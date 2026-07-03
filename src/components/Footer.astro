@@ -1,0 +1,66 @@
+---
+// Site footer (spec 03 §2): mono socials from site.ts, colophon link, © line.
+// Null socials render nothing (accounts don't exist yet, L-15/L-17 principle).
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+
+const links: { label: string; href: string }[] = [
+  { label: 'RSS', href: '/rss.xml' },
+  ...(site.socials.github ? [{ label: 'GitHub', href: site.socials.github }] : []),
+  ...(site.socials.youtube ? [{ label: 'YouTube', href: site.socials.youtube }] : []),
+  ...(site.socials.linkedin ? [{ label: 'LinkedIn', href: site.socials.linkedin }] : []),
+  { label: 'Email', href: `mailto:${site.email}` },
+];
+---
+
+<footer class="footer">
+  <div class="inner mono">
+    <span>© {year} {site.author}</span>
+    <nav aria-label="footer" class="links">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+  </div>
+  <p class="colophon mono">
+    <a href="/projects/launch-start/">How this site is built →</a>
+  </p>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    margin-top: var(--s-16);
+    padding: var(--s-6) var(--s-4) var(--s-8);
+  }
+  .inner {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    color: var(--muted);
+  }
+  .links {
+    display: flex;
+    gap: var(--s-6);
+  }
+  .links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--pink-deep);
+  }
+  .colophon {
+    max-width: var(--page-max);
+    margin: var(--s-4) auto 0;
+    color: var(--muted);
+  }
+  .colophon a {
+    color: var(--muted);
+  }
+  .colophon a:hover {
+    color: var(--pink-deep);
+  }
+</style>

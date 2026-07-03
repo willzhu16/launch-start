@@ -1,0 +1,141 @@
+---
+// The /about career git-graph (L-22, spec 02 §5.12): a static inline SVG.
+// Positions are computed from src/data/career.ts — editing history never
+// touches geometry. Horizontal scroll on small screens.
+import { career } from '../data/career';
+
+const W = 800;
+const H = 210;
+const MAIN_Y = 150;
+const SIDE_Y = 70;
+const NOW_X = 740;
+
+const mainNodes = career.filter((n) => n.lane === 'main');
+const sideNodes = career.filter((n) => n.lane === 'side');
+const hasMerge = sideNodes.some((n) => n.merge);
+
+const mainSpanEnd = 480;
+const mainStep = mainNodes.length > 1 ? (mainSpanEnd - 70) / (mainNodes.length - 1) : 0;
+const mains = mainNodes.map((n, i) => ({ ...n, x: 70 + i * mainStep, y: MAIN_Y }));
+
+const branchX = mains.at(-1)?.x ?? 70;
+const sideStart = branchX + 90;
+const sideEnd = NOW_X - 90;
+const sideStep = sideNodes.length > 1 ? (sideEnd - sideStart) / (sideNodes.length - 1) : 0;
+const sides = sideNodes.map((n, i) => ({ ...n, x: sideStart + i * sideStep, y: SIDE_Y }));
+
+const first = sides[0];
+const last = sides.at(-1);
+const branchPath =
+  first && last
+    ? [
+        `M ${branchX} ${MAIN_Y}`,
+        `C ${branchX + 45} ${MAIN_Y}, ${first.x - 45} ${SIDE_Y}, ${first.x} ${SIDE_Y}`,
+        ...sides.slice(1).map((n) => `L ${n.x} ${SIDE_Y}`),
+        ...(hasMerge
+          ? [`C ${last.x + 45} ${SIDE_Y}, ${NOW_X - 45} ${MAIN_Y}, ${NOW_X} ${MAIN_Y}`]
+          : []),
+      ].join(' ')
+    : null;
+
+const description = [
+  'Career timeline as a commit graph.',
+  `Main lane: ${mainNodes.map((n) => `${n.year} ${n.label}`).join(', ')}.`,
+  sideNodes.length > 0
+    ? `Side-project branch: ${sideNodes.map((n) => `${n.year} ${n.label}`).join(', ')}, merging back as skills.`
+    : '',
+]
+  .join(' ')
+  .trim();
+---
+
+{
+  career.length > 0 && (
+    <figure class="graph">
+      <div class="scroll">
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={description} width={W} height={H}>
+          <line x1="40" y1={MAIN_Y} x2={W - 20} y2={MAIN_Y} class="lane-main" />
+          {branchPath && <path d={branchPath} class="lane-side" />}
+          {mains.map((n) => (
+            <>
+              <circle cx={n.x} cy={n.y} r="7" class="dot-main" />
+              <text x={n.x} y={n.y + 32} text-anchor="middle" class="label">
+                {n.year} · {n.label}
+              </text>
+            </>
+          ))}
+          {sides.map((n) => (
+            <>
+              <circle cx={n.x} cy={n.y} r="7" class="dot-side" />
+              <text x={n.x} y={n.y - 20} text-anchor="middle" class="label label-side">
+                {n.year} · {n.label}
+              </text>
+            </>
+          ))}
+          {hasMerge && (
+            <>
+              <circle cx={NOW_X} cy={MAIN_Y} r="8" class="dot-merge" />
+              <text x={NOW_X} y={MAIN_Y + 32} text-anchor="middle" class="label">
+                merge → now
+              </text>
+            </>
+          )}
+        </svg>
+      </div>
+      <figcaption class="mono">
+        Main = career · pink branch = side projects, merging back as skills
+      </figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .graph {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    padding: var(--s-4);
+    box-shadow: var(--shadow-s);
+  }
+  .scroll {
+    overflow-x: auto;
+  }
+  svg {
+    min-width: 640px;
+    width: 100%;
+    height: auto;
+  }
+  .lane-main {
+    stroke: var(--muted);
+    stroke-width: 2.5;
+  }
+  .lane-side {
+    stroke: var(--pink);
+    stroke-width: 2.5;
+    fill: none;
+  }
+  .dot-main {
+    fill: var(--muted);
+  }
+  .dot-side {
+    fill: var(--pink);
+  }
+  .dot-merge {
+    fill: var(--rose-ink);
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--muted);
+  }
+  .label-side {
+    fill: var(--rose-ink);
+  }
+  figcaption {
+    margin-top: var(--s-3);
+    color: var(--muted);
+    font-size: 0.6rem;
+  }
+</style>

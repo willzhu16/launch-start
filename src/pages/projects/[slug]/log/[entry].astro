@@ -1,0 +1,210 @@
+---
+// Log entry & retro page (L-19/L-28/L-35, spec 03 §3.4): the canonical,
+// shareable URL for one week of building. Story body with a glance card.
+import { getEntry, render } from 'astro:content';
+import NavLite from '../../../../components/NavLite.astro';
+import PathCrumb from '../../../../components/PathCrumb.astro';
+import SubscribeNote from '../../../../components/SubscribeNote.astro';
+import TicketId from '../../../../components/TicketId.astro';
+import VideoFacade from '../../../../components/VideoFacade.astro';
+import WeekAtAGlance from '../../../../components/WeekAtAGlance.astro';
+import { site } from '../../../../data/site';
+import Base from '../../../../layouts/Base.astro';
+import { logPath, publishedLogs, ticketId } from '../../../../lib/content';
+import { fmtLong, fmtMono } from '../../../../lib/dates';
+import { blogPostingLd } from '../../../../lib/seo';
+
+export async function getStaticPaths() {
+  const logs = await publishedLogs();
+  return logs.map((entry) => {
+    const [slug, file] = entry.id.split('/');
+    return { params: { slug, entry: file }, props: { entry } };
+  });
+}
+
+const { entry } = Astro.props;
+const { title, date, tldr, sprint, week, kind, videoId } = entry.data;
+
+const project = await getEntry(entry.data.project);
+if (!project) throw new Error(`${entry.id}: project not found`);
+
+const { Content } = await render(entry);
+
+const sprintMeta = project.data.sprints.find((s) => s.number === sprint);
+const isRetro = kind === 'retro';
+
+// DAY {a}–{b} OF {len} for week entries (spec 03 §3.4 kicker).
+const dayRange =
+  !isRetro && week && sprintMeta
+    ? {
+        a: (week - 1) * 7 + 1,
+        b: Math.min(week * 7, sprintMeta.lengthDays),
+        len: sprintMeta.lengthDays,
+      }
+    : null;
+
+// Retro pages prepend an auto-generated sprint timeline (L-35) — every
+// published week entry of this sprint, oldest first. Never hand-written.
+const projectLogs = (await publishedLogs()).filter((l) => l.data.project.id === project.id);
+const timeline = isRetro
+  ? projectLogs
+      .filter((l) => l.data.sprint === sprint && l.data.kind === 'week')
+      .sort((a, b) => a.data.date.getTime() - b.data.date.getTime())
+  : [];
+
+// Prev/next entry within the project, chronological.
+const chrono = [...projectLogs].sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const idx = chrono.findIndex((l) => l.id === entry.id);
+const prevEntry = idx > 0 ? chrono[idx - 1] : null;
+const nextEntry = idx >= 0 && idx < chrono.length - 1 ? chrono[idx + 1] : null;
+---
+
+<Base
+  page={`${title} · ${project.data.title}`}
+  description={tldr}
+  jsonLd={[
+    blogPostingLd({
+      title: `${project.data.title} — ${title}`,
+      description: tldr,
+      path: logPath(entry),
+      date,
+      partOfPath: `/projects/${project.id}/`,
+    }),
+  ]}
+>
+  <NavLite current="projects" />
+  <main id="main" class="prose-width">
+    <PathCrumb
+      segments={[
+        { label: 'projects', href: '/projects/' },
+        { label: project.id, href: `/projects/${project.id}/` },
+        { label: `s${sprint}`, href: `/projects/${project.id}/` },
+        { label: isRetro ? 'retro' : `week-${String(week).padStart(2, '0')}` },
+      ]}
+    />
+
+    <header class="head">
+      <p class="mono kicker">
+        {
+          isRetro
+            ? `Sprint ${sprint} · Retrospective${sprintMeta ? ` · ${sprintMeta.lengthDays} days` : ''}`
+            : `Sprint ${sprint} · Week ${week} · ${fmtMono(date)} ${date.getUTCFullYear()}${
+                dayRange ? ` · Day ${dayRange.a}–${dayRange.b} of ${dayRange.len}` : ''
+              }`
+        }
+      </p>
+      <h1>{title}</h1>
+      <p class="byline">by {site.author} — {fmtLong(date)}</p>
+    </header>
+
+    {
+      timeline.length > 0 && (
+        <aside class="timeline" aria-label="sprint timeline">
+          <h2 class="mono timeline-head">The sprint, week by week</h2>
+          <ol role="list">
+            {timeline.map((weekEntry) => (
+              <li>
+                <TicketId text={ticketId(weekEntry)} />
+                <div>
+                  <a href={logPath(weekEntry)}>{weekEntry.data.title}</a>
+                  <p>{weekEntry.data.tldr}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      )
+    }
+
+    <WeekAtAGlance entry={entry} />
+
+    <article class="prose story">
+      <Content />
+      {videoId && <VideoFacade videoId={videoId} />}
+    </article>
+
+    <nav class="pn" aria-label="entry navigation">
+      {
+        prevEntry ? (
+          <a href={logPath(prevEntry)}>← {prevEntry.data.title}</a>
+        ) : (
+          <a href={`/projects/${project.id}/`}>← {project.data.title}</a>
+        )
+      }
+      {nextEntry ? <a href={logPath(nextEntry)}>{nextEntry.data.title} →</a> : <span />}
+    </nav>
+
+    <SubscribeNote compact />
+  </main>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--s-8);
+  }
+  .head {
+    text-align: center;
+    margin-block: var(--s-8) var(--s-6);
+  }
+  .kicker {
+    color: var(--rose-ink);
+  }
+  h1 {
+    font-size: var(--step-4);
+    margin-block: var(--s-3);
+  }
+  .byline {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .timeline {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    padding: var(--s-6);
+    margin-block: var(--s-8);
+  }
+  .timeline-head {
+    color: var(--rose-ink);
+    font-size: 0.72rem;
+    font-weight: 400;
+    margin-bottom: var(--s-4);
+  }
+  .timeline ol {
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .timeline li {
+    display: flex;
+    gap: var(--s-4);
+    align-items: baseline;
+  }
+  .timeline a {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .timeline a:hover {
+    color: var(--pink-deep);
+  }
+  .timeline p {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .story {
+    margin-inline: auto;
+  }
+  .pn {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-12);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-body);
+  }
+</style>

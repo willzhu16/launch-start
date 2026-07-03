@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+// Framed image with a mono caption (spec 02 §5.9). Accepts an imported image
+// (astro:assets, optimized at build) or a /public path string.
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { src, alt, caption, loading = 'lazy' } = Astro.props;
+---
+
+<figure class="figure">
+  {
+    typeof src === 'string' ? (
+      <img src={src} alt={alt} loading={loading} />
+    ) : (
+      <Image src={src} alt={alt} widths={[640, 960, 1280]} sizes="(max-width: 700px) 100vw, 660px" loading={loading} />
+    )
+  }
+  {caption && <figcaption class="mono">{caption}</figcaption>}
+</figure>
+
+<style>
+  .figure {
+    margin-block: var(--s-6);
+  }
+  .figure :global(img) {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    box-shadow: var(--shadow-s);
+  }
+  figcaption {
+    margin-top: var(--s-2);
+    color: var(--muted);
+    font-size: 0.66rem;
+  }
+</style>

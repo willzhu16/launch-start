@@ -1,0 +1,188 @@
+---
+// /about — the complete portfolio on one page (L-22, spec 03 §3.6). This is
+// the resume-link target; it must answer everything standalone.
+import { existsSync } from 'node:fs';
+import CareerGraph from '../components/CareerGraph.astro';
+import NavLite from '../components/NavLite.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import { externalWork } from '../data/external-work';
+import { site } from '../data/site';
+import Base from '../layouts/Base.astro';
+import { publishedProjects } from '../lib/content';
+import { personLd } from '../lib/seo';
+
+const projects = await publishedProjects();
+const ordered = [
+  ...projects.filter((p) => p.data.featured),
+  ...projects.filter((p) => !p.data.featured),
+];
+
+// Never a dead link: the Resume button ships only when the PDF exists (L-18).
+const hasResume = existsSync(new URL('../../public/resume.pdf', import.meta.url));
+
+const initials = site.author
+  .split(' ')
+  .map((part) => part[0])
+  .join('');
+
+const profileLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: personLd(),
+};
+---
+
+<Base
+  page="About"
+  description={`${site.author} — software engineer. Timed public sprints, documented weekly.`}
+  jsonLd={[personLd(), profileLd]}
+>
+  <NavLite current="about" />
+  <main id="main">
+    <header class="head gridbg">
+      <div class="head-inner">
+        <div class="avatar" aria-hidden="true">{initials}</div>
+        <div>
+          <h1>{site.author}</h1>
+          <p class="role">
+            Software engineer. I ship production systems by day and run timed public sprints by
+            night — everything on this site was built end-to-end against a deadline, and written
+            up weekly.
+          </p>
+          <div class="actions">
+            {hasResume && <a class="btn btn-pink" href="/resume.pdf">Resume (PDF)</a>}
+            {site.socials.github && <a class="btn" href={site.socials.github}>GitHub ↗</a>}
+            {site.socials.linkedin && <a class="btn" href={site.socials.linkedin}>LinkedIn ↗</a>}
+            <a class="btn" href={`mailto:${site.email}`}>Email</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <section aria-label="career timeline">
+        <SectionLabel label="The journey, as a commit graph" />
+        <CareerGraph />
+      </section>
+
+      {
+        (ordered.length > 0 || externalWork.length > 0) && (
+          <section aria-label="projects">
+            <SectionLabel label="Projects" />
+            <div class="grid">
+              {ordered.map((project) => (
+                <ProjectCard project={project} />
+              ))}
+              {externalWork.map((work) => (
+                <a class="external" href={work.repoUrl}>
+                  <span class="external-title">{work.title}</span>
+                  <p>{work.blurb}</p>
+                  <span class="mono badge">GitHub ↗</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <section aria-label="how I work" class="prose-narrow">
+        <SectionLabel label="How I work" />
+        <div class="prose">
+          <p>
+            Every project here runs on my own engineering platform — shared CI with security
+            gates (Semgrep, osv-scanner, gitleaks), pinned reusable workflows, automated
+            releases, and an AI-assisted development harness. The platform itself is a project;
+            <a href="/projects/launch-start/">this site documents how it's built →</a>
+          </p>
+        </div>
+      </section>
+
+      <section aria-label="skills" class="prose-narrow">
+        <SectionLabel label="Skills, in prose" />
+        <div class="prose">
+          <p>
+            TypeScript and Python across the stack; CI/CD and supply-chain security as a habit,
+            not an afterthought; content systems, static sites, and the Cloudflare edge. The
+            projects above are the proof — each one links to its code and its build log.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .head {
+    border-bottom: 1px solid var(--line);
+    padding: var(--s-12) 0;
+  }
+  .head-inner {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--s-4);
+    display: flex;
+    gap: var(--s-8);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .avatar {
+    width: 116px;
+    height: 116px;
+    border-radius: 50%;
+    border: 3px solid var(--pink);
+    background: var(--card);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-3);
+    color: var(--rose-ink);
+    flex-shrink: 0;
+  }
+  h1 {
+    font-size: var(--step-4);
+  }
+  .role {
+    font-family: var(--font-body);
+    max-width: var(--measure);
+    margin-block: var(--s-3) var(--s-4);
+  }
+  .actions {
+    display: flex;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--s-6);
+  }
+  .external {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    box-shadow: var(--shadow-s);
+    padding: var(--s-4);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .external-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+  }
+  .external p {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+  }
+  .badge {
+    color: var(--pink-deep);
+  }
+  .prose-narrow .prose {
+    max-width: var(--measure-wide);
+  }
+</style>

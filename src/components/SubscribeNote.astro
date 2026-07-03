@@ -1,0 +1,90 @@
+---
+// Friendly subscribe note (L-20, spec 02 §5.13) — a letter-voice invitation,
+// not a conversion band. Renders nothing until a Buttondown account exists;
+// the form POSTs directly to Buttondown (no JS). Honeypot included.
+import { site } from '../data/site';
+
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const username = site.buttondownUsername;
+---
+
+{
+  username && (
+    <aside class:list={['note', { compact }]} id="subscribe">
+      <p class="invite">Following along? The next log lands in your inbox.</p>
+      <form
+        action={`https://buttondown.com/api/emails/embed-subscribe/${username}`}
+        method="post"
+        class="form"
+      >
+        <label class="visually-hidden" for="subscribe-email">
+          Email address
+        </label>
+        <input
+          id="subscribe-email"
+          type="email"
+          name="email"
+          required
+          placeholder="you@example.com"
+          autocomplete="email"
+        />
+        <input type="text" name="tag" tabindex="-1" class="visually-hidden" aria-hidden="true" />
+        <button type="submit" class="btn btn-pink">
+          Subscribe
+        </button>
+      </form>
+    </aside>
+  )
+}
+
+<style>
+  .note {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    padding: var(--s-8);
+    text-align: center;
+    margin-block: var(--s-12);
+  }
+  .note.compact {
+    padding: var(--s-6);
+    margin-block: var(--s-8);
+  }
+  .invite {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: var(--step-1);
+    margin-bottom: var(--s-4);
+  }
+  .compact .invite {
+    font-size: var(--step-0);
+  }
+  .form {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+  }
+  input[type='email'] {
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: var(--paper);
+    padding: 0.5em 1.2em;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    min-width: 220px;
+    color: var(--ink);
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

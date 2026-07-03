@@ -1,0 +1,44 @@
+# Deploy to Cloudflare Workers static assets. Three triggers
+# (ARCHITECTURE §4.2): push to master, daily scheduled rebuild (keeps the
+# sprint day counter honest), manual dispatch.
+# Requires repo secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
+# Optional repo variable: SITE_ORIGIN (set at domain cutover, Q1).
+name: deploy
+
+on:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '17 9 * * *' # daily rebuild
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+        env:
+          SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

@@ -1,0 +1,48 @@
+---
+// One line in a writing list (spec 02 §5.13): type lozenge, title, mono date.
+import { logPath, ticketId, type WritingItem } from '../lib/content';
+import { fmtISO } from '../lib/dates';
+import StatusLozenge from './StatusLozenge.astro';
+import TicketId from './TicketId.astro';
+
+interface Props {
+  item: WritingItem;
+}
+
+const { item } = Astro.props;
+const href = item.type === 'log' ? logPath(item.entry) : `/blog/${item.entry.id}/`;
+---
+
+<li class="row">
+  <StatusLozenge status={item.type} />
+  {item.type === 'log' && <TicketId text={ticketId(item.entry)} />}
+  {import.meta.env.DEV && item.entry.data.draft && <StatusLozenge status="draft" />}
+  <a class="title" href={href}>{item.entry.data.title}</a>
+  <span class="mono date">{fmtISO(item.entry.data.date)}</span>
+</li>
+
+<style>
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    padding-block: var(--s-3);
+    border-bottom: 1px solid var(--line);
+  }
+  .title {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    color: var(--ink);
+    text-decoration: none;
+    flex: 1;
+    min-width: 12ch;
+  }
+  .title:hover {
+    color: var(--pink-deep);
+  }
+  .date {
+    color: var(--muted);
+    font-size: 0.66rem;
+    white-space: nowrap;
+  }
+</style>

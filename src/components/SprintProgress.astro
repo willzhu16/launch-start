@@ -1,0 +1,72 @@
+---
+// Day counter + linear gauge (spec 02 §5.6). All math from lib/sprint.ts.
+// Pre-start renders "STARTS {date}"; ended renders a full bar + DONE.
+import { fmtMono } from '../lib/dates';
+import { type Sprint, sprintEnded, sprintProgress } from '../lib/sprint';
+
+interface Props {
+  sprint: Sprint;
+  today?: Date;
+}
+
+const { sprint, today = new Date() } = Astro.props;
+const progress = sprintProgress(sprint, today);
+const ended = sprintEnded(sprint, today);
+---
+
+{
+  progress === null ? (
+    <p class="mono label">Starts {fmtMono(sprint.startDate)}</p>
+  ) : (
+    <div
+      class="progress"
+      role="img"
+      aria-label={`Sprint progress: day ${progress.day} of ${sprint.lengthDays}`}
+    >
+      <span class="mono label">
+        Day {progress.day} / {sprint.lengthDays}
+      </span>
+      <span class="track" aria-hidden="true">
+        <span class="fill" style={`width:${progress.pct}%`} />
+        {!ended && <span class="marker" style={`left:${progress.pct}%`} />}
+      </span>
+      {ended && <span class="mono label">Done</span>}
+    </div>
+  )
+}
+
+<style>
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .label {
+    color: var(--rose-ink);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .track {
+    position: relative;
+    flex: 1;
+    height: 7px;
+    border-radius: var(--r-pill);
+    background: var(--tan-tint);
+    overflow: visible;
+  }
+  .fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: var(--r-pill);
+    background: var(--pink);
+  }
+  .marker {
+    position: absolute;
+    top: 50%;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--ink);
+    transform: translate(-50%, -50%);
+  }
+</style>

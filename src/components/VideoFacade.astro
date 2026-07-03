@@ -1,0 +1,99 @@
+---
+// Click-to-load YouTube facade (spec 02 §5.9) — an eager iframe is ~1MB of
+// third-party JS; this is a thumbnail and a play button. The inline script is
+// the one sanctioned interactive JS on content pages; loads youtube-nocookie.
+import { youtubeFacts } from '../lib/generated';
+
+interface Props {
+  videoId: string;
+  title?: string;
+}
+
+const { videoId, title } = Astro.props;
+const facts = youtubeFacts(videoId);
+const resolvedTitle = title ?? facts?.title ?? 'video';
+const thumbnail = facts?.thumbnailUrl ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+---
+
+<figure class="facade">
+  <button
+    type="button"
+    class="poster"
+    data-video-facade
+    data-video-id={videoId}
+    aria-label={`Play video: ${resolvedTitle}`}
+  >
+    <img src={thumbnail} alt="" loading="lazy" width="1280" height="720" />
+    <span class="play" aria-hidden="true"></span>
+  </button>
+  <figcaption class="mono">{resolvedTitle}</figcaption>
+</figure>
+
+<script is:inline>
+  for (const btn of document.querySelectorAll('[data-video-facade]')) {
+    btn.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.videoId}?autoplay=1`;
+      iframe.title = btn.getAttribute('aria-label') ?? 'video';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      btn.replaceWith(iframe);
+    });
+  }
+</script>
+
+<style>
+  .facade {
+    margin-block: var(--s-6);
+  }
+  .poster {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--card);
+    box-shadow: var(--shadow-s);
+  }
+  .poster img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--cream);
+    box-shadow: var(--shadow-m);
+  }
+  .play::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 0;
+    height: 0;
+    border-left: 16px solid var(--pink-deep);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    transform: translateX(2px);
+  }
+  .facade :global(iframe) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+  }
+  figcaption {
+    margin-top: var(--s-2);
+    color: var(--muted);
+    font-size: 0.66rem;
+  }
+</style>

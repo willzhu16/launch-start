@@ -1,0 +1,101 @@
+---
+// Cover-led project card for the home shelf and /about grid (spec 02 §5.5).
+// The whole card is one link. Idea-status projects may lack a cover (schema
+// allows it) and get a quiet tinted block instead.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { fmtISO } from '../lib/dates';
+import StatusLozenge from './StatusLozenge.astro';
+import TechChips from './TechChips.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, pitch, status, cover, coverAlt, tech, draft, createdDate } = project.data;
+---
+
+<a class="card" href={`/projects/${project.id}/`}>
+  {
+    cover ? (
+      <Image
+        class="cover"
+        src={cover}
+        alt={coverAlt ?? ''}
+        widths={[480, 720, 960]}
+        sizes="(max-width: 700px) 100vw, 320px"
+      />
+    ) : (
+      <div class="cover cover-empty" aria-hidden="true" />
+    )
+  }
+  <div class="body">
+    <div class="titlerow">
+      <span class="title">{title}</span>
+      <StatusLozenge status={status} />
+      {import.meta.env.DEV && draft && <StatusLozenge status="draft" />}
+    </div>
+    <p class="pitch">{pitch}</p>
+    <TechChips items={tech} />
+    <span class="mono started">Started {fmtISO(createdDate)}</span>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: block;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    overflow: hidden;
+    box-shadow: var(--shadow-s);
+    color: var(--ink);
+    text-decoration: none;
+    transition:
+      transform 200ms ease,
+      box-shadow 200ms ease;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-m);
+    }
+  }
+  .card :global(img.cover),
+  .cover-empty {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
+  }
+  .cover-empty {
+    background: linear-gradient(135deg, var(--card), var(--tan-tint));
+  }
+  .body {
+    padding: var(--s-4);
+    display: grid;
+    gap: var(--s-3);
+  }
+  .titlerow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+  }
+  .pitch {
+    font-family: var(--font-body);
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .started {
+    color: var(--muted);
+    font-size: 0.63rem;
+  }
+</style>

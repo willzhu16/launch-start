@@ -1,0 +1,17 @@
+---
+// Small mono metadata voice: LS-S1-W02, JUL 19 (spec 02 §5.4).
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<span class="mono ticket">{text}</span>
+
+<style>
+  .ticket {
+    color: var(--muted);
+    font-size: 0.66rem;
+  }
+</style>

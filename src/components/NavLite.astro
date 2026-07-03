@@ -1,0 +1,67 @@
+---
+// Header for every page except home (spec 02 §5.1): serif wordmark left
+// (no dots), mono nav right, current page marked.
+interface Props {
+  current?: 'projects' | 'blog' | 'about';
+}
+
+const { current } = Astro.props;
+
+const items = [
+  { key: 'projects', label: 'Projects', href: '/projects/' },
+  { key: 'blog', label: 'Blog', href: '/blog/' },
+  { key: 'about', label: 'About', href: '/about/' },
+] as const;
+---
+
+<header class="navlite">
+  <a class="wordmark" href="/">Launch<span class="start">Start</span></a>
+  <nav class="nav mono" aria-label="primary">
+    {
+      items.map((item) => (
+        <a href={item.href} aria-current={current === item.key ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<style>
+  .navlite {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-4);
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: var(--s-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .start {
+    color: var(--pink-deep);
+  }
+  .nav {
+    display: flex;
+    gap: var(--s-6);
+  }
+  .nav a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--pink-deep);
+  }
+  .nav a[aria-current='page'] {
+    color: var(--rose-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+</style>

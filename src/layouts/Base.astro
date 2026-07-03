@@ -1,0 +1,67 @@
+---
+// Page shell (spec 02 §1, spec 03 §2): head/meta, fonts, skip-link, footer.
+// Page composition (nav choice, main content) belongs to the pages.
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { absoluteUrl } from '../lib/seo';
+import '../styles/global.css';
+
+interface Props {
+  /** Page name for `{page} · Launch Start`; omit on home for the tagline form. */
+  page?: string;
+  description?: string;
+  /** JSON-LD payloads to embed, one script per object. */
+  jsonLd?: Record<string, unknown>[];
+  ogImage?: string;
+}
+
+const { page, description = site.description, jsonLd = [], ogImage } = Astro.props;
+const title = page ? `${page} · ${site.title}` : `${site.title} — ${site.tagline}`;
+const canonical = absoluteUrl(Astro.url.pathname);
+const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-latin-600-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/source-serif-4-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content={site.title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="generator" content={Astro.generator} />
+    {jsonLd.map((ld) => <script type="application/ld+json" set:html={JSON.stringify(ld)} />)}
+  </head>
+  <body>
+    <a class="skip-link mono" href="#main">Skip to content</a>
+    <slot />
+    <Footer />
+  </body>
+</html>

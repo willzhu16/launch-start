@@ -1,0 +1,38 @@
+---
+// Mono pills for tech/tags (spec 02 §5.10). Display names from vocab labels.
+import { labelFor } from '../data/vocab';
+
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <ul class="chips" role="list">
+      {items.map((item) => (
+        <li class="mono chip">{labelFor(item)}</li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    padding: 0;
+  }
+  .chip {
+    font-size: 0.63rem;
+    text-transform: none;
+    letter-spacing: 0.06em;
+    background: var(--tan-tint);
+    color: var(--muted);
+    border-radius: var(--r-pill);
+    padding: 0.25em 0.85em;
+  }
+</style>

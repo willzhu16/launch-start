@@ -1,0 +1,60 @@
+/* Design tokens — "Warm Journal" v0.5 (spec 02 §2, L-26/L-29).
+   Every color, size, and shadow in the site lives here; components consume
+   tokens only. Dark palette is a Phase 2 addendum (L-16). */
+:root {
+  /* color — light (all-warm, pink is the sole accent family) */
+  --cream: #fbf5ea; /* page ground */
+  --card: #f3eada; /* cards, asides, glance box */
+  --paper: #fffdf7; /* elevated card interiors */
+  --ink: #2e2820; /* text */
+  --muted: #6e6353; /* metadata, captions, warm structure */
+  --line: rgba(46, 40, 32, 0.16); /* hairlines, borders */
+  --grid: rgba(122, 86, 56, 0.09); /* graph-paper lines */
+  --pink: #d9538f; /* accent fills, marks — once per screen */
+  --pink-deep: #b23a72; /* links, interactive text */
+  --rose-ink: #8e2e5b; /* strong small text (day counter, active nav) */
+  --ok: #4a7c59; /* status: shipped */
+  --warn: #a07e1c; /* status: paused */
+
+  /* tinted lozenge/chip grounds (derived, kept here so components stay literal-free) */
+  --pink-tint: rgba(217, 83, 143, 0.14);
+  --ok-tint: rgba(74, 124, 89, 0.14);
+  --warn-tint: rgba(160, 126, 28, 0.16);
+  --gray-tint: rgba(110, 99, 83, 0.13);
+  --tan-tint: rgba(122, 86, 56, 0.1);
+
+  /* type */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --step--1: 0.79rem;
+  --step-0: 1rem;
+  --step-1: 1.19rem;
+  --step-2: 1.42rem;
+  --step-3: 1.69rem;
+  --step-4: 2.02rem;
+  --step-5: 2.6rem;
+
+  /* space (4px base) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+
+  /* shape & depth */
+  --r-s: 4px;
+  --r-m: 8px;
+  --r-pill: 999px;
+  --shadow-s: 0 2px 8px rgba(46, 40, 32, 0.06);
+  --shadow-m: 0 10px 22px rgba(46, 40, 32, 0.13);
+
+  /* layout */
+  --measure: 62ch; /* article text */
+  --measure-wide: 66ch; /* prose on pages */
+  --page-max: 1000px; /* grids, gallery */
+}

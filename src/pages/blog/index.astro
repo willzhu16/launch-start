@@ -1,0 +1,84 @@
+---
+// /blog/ — curated standalone posts only (L-36); logs live with their projects.
+import NavLite from '../../components/NavLite.astro';
+import PathCrumb from '../../components/PathCrumb.astro';
+import PostListItem from '../../components/PostListItem.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import SubscribeNote from '../../components/SubscribeNote.astro';
+import Base from '../../layouts/Base.astro';
+import { publishedPosts } from '../../lib/content';
+
+const posts = await publishedPosts();
+
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.getUTCFullYear();
+  byYear.set(year, [...(byYear.get(year) ?? []), post]);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+
+const blogLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Launch Start — Blog',
+  url: new URL('/blog/', Astro.site).href,
+};
+---
+
+<Base
+  page="Blog"
+  description="Essays and ideas — the build logs live with their projects."
+  jsonLd={[blogLd]}
+>
+  <NavLite current="blog" />
+  <main id="main" class="page">
+    <PathCrumb segments={[{ label: 'blog' }]} />
+    <h1>Blog</h1>
+    <p class="lede">Essays and ideas — the build logs live with their projects.</p>
+
+    {
+      posts.length === 0 && (
+        <>
+          <p class="empty">First post is being written — subscribe and it'll find you.</p>
+          <SubscribeNote />
+        </>
+      )
+    }
+
+    {
+      years.map((year) => (
+        <section aria-label={String(year)}>
+          {years.length > 1 && <SectionLabel label={String(year)} />}
+          <ul class="list" role="list">
+            {(byYear.get(year) ?? []).map((post) => (
+              <PostListItem item={{ type: 'post', entry: post }} />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </main>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--s-8);
+  }
+  h1 {
+    font-size: var(--step-4);
+  }
+  .lede {
+    font-family: var(--font-body);
+    color: var(--muted);
+    margin-top: var(--s-2);
+  }
+  .empty {
+    font-family: var(--font-body);
+    font-style: italic;
+    margin-top: var(--s-8);
+  }
+  .list {
+    padding: 0;
+    margin-top: var(--s-6);
+  }
+</style>

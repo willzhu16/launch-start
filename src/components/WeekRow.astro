@@ -1,0 +1,79 @@
+---
+// Collapsible weekly row in the project page's log section (spec 02 §5.7).
+// Native <details> — zero JS, keyboard accessible. Links to the entry page.
+import type { CollectionEntry } from 'astro:content';
+import { logPath } from '../lib/content';
+import { fmtMono } from '../lib/dates';
+import StatusLozenge from './StatusLozenge.astro';
+import TicketId from './TicketId.astro';
+
+interface Props {
+  entry: CollectionEntry<'logs'>;
+  open?: boolean;
+}
+
+const { entry, open = false } = Astro.props;
+const isRetro = entry.data.kind === 'retro';
+---
+
+<details class="week" open={open}>
+  <summary>
+    <span class="glyph" aria-hidden="true"></span>
+    {isRetro ? <StatusLozenge status="retro" /> : <TicketId text={fmtMono(entry.data.date)} />}
+    <span class="title">{entry.data.title}</span>
+    {import.meta.env.DEV && entry.data.draft && <StatusLozenge status="draft" />}
+  </summary>
+  <div class="body">
+    <p class="tldr">{entry.data.tldr}</p>
+    <a href={logPath(entry)}>Read the full entry →</a>
+  </div>
+</details>
+
+<style>
+  .week {
+    border-bottom: 1px solid var(--line);
+    padding-block: var(--s-3);
+  }
+  summary {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .glyph::before {
+    content: '+';
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-weight: 400;
+  }
+  details[open] .glyph::before {
+    content: '–';
+  }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+  }
+  .body {
+    padding: var(--s-3) 0 var(--s-2) var(--s-6);
+    max-width: var(--measure);
+  }
+  .tldr {
+    font-family: var(--font-body);
+    margin-bottom: var(--s-2);
+  }
+  .body a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .body a:hover {
+    text-decoration: underline;
+  }
+</style>

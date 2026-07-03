@@ -1,0 +1,112 @@
+---
+// Home-only masthead (spec 02 §5.1): topline, wordmark with the signature
+// trailing-dots animation (L-32), tagline, centered mono nav.
+import { site } from '../data/site';
+---
+
+<header class="masthead gridbg">
+  <div class="topline mono">
+    <span>A build log</span>
+    <span>Est. 2026</span>
+  </div>
+  <div class="mark">
+    <h1 class="wordmark">
+      Launch<span class="start">Start</span><span class="dots" aria-hidden="true"
+        ><span>.</span><span>.</span><span>.</span></span
+      >
+    </h1>
+    <p class="tagline mono">{site.tagline}</p>
+  </div>
+  <nav class="nav mono" aria-label="primary">
+    <a href="/projects/">Projects</a>
+    <a href="/blog/">Blog</a>
+    <a href="/about/">About</a>
+    {site.buttondownUsername && <a href="#subscribe">Subscribe</a>}
+  </nav>
+</header>
+
+<style>
+  .masthead {
+    border-bottom: 1px solid var(--line);
+  }
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--s-3) var(--s-4);
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .mark {
+    text-align: center;
+    padding: var(--s-12) var(--s-4) var(--s-8);
+  }
+  .wordmark {
+    font-size: clamp(2.6rem, 7vw, 3.6rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .start {
+    color: var(--pink-deep);
+  }
+  .dots {
+    color: var(--pink);
+  }
+  .tagline {
+    margin-top: var(--s-3);
+    color: var(--muted);
+  }
+  .nav {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-8);
+    padding: var(--s-4);
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .nav a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--pink-deep);
+  }
+
+  /* signature animation: dots type in, fall away, on a slow loop (L-32) */
+  .dots span {
+    display: inline-block;
+    opacity: 0.55;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dots span {
+      animation: dotcycle 2.6s infinite;
+    }
+    .dots span:nth-child(2) {
+      animation-delay: 0.35s;
+    }
+    .dots span:nth-child(3) {
+      animation-delay: 0.7s;
+    }
+  }
+  @keyframes dotcycle {
+    0% {
+      opacity: 0;
+      transform: none;
+    }
+    12% {
+      opacity: 1;
+    }
+    58% {
+      opacity: 1;
+      transform: none;
+    }
+    78% {
+      opacity: 0;
+      transform: translateY(0.32em);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(0.32em);
+    }
+  }
+</style>

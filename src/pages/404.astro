@@ -1,0 +1,56 @@
+---
+// 404 (spec 03 §3.7): letter voice, the one earned terminal joke.
+import NavLite from '../components/NavLite.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base page="404" description="This path doesn't exist — yet.">
+  <NavLite />
+  <main id="main" class="prose-width">
+    <p class="mono path">~/launchstart <span class="cursor" aria-hidden="true">▍</span></p>
+    <p class="mono error">command not found</p>
+    <h1>This path doesn't exist — yet.</h1>
+    <p class="body">
+      Maybe it will after a future sprint. In the meantime, everything real lives in one of
+      three places:
+    </p>
+    <nav class="mono links" aria-label="404 navigation">
+      <a href="/">Home</a>
+      <a href="/projects/">Projects</a>
+      <a href="/blog/">Blog</a>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--s-16);
+    text-align: center;
+  }
+  .path {
+    color: var(--muted);
+  }
+  .cursor {
+    color: var(--pink);
+  }
+  .error {
+    color: var(--rose-ink);
+    margin-top: var(--s-2);
+  }
+  h1 {
+    font-size: var(--step-4);
+    margin-block: var(--s-6) var(--s-3);
+  }
+  .body {
+    font-family: var(--font-body);
+    color: var(--muted);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-6);
+    margin-top: var(--s-8);
+  }
+</style>

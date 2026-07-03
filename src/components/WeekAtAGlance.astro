@@ -1,0 +1,110 @@
+---
+// Frontmatter-driven recap card at the top of an entry (L-28, spec 02 §5.8).
+// Renders nothing when every array is empty. Retro variant retitles itself.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'logs'>;
+}
+
+const { entry } = Astro.props;
+const { shipped, struggled, learned, days, kind } = entry.data;
+const hasContent =
+  shipped.length > 0 || struggled.length > 0 || learned.length > 0 || days.length > 0;
+const heading = kind === 'retro' ? 'The sprint at a glance' : 'The week at a glance';
+const columns = [
+  { label: 'Shipped', items: shipped },
+  { label: 'Struggled with', items: struggled },
+  { label: 'Learned', items: learned },
+].filter((c) => c.items.length > 0);
+---
+
+{
+  hasContent && (
+    <aside class="glance" aria-label={heading}>
+      <h2 class="mono heading">{heading}</h2>
+      <div class="cols">
+        {columns.map((col) => (
+          <div>
+            <h3 class="mono col-label">{col.label}</h3>
+            <ul>
+              {col.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      {days.length > 0 && (
+        <dl class="days">
+          {days.map((day) => (
+            <div class="day">
+              <dt class="mono">{day.d}</dt>
+              <dd>{day.note}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </aside>
+  )
+}
+
+<style>
+  .glance {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    padding: var(--s-6);
+    margin-block: var(--s-8);
+  }
+  .heading {
+    color: var(--rose-ink);
+    font-size: 0.72rem;
+    font-weight: 400;
+    margin-bottom: var(--s-4);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--s-6);
+  }
+  .col-label {
+    color: var(--muted);
+    font-size: 0.63rem;
+    font-weight: 400;
+    margin-bottom: var(--s-2);
+  }
+  ul {
+    padding-left: 1.1em;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  li {
+    margin-bottom: var(--s-1);
+  }
+  li::marker {
+    color: var(--pink);
+  }
+  .days {
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px dashed var(--line);
+    display: grid;
+    gap: var(--s-2);
+  }
+  .day {
+    display: flex;
+    gap: var(--s-4);
+    align-items: baseline;
+  }
+  dt {
+    color: var(--rose-ink);
+    min-width: 4.5em;
+    font-size: 0.66rem;
+  }
+  dd {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+  }
+</style>

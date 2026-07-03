@@ -1,0 +1,85 @@
+---
+// Repo facts strip from the committed nightly snapshot (spec 02 §5.11).
+// Renders nothing when the repo has no synced data (L-05 rule).
+import { githubFacts } from '../lib/generated';
+
+interface Props {
+  repo: string;
+}
+
+const { repo } = Astro.props;
+const facts = githubFacts(repo);
+
+function age(iso: string): string {
+  const days = Math.max(0, Math.floor((Date.now() - Date.parse(iso)) / 86_400_000));
+  if (days === 0) return 'today';
+  return days === 1 ? '1d ago' : `${days}d ago`;
+}
+---
+
+{
+  facts && (
+    <div class="panel">
+      <div class="stats">
+        <div class="stat">
+          <span class="value">{facts.stars}</span>
+          <span class="mono label">Stars</span>
+        </div>
+        {facts.primaryLanguage && (
+          <div class="stat">
+            <span class="value">{facts.primaryLanguage}</span>
+            <span class="mono label">Language</span>
+          </div>
+        )}
+        {facts.latestRelease && (
+          <div class="stat">
+            <span class="value">{facts.latestRelease.tag}</span>
+            <span class="mono label">Latest release</span>
+          </div>
+        )}
+        <div class="stat">
+          <span class="value">{age(facts.lastCommitDate)}</span>
+          <span class="mono label">Last commit</span>
+        </div>
+      </div>
+      <span class="mono fetched">Fetched {facts.fetchedAt.slice(0, 10)}</span>
+    </div>
+  )
+}
+
+<style>
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    padding: var(--s-4) var(--s-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--s-6);
+    flex-wrap: wrap;
+  }
+  .stats {
+    display: flex;
+    gap: var(--s-8);
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .value {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: var(--step-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .label {
+    color: var(--muted);
+    font-size: 0.6rem;
+  }
+  .fetched {
+    color: var(--muted);
+    font-size: 0.6rem;
+  }
+</style>

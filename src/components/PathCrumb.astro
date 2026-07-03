@@ -1,0 +1,51 @@
+---
+// Terminal-path breadcrumb (L-31): ~/launchstart/projects/<slug>/… — every
+// segment except the last is a link; decorative cursor glyph is aria-hidden.
+interface Props {
+  segments: { label: string; href?: string }[];
+}
+
+const { segments } = Astro.props;
+---
+
+<nav aria-label="breadcrumb" class="crumb mono">
+  <a href="/">~</a><span class="sep">/</span><a href="/">launchstart</a>
+  {
+    segments.map((seg) => (
+      <>
+        <span class="sep">/</span>
+        {seg.href ? <a href={seg.href}>{seg.label}</a> : <span class="here">{seg.label}</span>}
+      </>
+    ))
+  }
+  <span class="cursor" aria-hidden="true">▍</span>
+</nav>
+
+<style>
+  .crumb {
+    font-size: 0.72rem;
+    text-transform: none;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+    margin-bottom: var(--s-6);
+  }
+  .crumb a {
+    color: var(--pink-deep);
+    text-decoration: none;
+  }
+  .crumb a:hover {
+    text-decoration: underline;
+  }
+  .sep {
+    margin-inline: 0.35em;
+    color: var(--muted);
+  }
+  .here {
+    color: var(--ink);
+  }
+  .cursor {
+    color: var(--pink);
+    margin-left: 0.15em;
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+title: 'Launch Start'
+pitch: 'The build-in-public platform this site runs on — built as its own first sprint.'
+status: 'in-sprint'
+featured: true
+draft: false
+createdDate: 2026-07-02
+tech: ['astro', 'typescript', 'cloudflare-workers']
+tags: ['platform', 'meta']
+cover: './cover.png'
+coverAlt: 'Launch Start wordmark on a warm pink-to-orange gradient — generated cover, to be replaced by a site screenshot'
+sprints:
+  - number: 1
+    goal: 'Ship the site: pages, content system, CI, deploy — documented weekly.'
+    lengthDays: 30
+    startDate: 2026-07-06
+    endDate: 2026-08-05
+---
+
+## What & why
+
+Every side project I'd ever finished lived in a private repo nobody saw. Launch
+Start fixes that structurally: each project runs as a timed public sprint, with
+weekly write-ups and a retrospective at the end — the work markets itself while
+I build it. This site is the platform that makes that sustainable, and fittingly,
+it's also the first project on its own shelf.
+
+The one rule that shaped everything: it has to survive a week where I only have
+45 minutes on a Sunday. So there's no CMS, no database, no admin panel — content
+is markdown in the repo, validated by schemas, rendered by templates. Writing a
+weekly log is one scaffolded file and one push.
+
+## Architecture
+
+MDX content with zod-validated frontmatter goes in; an Astro build (on every
+push, plus a daily rebuild that keeps the sprint day-counter honest) turns it
+into fully static HTML; Cloudflare serves it from the edge. No servers, no
+runtime API calls, no secrets in the deployed site. GitHub and YouTube facts
+sync in at build time as committed JSON snapshots, so an API outage can only
+ever make the data slightly stale — never break a page.
+
+## Outcome
+
+Sprint 1 is the launch sprint: ship the full platform in 30 days — pages,
+content schemas, CI with security gates, deploy pipeline — and at least four
+weekly logs written while building it, ending in a retrospective on this page.

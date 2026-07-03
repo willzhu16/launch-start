@@ -1,0 +1,120 @@
+---
+// Blog post page (spec 03 §3.5): same article layout as a log entry, minus
+// the glance card and sprint kicker.
+import { getEntry, render } from 'astro:content';
+import NavLite from '../../components/NavLite.astro';
+import PathCrumb from '../../components/PathCrumb.astro';
+import SubscribeNote from '../../components/SubscribeNote.astro';
+import TechChips from '../../components/TechChips.astro';
+import VideoFacade from '../../components/VideoFacade.astro';
+import { site } from '../../data/site';
+import Base from '../../layouts/Base.astro';
+import { publishedPosts } from '../../lib/content';
+import { fmtLong, fmtMono } from '../../lib/dates';
+import { blogPostingLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const posts = await publishedPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { title, description, date, updated, tags, videoId } = post.data;
+const { Content } = await render(post);
+
+const project = post.data.project ? await getEntry(post.data.project) : null;
+---
+
+<Base
+  page={title}
+  description={description}
+  jsonLd={[
+    blogPostingLd({
+      title,
+      description,
+      path: `/blog/${post.id}/`,
+      date,
+      ...(updated ? { updated } : {}),
+    }),
+  ]}
+>
+  <NavLite current="blog" />
+  <main id="main" class="prose-width">
+    <PathCrumb segments={[{ label: 'blog', href: '/blog/' }, { label: post.id }]} />
+
+    <header class="head">
+      <p class="mono kicker">Blog · {fmtMono(date)} {date.getUTCFullYear()}</p>
+      <h1>{title}</h1>
+      <p class="byline">by {site.author} — {fmtLong(date)}</p>
+      <div class="tags"><TechChips items={[...tags]} /></div>
+    </header>
+
+    <article class="prose story">
+      <Content />
+      {videoId && <VideoFacade videoId={videoId} />}
+    </article>
+
+    {
+      project && (
+        <aside class="project-link">
+          <p>
+            This post came out of a project: <strong>{project.data.title}</strong> —{' '}
+            {project.data.pitch}
+          </p>
+          <a class="mono" href={`/projects/${project.id}/`}>
+            Read the build →
+          </a>
+        </aside>
+      )
+    }
+
+    <SubscribeNote compact />
+  </main>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--s-8);
+  }
+  .head {
+    text-align: center;
+    margin-block: var(--s-8) var(--s-6);
+  }
+  .kicker {
+    color: var(--rose-ink);
+  }
+  h1 {
+    font-size: var(--step-4);
+    margin-block: var(--s-3);
+  }
+  .byline {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .tags {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--s-3);
+  }
+  .story {
+    margin-inline: auto;
+  }
+  .project-link {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    padding: var(--s-6);
+    margin-top: var(--s-12);
+  }
+  .project-link p {
+    font-family: var(--font-body);
+    margin-bottom: var(--s-2);
+  }
+  .project-link a {
+    text-decoration: none;
+  }
+  .project-link a:hover {
+    text-decoration: underline;
+  }
+</style>

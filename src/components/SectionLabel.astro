@@ -1,0 +1,29 @@
+---
+// Mono tracked label between hairline rules: — THE SHELF — (spec 02 §5.13).
+interface Props {
+  label: string;
+  id?: string;
+}
+
+const { label, id } = Astro.props;
+---
+
+<div class="section-label" id={id}>
+  <span class="mono">{label}</span>
+</div>
+
+<style>
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    margin-block: var(--s-12) var(--s-6);
+    color: var(--muted);
+  }
+  .section-label::before,
+  .section-label::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--line);
+  }
+</style>

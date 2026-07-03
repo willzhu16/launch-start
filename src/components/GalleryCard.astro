@@ -1,0 +1,82 @@
+---
+// Plain gallery card for /projects (L-30): cover, title, lozenge + date only.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { fmtMono } from '../lib/dates';
+import StatusLozenge from './StatusLozenge.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, status, cover, coverAlt, draft, createdDate } = project.data;
+---
+
+<a class="card" href={`/projects/${project.id}/`}>
+  {
+    cover ? (
+      <Image
+        class="cover"
+        src={cover}
+        alt={coverAlt ?? ''}
+        widths={[480, 720, 960]}
+        sizes="(max-width: 700px) 100vw, 320px"
+      />
+    ) : (
+      <div class="cover cover-empty" aria-hidden="true" />
+    )
+  }
+  <span class="title">{title}</span>
+  <span class="meta">
+    <StatusLozenge status={status} />
+    {import.meta.env.DEV && draft && <StatusLozenge status="draft" />}
+    <span class="mono date">{fmtMono(createdDate)} {createdDate.getUTCFullYear()}</span>
+  </span>
+</a>
+
+<style>
+  .card {
+    display: grid;
+    gap: var(--s-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .card :global(img.cover),
+  .cover-empty {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    box-shadow: var(--shadow-s);
+    transition:
+      transform 200ms ease,
+      box-shadow 200ms ease;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card:hover :global(img.cover),
+    .card:hover .cover-empty {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-m);
+    }
+  }
+  .cover-empty {
+    background: linear-gradient(135deg, var(--card), var(--tan-tint));
+  }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+    margin-top: var(--s-1);
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .date {
+    color: var(--muted);
+    font-size: 0.63rem;
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+// Stamped status lozenge (spec 02 §5.3). Tinted ground + dark fg per status;
+// fg/bg pairs meet 4.5:1 on their tints.
+type Status =
+  | 'idea'
+  | 'in-sprint'
+  | 'shipped'
+  | 'paused'
+  | 'archived'
+  | 'up-next'
+  | 'log'
+  | 'post'
+  | 'retro'
+  | 'draft';
+
+interface Props {
+  status: Status;
+}
+
+const { status } = Astro.props;
+
+const text: Record<Status, string> = {
+  idea: 'IDEA',
+  'in-sprint': 'IN SPRINT',
+  shipped: 'SHIPPED',
+  paused: 'PAUSED',
+  archived: 'ARCHIVED',
+  'up-next': 'UP NEXT',
+  log: 'LOG',
+  post: 'POST',
+  retro: 'RETRO',
+  draft: 'DRAFT',
+};
+---
+
+<span class:list={['lozenge', status]}>{text[status]}</span>
+
+<style>
+  .lozenge {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    padding: 0.28em 0.7em;
+    border-radius: var(--r-s);
+    white-space: nowrap;
+    background: var(--gray-tint);
+    color: var(--muted);
+  }
+  .in-sprint,
+  .log,
+  .retro,
+  .draft {
+    background: var(--pink-tint);
+    color: var(--rose-ink);
+  }
+  .shipped {
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+  .paused,
+  .up-next {
+    background: var(--warn-tint);
+    color: var(--warn);
+  }
+  .post {
+    background: var(--tan-tint);
+    color: var(--muted);
+  }
+</style>

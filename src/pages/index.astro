@@ -1,0 +1,240 @@
+---
+// Home (spec 03 §3.1): masthead → letter intro → optional media → sprint
+// banner → the shelf → recent writing → subscribe note.
+import Figure from '../components/Figure.astro';
+import Masthead from '../components/Masthead.astro';
+import PostListItem from '../components/PostListItem.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionLabel from '../components/SectionLabel.astro';
+import SprintProgress from '../components/SprintProgress.astro';
+import StatusLozenge from '../components/StatusLozenge.astro';
+import SubscribeNote from '../components/SubscribeNote.astro';
+import VideoFacade from '../components/VideoFacade.astro';
+import HomeIntro from '../content/home-intro.mdx';
+import { site } from '../data/site';
+import Base from '../layouts/Base.astro';
+import {
+  activeProject,
+  assertContentIntegrity,
+  latestWriting,
+  logPath,
+  publishedLogs,
+  publishedProjects,
+  scheduledProject,
+} from '../lib/content';
+import { fmtMono, fmtRange } from '../lib/dates';
+import { personLd, websiteLd } from '../lib/seo';
+import { activeSprint, upcomingSprint } from '../lib/sprint';
+
+// Cross-entry content rules run once per build, here on the entry page.
+await assertContentIntegrity();
+
+const today = new Date();
+const projects = await publishedProjects();
+const writing = await latestWriting(5);
+
+// Sprint banner states (spec 03 §3.1 table).
+const active = await activeProject(today);
+const sprint = active ? activeSprint(active.data, today) : null;
+const latestActiveLog = active
+  ? (await publishedLogs()).find((l) => l.data.project.id === active.id)
+  : null;
+
+const scheduled = !active ? await scheduledProject(today) : null;
+const nextSprint = scheduled ? upcomingSprint(scheduled.data, today) : null;
+
+const latestAnything = writing[0] ?? null;
+
+const shelf = projects.slice(0, 6);
+---
+
+<Base jsonLd={[websiteLd(), personLd()]}>
+  <Masthead />
+  <main id="main" class="page">
+    <div class="letter prose">
+      <HomeIntro />
+    </div>
+
+    {
+      site.homeMedia?.kind === 'image' && (
+        <div class="media">
+          <Figure
+            src={site.homeMedia.src}
+            alt={site.homeMedia.alt}
+            caption={site.homeMedia.caption}
+          />
+        </div>
+      )
+    }
+    {
+      site.homeMedia?.kind === 'video' && (
+        <div class="media">
+          <VideoFacade videoId={site.homeMedia.videoId} />
+        </div>
+      )
+    }
+
+    {
+      active && sprint && (
+        <aside class="banner" aria-label="current sprint">
+          <div class="banner-head">
+            <StatusLozenge status="in-sprint" />
+            <span class="banner-title">
+              {active.data.title} — Sprint {sprint.number}
+            </span>
+            <span class="mono banner-dates">
+              {fmtRange(sprint.startDate, sprint.endDate)}
+            </span>
+          </div>
+          <p class="banner-goal">{sprint.goal}</p>
+          <div class="banner-progress">
+            <SprintProgress sprint={sprint} today={today} />
+            {latestActiveLog && (
+              <a href={logPath(latestActiveLog)}>Latest: {latestActiveLog.data.title} →</a>
+            )}
+          </div>
+        </aside>
+      )
+    }
+    {
+      !active && nextSprint && scheduled && (
+        <aside class="banner" aria-label="next sprint">
+          <div class="banner-head">
+            <StatusLozenge status="up-next" />
+            <span class="banner-title">
+              {scheduled.data.title} — Sprint {nextSprint.number}
+            </span>
+            <span class="mono banner-dates">Starts {fmtMono(nextSprint.startDate)}</span>
+          </div>
+          <p class="banner-goal">{nextSprint.goal}</p>
+        </aside>
+      )
+    }
+    {
+      !active && !nextSprint && latestAnything && (
+        <p class="between mono">
+          Latest:{' '}
+          <a
+            href={
+              latestAnything.type === 'log'
+                ? logPath(latestAnything.entry)
+                : `/blog/${latestAnything.entry.id}/`
+            }
+          >
+            {latestAnything.entry.data.title}
+          </a>
+        </p>
+      )
+    }
+
+    {
+      shelf.length > 0 && (
+        <section aria-label="projects">
+          <SectionLabel label="From the shelf" />
+          <div class="shelf">
+            {shelf.map((project) => (
+              <ProjectCard project={project} />
+            ))}
+          </div>
+          {projects.length > shelf.length && (
+            <p class="more mono">
+              <a href="/projects/">All projects →</a>
+            </p>
+          )}
+        </section>
+      )
+    }
+
+    {
+      writing.length > 0 && (
+        <section aria-label="recent writing">
+          <SectionLabel label="Latest writing" />
+          <ul class="writing" role="list">
+            {writing.map((item) => (
+              <PostListItem item={item} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <SubscribeNote />
+  </main>
+</Base>
+
+<style>
+  .letter {
+    margin: var(--s-12) auto var(--s-4);
+    font-size: var(--step-1);
+    line-height: 1.7;
+  }
+  .media {
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+  }
+  .banner {
+    max-width: var(--measure-wide);
+    margin: var(--s-8) auto;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--pink);
+    border-radius: var(--r-m);
+    padding: var(--s-6);
+  }
+  .banner-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+  }
+  .banner-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+  }
+  .banner-dates {
+    color: var(--muted);
+  }
+  .banner-goal {
+    font-family: var(--font-body);
+    margin-block: var(--s-3);
+  }
+  .banner-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+    flex-wrap: wrap;
+  }
+  .banner-progress :global(.progress) {
+    flex: 1;
+    min-width: 220px;
+  }
+  .banner-progress a {
+    font-family: var(--font-body);
+    white-space: nowrap;
+  }
+  .between {
+    text-align: center;
+    margin-block: var(--s-8);
+    color: var(--muted);
+  }
+  .shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--s-6);
+  }
+  .more {
+    margin-top: var(--s-4);
+    text-align: right;
+  }
+  .more a {
+    text-decoration: none;
+  }
+  .more a:hover {
+    text-decoration: underline;
+  }
+  .writing {
+    padding: 0;
+    max-width: var(--page-max);
+  }
+</style>

@@ -1,0 +1,268 @@
+---
+// Project page (L-24, spec 03 §3.3): overview on top, build log underneath.
+import { render } from 'astro:content';
+import Figure from '../../../components/Figure.astro';
+import GitHubPanel from '../../../components/GitHubPanel.astro';
+import NavLite from '../../../components/NavLite.astro';
+import PathCrumb from '../../../components/PathCrumb.astro';
+import SectionLabel from '../../../components/SectionLabel.astro';
+import SprintProgress from '../../../components/SprintProgress.astro';
+import StatusLozenge from '../../../components/StatusLozenge.astro';
+import TechChips from '../../../components/TechChips.astro';
+import VideoFacade from '../../../components/VideoFacade.astro';
+import WeekRow from '../../../components/WeekRow.astro';
+import Base from '../../../layouts/Base.astro';
+import { logPath, publishedLogs, publishedProjects } from '../../../lib/content';
+import { fmtMono, fmtRange } from '../../../lib/dates';
+import { projectLd } from '../../../lib/seo';
+import { activeSprint } from '../../../lib/sprint';
+
+export async function getStaticPaths() {
+  const projects = await publishedProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { title, pitch, status, tech, repo, demoUrl, videoId, cover, coverAlt, sprints } =
+  project.data;
+
+const { Content } = await render(project);
+
+const today = new Date();
+const allProjects = await publishedProjects();
+const logs = (await publishedLogs()).filter((l) => l.data.project.id === project.id);
+
+// Header meta line describes the current sprint, or the latest one.
+const current = activeSprint(project.data, today) ?? sprints.at(-1) ?? null;
+
+// The log section: sprints newest first; within a sprint, retro first, then
+// weeks newest first. The newest row on the page starts open.
+const sprintsDesc = [...sprints].sort((a, b) => b.number - a.number);
+function sprintLogs(n: number) {
+  return logs
+    .filter((l) => l.data.sprint === n)
+    .sort((a, b) => {
+      if (a.data.kind !== b.data.kind) return a.data.kind === 'retro' ? -1 : 1;
+      return b.data.date.getTime() - a.data.date.getTime();
+    });
+}
+const newestEntryId = logs[0]?.id;
+
+// Outcome section (spec 03 §3.3): shipped → retro teaser; in-sprint → goal.
+const retro = logs.find((l) => l.data.kind === 'retro');
+const outcome =
+  status === 'shipped' && retro
+    ? { kind: 'retro' as const, retro }
+    : status === 'in-sprint' && current
+      ? { kind: 'goal' as const, goal: current.goal }
+      : null;
+
+const index = allProjects.findIndex((p) => p.id === project.id);
+const prev = allProjects[index + 1] ?? null; // older
+const next = allProjects[index - 1] ?? null; // newer
+---
+
+<Base
+  page={title}
+  description={pitch}
+  jsonLd={[
+    projectLd({
+      title,
+      description: pitch,
+      path: `/projects/${project.id}/`,
+      ...(repo ? { repo } : {}),
+    }),
+  ]}
+>
+  <NavLite current="projects" />
+  <main id="main">
+    <header class="head gridbg">
+      <div class="head-inner">
+        <PathCrumb
+          segments={[{ label: 'projects', href: '/projects/' }, { label: project.id }]}
+        />
+        <div class="metaline">
+          <StatusLozenge status={status} />
+          {import.meta.env.DEV && project.data.draft && <StatusLozenge status="draft" />}
+          {
+            current && (
+              <span class="mono meta">
+                Sprint {current.number} · {current.lengthDays} days ·{' '}
+                {fmtRange(current.startDate, current.endDate)}
+              </span>
+            )
+          }
+        </div>
+        <h1>{title}</h1>
+        <p class="pitch">{pitch}</p>
+        <div class="chipsrow">
+          <TechChips items={tech} />
+          <span class="links mono">
+            {repo && <a href={`https://github.com/${repo}`}>GitHub ↗</a>}
+            {demoUrl && <a href={demoUrl}>Live ↗</a>}
+            {videoId && <a href="#cover">Video</a>}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <div class="content prose-width">
+      <div id="cover">
+        {
+          videoId ? (
+            <VideoFacade videoId={videoId} title={`${title} — overview`} />
+          ) : (
+            cover && <Figure src={cover} alt={coverAlt ?? ''} loading="eager" />
+          )
+        }
+      </div>
+
+      <article class="prose">
+        <Content />
+      </article>
+
+      {
+        repo && (
+          <section aria-label="repository">
+            <SectionLabel label="Repository — synced nightly" />
+            <GitHubPanel repo={repo} />
+          </section>
+        )
+      }
+
+      {
+        outcome && (
+          <section aria-label="outcome">
+            <SectionLabel label={outcome.kind === 'retro' ? 'Outcome' : 'Goal'} />
+            {outcome.kind === 'retro' ? (
+              <p class="outcome">
+                {outcome.retro.data.tldr}{' '}
+                <a href={logPath(outcome.retro)}>Read the retrospective →</a>
+              </p>
+            ) : (
+              <p class="outcome">{outcome.goal}</p>
+            )}
+          </section>
+        )
+      }
+
+      {
+        sprints.length > 0 && (
+          <section aria-label="build log">
+            <SectionLabel label="The log" />
+            {sprintsDesc.map((sprint) => {
+              const entries = sprintLogs(sprint.number);
+              return (
+                <div class="sprint">
+                  <div class="sprint-head">
+                    <h2>
+                      Sprint {sprint.number} — {sprint.goal}
+                    </h2>
+                    <SprintProgress sprint={sprint} today={today} />
+                  </div>
+                  {entries.length === 0 ? (
+                    <p class="empty">
+                      The log starts when the sprint does — {fmtMono(sprint.startDate)}.
+                    </p>
+                  ) : (
+                    entries.map((entry) => (
+                      <WeekRow entry={entry} open={entry.id === newestEntryId} />
+                    ))
+                  )}
+                </div>
+              );
+            })}
+          </section>
+        )
+      }
+
+      <nav class="pn mono" aria-label="project navigation">
+        {prev ? <a href={`/projects/${prev.id}/`}>← {prev.data.title}</a> : <span />}
+        {next ? <a href={`/projects/${next.id}/`}>{next.data.title} →</a> : <span />}
+      </nav>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .head {
+    border-bottom: 1px solid var(--line);
+    padding: var(--s-8) 0 var(--s-8);
+  }
+  .head-inner {
+    max-width: var(--measure-wide);
+    margin-inline: auto;
+    padding-inline: var(--s-4);
+  }
+  .metaline {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+  }
+  .meta {
+    color: var(--muted);
+  }
+  h1 {
+    font-size: var(--step-5);
+    margin-block: var(--s-3);
+  }
+  .pitch {
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+    color: var(--muted);
+    max-width: var(--measure);
+  }
+  .chipsrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    margin-top: var(--s-4);
+  }
+  .links {
+    display: flex;
+    gap: var(--s-4);
+  }
+  .content {
+    padding-top: var(--s-8);
+  }
+  .outcome {
+    font-family: var(--font-body);
+    max-width: var(--measure);
+  }
+  .sprint {
+    margin-bottom: var(--s-8);
+  }
+  .sprint-head {
+    display: grid;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .sprint-head h2 {
+    font-size: var(--step-2);
+  }
+  .sprint-head :global(.progress) {
+    max-width: 420px;
+  }
+  .empty {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .pn {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-12);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+  .pn a {
+    text-decoration: none;
+  }
+  .pn a:hover {
+    text-decoration: underline;
+  }
+</style>

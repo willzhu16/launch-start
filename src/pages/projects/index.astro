@@ -1,0 +1,93 @@
+---
+// /projects/ — plain cover gallery, newest first, grouped by year (L-30).
+// No filters, no search, until the shelf exceeds ~12 projects.
+import GalleryCard from '../../components/GalleryCard.astro';
+import NavLite from '../../components/NavLite.astro';
+import PathCrumb from '../../components/PathCrumb.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import Base from '../../layouts/Base.astro';
+import { publishedProjects } from '../../lib/content';
+
+const projects = await publishedProjects();
+
+const byYear = new Map<number, typeof projects>();
+for (const project of projects) {
+  const year = project.data.createdDate.getUTCFullYear();
+  byYear.set(year, [...(byYear.get(year) ?? []), project]);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+
+const collectionLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Projects',
+  url: new URL('/projects/', Astro.site).href,
+};
+---
+
+<Base page="Projects" description="Every build, newest first." jsonLd={[collectionLd]}>
+  <NavLite current="projects" />
+  <main id="main" class="page">
+    <PathCrumb segments={[{ label: 'projects' }]} />
+    <h1>Projects</h1>
+    <p class="lede">Every build, newest first. Click one to read its story.</p>
+
+    {
+      projects.length === 0 && (
+        <p class="empty">
+          Nothing on the shelf yet — sprint 1 is underway. <a href="/">Back home →</a>
+        </p>
+      )
+    }
+
+    {
+      years.map((year) => (
+        <section aria-label={String(year)}>
+          <SectionLabel label={String(year)} />
+          <div class="gallery">
+            {(byYear.get(year) ?? []).map((project) => (
+              <GalleryCard project={project} />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    {
+      projects.length > 0 && (
+        <p class="count mono">
+          {projects.length} {projects.length === 1 ? 'project' : 'projects'} · no filters until
+          the shelf earns them
+        </p>
+      )
+    }
+  </main>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--s-8);
+  }
+  h1 {
+    font-size: var(--step-4);
+  }
+  .lede {
+    font-family: var(--font-body);
+    color: var(--muted);
+    margin-top: var(--s-2);
+  }
+  .empty {
+    font-family: var(--font-body);
+    font-style: italic;
+    margin-top: var(--s-8);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--s-8) var(--s-6);
+  }
+  .count {
+    margin-top: var(--s-12);
+    color: var(--muted);
+  }
+</style>
