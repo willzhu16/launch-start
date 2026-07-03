@@ -19,10 +19,17 @@ const mainStep = mainNodes.length > 1 ? (mainSpanEnd - 70) / (mainNodes.length -
 const mains = mainNodes.map((n, i) => ({ ...n, x: 70 + i * mainStep, y: MAIN_Y }));
 
 const branchX = mains.at(-1)?.x ?? 70;
-const sideStart = branchX + 90;
-const sideEnd = NOW_X - 90;
+// Spread side nodes wide and stagger their label heights so adjacent labels
+// (e.g. two same-year projects) can never collide.
+const sideStart = branchX + 60;
+const sideEnd = NOW_X - 50;
 const sideStep = sideNodes.length > 1 ? (sideEnd - sideStart) / (sideNodes.length - 1) : 0;
-const sides = sideNodes.map((n, i) => ({ ...n, x: sideStart + i * sideStep, y: SIDE_Y }));
+const sides = sideNodes.map((n, i) => ({
+  ...n,
+  x: sideStart + i * sideStep,
+  y: SIDE_Y,
+  labelY: SIDE_Y - 22 - (i % 2) * 20,
+}));
 
 const first = sides[0];
 const last = sides.at(-1);
@@ -67,7 +74,7 @@ const description = [
           {sides.map((n) => (
             <>
               <circle cx={n.x} cy={n.y} r="7" class="dot-side" />
-              <text x={n.x} y={n.y - 20} text-anchor="middle" class="label label-side">
+              <text x={n.x} y={n.labelY} text-anchor="middle" class="label label-side">
                 {n.year} · {n.label}
               </text>
             </>

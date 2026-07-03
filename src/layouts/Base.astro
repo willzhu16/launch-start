@@ -61,7 +61,9 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
   </head>
   <body>
     <a class="skip-link mono" href="#main">Skip to content</a>
-    <slot />
-    <Footer />
+    <div class="sheet">
+      <slot />
+      <Footer />
+    </div>
   </body>
 </html>

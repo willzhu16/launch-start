@@ -279,3 +279,30 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* lists that carry role="list" are layout lists — no markers */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+/* Blueprint drafting-board frame (wide viewports only): the cream page reads
+   as a sheet pinned to a light-blue gridded board. Presentation chrome — the
+   warm content palette (L-29) is untouched. */
+@media (min-width: 1280px) {
+  body {
+    background-color: var(--blueprint);
+    background-image:
+      linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .sheet {
+    max-width: var(--sheet-max);
+    min-height: 100vh;
+    margin-inline: auto;
+    background: var(--cream);
+    border-inline: 1px solid var(--line);
+    box-shadow: 0 0 44px rgba(46, 40, 32, 0.12);
+  }
+}

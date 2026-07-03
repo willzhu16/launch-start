@@ -57,4 +57,10 @@
   --measure: 62ch; /* article text */
   --measure-wide: 66ch; /* prose on pages */
   --page-max: 1000px; /* grids, gallery */
+  --sheet-max: 1200px; /* the cream sheet on the blueprint board */
+
+  /* blueprint drafting-board frame — page chrome on wide screens only,
+     never a content color (keeps L-29's warm palette intact) */
+  --blueprint: #e7edf3;
+  --blueprint-grid: rgba(74, 116, 158, 0.18);
 }
