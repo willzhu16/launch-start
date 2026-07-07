@@ -1,5 +1,5 @@
 ---
-// Log entry & retro page (L-19/L-28/L-35, spec 03 §3.4): the canonical,
+// Log entry & retro page: the canonical,
 // shareable URL for one week of building. Story body with a glance card.
 import { getEntry, render } from 'astro:content';
 import NavLite from '../../../../components/NavLite.astro';
@@ -33,7 +33,7 @@ const { Content } = await render(entry);
 const sprintMeta = project.data.sprints.find((s) => s.number === sprint);
 const isRetro = kind === 'retro';
 
-// DAY {a}–{b} OF {len} for week entries (spec 03 §3.4 kicker).
+// DAY {a}–{b} OF {len} for week entries (kicker).
 const dayRange =
   !isRetro && week && sprintMeta
     ? {
@@ -43,7 +43,7 @@ const dayRange =
       }
     : null;
 
-// Retro pages prepend an auto-generated sprint timeline (L-35) — every
+// Retro pages prepend an auto-generated sprint timeline — every
 // published week entry of this sprint, oldest first. Never hand-written.
 const projectLogs = (await publishedLogs()).filter((l) => l.data.project.id === project.id);
 const timeline = isRetro

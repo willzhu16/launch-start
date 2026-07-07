@@ -1,7 +1,24 @@
 ---
-// Home-only masthead (spec 02 §5.1): topline, wordmark with the signature
-// trailing-dots animation (L-32), tagline, centered mono nav.
+// Home-only masthead: topline, wordmark with the signature
+// trailing-dots animation, a slow project-icon ribbon drifting behind
+// the wordmark, tagline, centered mono nav.
+import { projectLogos } from '../data/project-logos';
 import { site } from '../data/site';
+
+// The ribbon derives from the shared per-project icon registry (one source for
+// tree marks and belt). Nine ~156px icon cells cover the widest (1280px sheet)
+// masthead, and the belt is rendered twice for the seamless -50% loop — so the
+// belt is the smallest whole repetition of the mark list reaching that span,
+// keeping the DOM count flat as the registry grows.
+const SPAN_ICONS = 9;
+const marks = Object.entries(projectLogos).map(([id, src]) => ({ name: id, src }));
+const belt =
+  marks.length > 0
+    ? Array.from(
+        { length: marks.length * Math.ceil(SPAN_ICONS / marks.length) },
+        (_, i) => marks[i % marks.length],
+      )
+    : [];
 ---
 
 <header class="masthead gridbg">
@@ -10,6 +27,24 @@ import { site } from '../data/site';
     <span>Est. 2026</span>
   </div>
   <div class="mark">
+    {
+      belt.length > 0 && (
+        <div class="ribbon" aria-hidden="true">
+          <div class="ribbon-track">
+            {[...belt, ...belt].map((logo) => (
+              <img
+                class="ribbon-icon"
+                src={logo.src}
+                alt=""
+                width="60"
+                height="60"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      )
+    }
     <h1 class="wordmark">
       Launch<span class="start">Start</span><span class="dots" aria-hidden="true"
         ><span>.</span><span>.</span><span>.</span></span
@@ -40,8 +75,26 @@ import { site } from '../data/site';
     background: var(--paper);
   }
   .mark {
+    position: relative;
+    overflow: hidden;
     text-align: center;
     padding: var(--s-12) var(--s-4) var(--s-8);
+  }
+  .wordmark,
+  .tagline {
+    position: relative;
+    z-index: 2;
+  }
+  /* opaque plate behind the wordmark: same colour as the band, so it seamlessly
+     hides the ribbon directly behind the title (keeping it legible) while the
+     icons stay visible drifting through the margins on either side */
+  .mark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(58% 64% at 50% 50%, var(--card) 42%, transparent 78%);
+    pointer-events: none;
   }
   .wordmark {
     font-size: clamp(2.6rem, 7vw, 3.6rem);
@@ -58,6 +111,50 @@ import { site } from '../data/site';
     margin-top: var(--s-3);
     color: var(--muted);
   }
+
+  /* project-icon ribbon: shipped marks drift slowly behind the wordmark like a
+     conveyor. Kept faint so it reads as texture and never fights the title. */
+  .ribbon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+    /* fade the belt out at both edges so icons don't hard-clip on the band */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .ribbon-track {
+    display: flex;
+    align-items: center;
+    gap: clamp(3rem, 8vw, 6rem);
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+    width: max-content;
+    will-change: transform;
+  }
+  .ribbon-icon {
+    width: 60px;
+    height: 60px;
+    flex: none;
+    opacity: 0.1;
+    filter: saturate(0.85);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ribbon-track {
+      /* `reverse` drifts the belt rightward */
+      animation: drift 40s linear infinite reverse;
+    }
+  }
+  /* shifting by exactly half the (doubled) track loops seamlessly */
+  @keyframes drift {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   .nav {
     display: flex;
     justify-content: center;
@@ -74,7 +171,7 @@ import { site } from '../data/site';
     color: var(--pink-deep);
   }
 
-  /* signature animation: dots type in, fall away, on a slow loop (L-32) */
+  /* signature animation: dots type in, fall away, on a slow loop */
   .dots span {
     display: inline-block;
     opacity: 0.55;

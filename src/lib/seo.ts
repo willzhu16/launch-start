@@ -1,5 +1,5 @@
-// JSON-LD builders (ARCHITECTURE §4.4). Payload details deepen in Phase 1
-// (specs/05); Phase 0 ships the core types with correct canonical URLs.
+// JSON-LD builders. Payload details deepen in Phase 1;
+// Phase 0 ships the core types with correct canonical URLs.
 import { site } from '../data/site';
 
 export function absoluteUrl(path: string): string {
@@ -64,5 +64,31 @@ export function projectLd(input: {
     url: absoluteUrl(input.path),
     ...(input.repo ? { codeRepository: `https://github.com/${input.repo}` } : {}),
     author: { '@type': 'Person', name: site.author, url: absoluteUrl('/about/') },
+  };
+}
+
+export function blogLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: `${site.title} — Blog`,
+    url: absoluteUrl('/blog/'),
+  };
+}
+
+export function collectionPageLd(input: { name: string; path: string }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: input.name,
+    url: absoluteUrl(input.path),
+  };
+}
+
+export function profilePageLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    mainEntity: personLd(),
   };
 }

@@ -1,4 +1,4 @@
-// Cloudflare Workers static-assets deploy (Launch Start L-03).
+// Cloudflare Workers static-assets deploy (Launch Start).
 // The site is 100% prerendered — this config serves ./dist as static assets
 // with no Worker script, no bindings, no secrets.
 {

@@ -4,43 +4,53 @@ pitch: 'The build-in-public platform this site runs on — built as its own firs
 status: 'in-sprint'
 featured: true
 draft: false
-createdDate: 2026-07-02
+createdDate: 2026-07-03
 tech: ['astro', 'typescript', 'cloudflare-workers']
 tags: ['platform', 'meta']
 cover: './cover.png'
-coverAlt: 'Launch Start wordmark on a warm pink-to-orange gradient — generated cover, to be replaced by a site screenshot'
+coverAlt: 'Launch Start wordmark on a warm pink-to-orange gradient'
 sprints:
   - number: 1
-    goal: 'Ship the site: pages, content system, CI, deploy — documented weekly.'
+    goal: 'Ship the site: pages, content system, CI, deploy. Documented weekly.'
     lengthDays: 30
-    startDate: 2026-07-06
-    endDate: 2026-08-05
+    startDate: 2026-07-05
+    endDate: 2026-08-04
 ---
 
 ## What & why
 
-Every side project I'd ever finished lived in a private repo nobody saw. Launch
-Start fixes that structurally: each project runs as a timed public sprint, with
-weekly write-ups and a retrospective at the end — the work markets itself while
-I build it. This site is the platform that makes that sustainable, and fittingly,
-it's also the first project on its own shelf.
+Most of my side projects used to end up the same way: finished enough to matter, but buried in a private repo with most of the story missing.
 
-The one rule that shaped everything: it has to survive a week where I only have
-45 minutes on a Sunday. So there's no CMS, no database, no admin panel — content
-is markdown in the repo, validated by schemas, rendered by templates. Writing a
-weekly log is one scaffolded file and one push.
+Launch Start is my attempt to fix that structurally.
+
+Each project gets a public sprint: a goal, a deadline, weekly write-ups, and a retrospective at the end. Instead of treating documentation as something I might remember to do later, Launch Start makes the trail part of the project from the beginning.
+
+This site is the system that makes that sustainable.
+
+Fittingly, it is also the first project on its own shelf.
+
+The rule that shaped everything was simple: this has to survive a week where I only have 45 minutes on a Sunday.
+
+So there is no CMS, no database, and no admin panel. Content lives as markdown in the repo, validated by schemas and rendered by templates. Writing a weekly log should be one scaffolded file, one honest update, and one push.
 
 ## Architecture
 
-MDX content with zod-validated frontmatter goes in; an Astro build (on every
-push, plus a daily rebuild that keeps the sprint day-counter honest) turns it
-into fully static HTML; Cloudflare serves it from the edge. No servers, no
-runtime API calls, no secrets in the deployed site. GitHub and YouTube facts
-sync in at build time as committed JSON snapshots, so an API outage can only
-ever make the data slightly stale — never break a page.
+Launch Start is built around static content and boring reliability.
+
+MDX content with zod-validated frontmatter goes in. Astro turns it into static HTML. Cloudflare serves it from the edge. The site rebuilds on every push, with a scheduled rebuild to keep sprint counters and time-based pages honest.
+
+There are no runtime API calls, no deployed secrets, and no server that needs to stay alive for the site to work.
+
+External facts, like GitHub and YouTube data, will be synced at build time as committed JSON snapshots. That means an API outage can make the data slightly stale, but it should never break a page.
+
+The goal is not to make the fanciest possible system.
+
+The goal is to make a system I will actually keep using.
 
 ## Outcome
 
-Sprint 1 is the launch sprint: ship the full platform in 30 days — pages,
-content schemas, CI with security gates, deploy pipeline — and at least four
-weekly logs written while building it, ending in a retrospective on this page.
+Sprint 1 is the launch sprint.
+
+The goal is to ship the full platform in 30 days: core pages, content schemas, project pages, weekly logs, CI checks, deployment, and a retrospective written after the work is done.
+
+If it works, Launch Start becomes more than a portfolio. It becomes the place where my side projects get built, documented, and remembered.

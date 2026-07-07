@@ -1,4 +1,4 @@
-// Controlled vocabulary (spec 01 §6). Lowercase kebab-case keys; extending the
+// Controlled vocabulary. Lowercase kebab-case keys; extending the
 // vocab is a deliberate one-line diff — the build fails on anything not listed.
 export const vocab = {
   tech: [

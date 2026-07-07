@@ -1,5 +1,5 @@
 ---
-// Click-to-load YouTube facade (spec 02 §5.9) — an eager iframe is ~1MB of
+// Click-to-load YouTube facade — an eager iframe is ~1MB of
 // third-party JS; this is a thumbnail and a play button. The inline script is
 // the one sanctioned interactive JS on content pages; loads youtube-nocookie.
 import { youtubeFacts } from '../lib/generated';
@@ -30,7 +30,8 @@ const thumbnail = facts?.thumbnailUrl ?? `https://i.ytimg.com/vi/${videoId}/hqde
 </figure>
 
 <script is:inline>
-  for (const btn of document.querySelectorAll('[data-video-facade]')) {
+  for (const btn of document.querySelectorAll('[data-video-facade]:not([data-bound])')) {
+    btn.setAttribute('data-bound', '');
     btn.addEventListener('click', () => {
       const iframe = document.createElement('iframe');
       iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.videoId}?autoplay=1`;

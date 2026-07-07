@@ -1,4 +1,4 @@
-// Sprint/day-counter math (spec 01 §9). Pure functions — the home banner,
+// Sprint/day-counter math. Pure functions — the home banner,
 // SprintProgress, and OG cards all compute day numbers exactly here.
 export interface Sprint {
   number: number;

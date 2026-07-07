@@ -1,5 +1,5 @@
-// Typed access to the committed sync snapshots (spec 01 §7). Components render
-// nothing when a key is absent — no skeletons, no errors (L-05).
+// Typed access to the committed sync snapshots. Components render
+// nothing when a key is absent — no skeletons, no errors.
 import githubJson from '../data/generated/github.json';
 import youtubeJson from '../data/generated/youtube.json';
 

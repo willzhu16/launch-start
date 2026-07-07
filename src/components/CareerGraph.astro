@@ -1,55 +1,42 @@
 ---
-// The /about career git-graph (L-22, spec 02 §5.12): a static inline SVG.
+// The /about career git-graph: a static inline SVG.
 // Positions are computed from src/data/career.ts — editing history never
-// touches geometry. Horizontal scroll on small screens.
+// touches geometry. Experiences slot in by year (then file order), the years
+// become tick marks on the timeline, and each side project branches off (and
+// optionally merges back into) the node wired by its id. Horizontal scroll on
+// small screens.
 import { career } from '../data/career';
+import { type Connector, layoutCareer } from '../lib/career-graph';
+import { placeLabel } from '../lib/svg-label';
 
 const W = 800;
-const H = 210;
-const MAIN_Y = 150;
-const SIDE_Y = 70;
-const NOW_X = 740;
+const H = 230;
+const MAIN_Y = 160;
+const SIDE_Y = 82;
+const YEAR_LABEL_Y = 16;
+const GRID_TOP = 26;
 
-const mainNodes = career.filter((n) => n.lane === 'main');
-const sideNodes = career.filter((n) => n.lane === 'side');
-const hasMerge = sideNodes.some((n) => n.merge);
+const { mains, sides, years, connectors } = layoutCareer(career, {
+  x0: 70,
+  x1: 730,
+  mainY: MAIN_Y,
+  sideY: SIDE_Y,
+});
 
-const mainSpanEnd = 480;
-const mainStep = mainNodes.length > 1 ? (mainSpanEnd - 70) / (mainNodes.length - 1) : 0;
-const mains = mainNodes.map((n, i) => ({ ...n, x: 70 + i * mainStep, y: MAIN_Y }));
-
-const branchX = mains.at(-1)?.x ?? 70;
-// Spread side nodes wide and stagger their label heights so adjacent labels
-// (e.g. two same-year projects) can never collide.
-const sideStart = branchX + 60;
-const sideEnd = NOW_X - 50;
-const sideStep = sideNodes.length > 1 ? (sideEnd - sideStart) / (sideNodes.length - 1) : 0;
-const sides = sideNodes.map((n, i) => ({
-  ...n,
-  x: sideStart + i * sideStep,
-  y: SIDE_Y,
-  labelY: SIDE_Y - 22 - (i % 2) * 20,
-}));
-
-const first = sides[0];
-const last = sides.at(-1);
-const branchPath =
-  first && last
-    ? [
-        `M ${branchX} ${MAIN_Y}`,
-        `C ${branchX + 45} ${MAIN_Y}, ${first.x - 45} ${SIDE_Y}, ${first.x} ${SIDE_Y}`,
-        ...sides.slice(1).map((n) => `L ${n.x} ${SIDE_Y}`),
-        ...(hasMerge
-          ? [`C ${last.x + 45} ${SIDE_Y}, ${NOW_X - 45} ${MAIN_Y}, ${NOW_X} ${MAIN_Y}`]
-          : []),
-      ].join(' ')
-    : null;
+// Cubic curve between two points with horizontal handles: a rise when a branch
+// leaves the trunk, a fall when it merges back, a straight run when both
+// endpoints share a lane. The reach shrinks for short spans so it never overshoots.
+const connectorPath = (connector: Connector): string => {
+  const { from, to } = connector;
+  const reach = Math.min(45, Math.max(14, Math.abs(to.x - from.x) / 2));
+  return `M ${from.x} ${from.y} C ${from.x + reach} ${from.y}, ${to.x - reach} ${to.y}, ${to.x} ${to.y}`;
+};
 
 const description = [
   'Career timeline as a commit graph.',
-  `Main lane: ${mainNodes.map((n) => `${n.year} ${n.label}`).join(', ')}.`,
-  sideNodes.length > 0
-    ? `Side-project branch: ${sideNodes.map((n) => `${n.year} ${n.label}`).join(', ')}, merging back as skills.`
+  `Career: ${mains.map((node) => `${node.year} ${node.label}`).join(', ')}.`,
+  sides.length > 0
+    ? `Side projects: ${sides.map((node) => `${node.year} ${node.label}`).join(', ')}, each branching off the role it grew from.`
     : '',
 ]
   .join(' ')
@@ -61,36 +48,45 @@ const description = [
     <figure class="graph">
       <div class="scroll">
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={description} width={W} height={H}>
+          {years.map((tick) => (
+            <>
+              <line x1={tick.x} y1={GRID_TOP} x2={tick.x} y2={MAIN_Y} class="year-grid" />
+              <text x={tick.x + 6} y={YEAR_LABEL_Y} text-anchor="start" class="year-label">
+                {tick.year}
+              </text>
+            </>
+          ))}
           <line x1="40" y1={MAIN_Y} x2={W - 20} y2={MAIN_Y} class="lane-main" />
-          {branchPath && <path d={branchPath} class="lane-side" />}
-          {mains.map((n) => (
-            <>
-              <circle cx={n.x} cy={n.y} r="7" class="dot-main" />
-              <text x={n.x} y={n.y + 32} text-anchor="middle" class="label">
-                {n.year} · {n.label}
-              </text>
-            </>
+          {connectors.map((connector) => (
+            <path d={connectorPath(connector)} class="lane-side" />
           ))}
-          {sides.map((n) => (
-            <>
-              <circle cx={n.x} cy={n.y} r="7" class="dot-side" />
-              <text x={n.x} y={n.labelY} text-anchor="middle" class="label label-side">
-                {n.year} · {n.label}
-              </text>
-            </>
-          ))}
-          {hasMerge && (
-            <>
-              <circle cx={NOW_X} cy={MAIN_Y} r="8" class="dot-merge" />
-              <text x={NOW_X} y={MAIN_Y + 32} text-anchor="middle" class="label">
-                merge → now
-              </text>
-            </>
-          )}
+          {mains.map((node) => {
+            const p = placeLabel(node.x, node.label, W);
+            return (
+              <>
+                <circle cx={node.x} cy={node.y} r="7" class="dot-main" />
+                <text x={p.x} y={node.labelY} text-anchor={p.anchor} class="label">
+                  {node.label}
+                </text>
+              </>
+            );
+          })}
+          {sides.map((node) => {
+            const p = placeLabel(node.x, node.label, W);
+            return (
+              <>
+                <circle cx={node.x} cy={node.y} r="7" class="dot-side" />
+                <text x={p.x} y={node.labelY} text-anchor={p.anchor} class="label label-side">
+                  {node.label}
+                </text>
+              </>
+            );
+          })}
         </svg>
       </div>
       <figcaption class="mono">
-        Main = career · pink branch = side projects, merging back as skills
+        Dark line = career · pink branches = side projects, each peeling off the
+        role it grew from and folding back in as skills
       </figcaption>
     </figure>
   )
@@ -127,9 +123,6 @@ const description = [
   .dot-side {
     fill: var(--pink);
   }
-  .dot-merge {
-    fill: var(--rose-ink);
-  }
   .label {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -139,6 +132,17 @@ const description = [
   }
   .label-side {
     fill: var(--rose-ink);
+  }
+  .year-grid {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .year-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    fill: var(--ink);
   }
   figcaption {
     margin-top: var(--s-3);

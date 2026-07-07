@@ -1,4 +1,4 @@
-// robots.txt as a route so the sitemap URL derives from config (L-15) —
+// robots.txt as a route so the sitemap URL derives from config —
 // nothing in the repo hardcodes the domain.
 import type { APIRoute } from 'astro';
 import { site } from '../data/site';

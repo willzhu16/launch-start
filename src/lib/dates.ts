@@ -39,3 +39,18 @@ export function fmtISO(d: Date): string {
 export function fmtLong(d: Date): string {
   return `${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
 }
+
+/** Groups items by the UTC year of `date(item)`, newest year first, order preserved within. */
+export function groupByYear<T>(
+  items: T[],
+  date: (item: T) => Date,
+): { year: number; items: T[] }[] {
+  const byYear = new Map<number, T[]>();
+  for (const item of items) {
+    const year = date(item).getUTCFullYear();
+    byYear.set(year, [...(byYear.get(year) ?? []), item]);
+  }
+  return [...byYear.entries()]
+    .sort(([a], [b]) => b - a)
+    .map(([year, grouped]) => ({ year, items: grouped }));
+}

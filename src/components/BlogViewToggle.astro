@@ -1,0 +1,57 @@
+---
+// Styled segmented toggle between the two blog views. Implemented as links (not
+// a JS switch) so each view is its own shareable URL and works with no client
+// script. The active view is solid; the other is faded.
+interface Props {
+  current: 'date' | 'projects';
+}
+
+const { current } = Astro.props;
+---
+
+<nav class="toggle mono" aria-label="blog views">
+  <a
+    href="/blog/"
+    class:list={['seg', { active: current === 'projects' }]}
+    aria-current={current === 'projects' ? 'page' : undefined}
+  >
+    By project
+  </a>
+  <span class="sep" aria-hidden="true">|</span>
+  <a
+    href="/blog/by-date/"
+    class:list={['seg', { active: current === 'date' }]}
+    aria-current={current === 'date' ? 'page' : undefined}
+  >
+    By date
+  </a>
+</nav>
+
+<style>
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-top: var(--s-4);
+  }
+  .seg {
+    color: var(--muted);
+    opacity: 0.5;
+    text-decoration: none;
+    transition:
+      opacity 160ms ease,
+      color 160ms ease;
+  }
+  .seg:hover {
+    opacity: 1;
+    color: var(--pink-deep);
+  }
+  .seg.active {
+    color: var(--ink);
+    opacity: 1;
+  }
+  .sep {
+    color: var(--muted);
+    opacity: 0.35;
+  }
+</style>

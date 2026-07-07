@@ -1,0 +1,59 @@
+---
+// One linked row in the /blog/ project tree (kicker · title · date). Shared by
+// log rows, essay rows, and the General section so the markup lives once.
+// Drafts get the dev-only DRAFT lozenge, same as every other list on the site.
+import type { CollectionEntry } from 'astro:content';
+import { fmtMono } from '../lib/dates';
+import StatusLozenge from './StatusLozenge.astro';
+
+interface Props {
+  href: string;
+  entry: CollectionEntry<'logs'> | CollectionEntry<'posts'>;
+  kicker?: string;
+  indent?: boolean;
+}
+
+const { href, entry, kicker, indent = false } = Astro.props;
+---
+
+<li>
+  <a class={indent ? 'row indent' : 'row'} href={href}>
+    {kicker && <span class="kicker mono">{kicker}</span>}
+    <span class="row-title">{entry.data.title}</span>
+    {import.meta.env.DEV && entry.data.draft && <StatusLozenge status="draft" />}
+    <time class="date mono" datetime={entry.data.date.toISOString()}>
+      {fmtMono(entry.data.date)}
+    </time>
+  </a>
+</li>
+
+<style>
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding: var(--s-2) 0;
+    text-decoration: none;
+    font-family: var(--font-body);
+    border-bottom: 1px dashed var(--line);
+  }
+  .row:hover .row-title {
+    text-decoration: underline;
+  }
+  .indent {
+    padding-left: var(--s-4);
+  }
+  .kicker {
+    color: var(--rose-ink);
+    flex: none;
+    min-width: 6em;
+  }
+  .row-title {
+    color: var(--ink);
+  }
+  .date {
+    margin-left: auto;
+    color: var(--muted);
+    flex: none;
+  }
+</style>

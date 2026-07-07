@@ -1,4 +1,4 @@
-// Full-content RSS (ARCHITECTURE §4.5, spec 03 §3.7): published posts + log
+// Full-content RSS: published posts + log
 // entries (weeks and retros), newest 30, each item carrying its canonical URL.
 
 import { loadRenderers } from 'astro:container';

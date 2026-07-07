@@ -1,7 +1,8 @@
 ---
-// /about — the complete portfolio on one page (L-22, spec 03 §3.6). This is
+// /about — the complete portfolio on one page. This is
 // the resume-link target; it must answer everything standalone.
-import { existsSync } from 'node:fs';
+import { Image } from 'astro:assets';
+import avatarSrc from '../assets/avatar.webp';
 import CareerGraph from '../components/CareerGraph.astro';
 import NavLite from '../components/NavLite.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -10,7 +11,7 @@ import { externalWork } from '../data/external-work';
 import { site } from '../data/site';
 import Base from '../layouts/Base.astro';
 import { publishedProjects } from '../lib/content';
-import { personLd } from '../lib/seo';
+import { personLd, profilePageLd } from '../lib/seo';
 
 const projects = await publishedProjects();
 const ordered = [
@@ -18,19 +19,13 @@ const ordered = [
   ...projects.filter((p) => !p.data.featured),
 ];
 
-// Never a dead link: the Resume button ships only when the PDF exists (L-18).
-const hasResume = existsSync(new URL('../../public/resume.pdf', import.meta.url));
+// Presence detection through the Vite module graph — resolved at compile time,
+// independent of the build's working directory. The avatar is a static import
+// above (a missing file fails the build loudly); the resume stays in public/
+// for a stable /resume.pdf URL, so its presence is checked via glob keys.
+const hasResume = Object.keys(import.meta.glob('/public/resume.pdf')).length > 0;
 
-const initials = site.author
-  .split(' ')
-  .map((part) => part[0])
-  .join('');
-
-const profileLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfilePage',
-  mainEntity: personLd(),
-};
+const profileLd = profilePageLd();
 ---
 
 <Base
@@ -42,13 +37,18 @@ const profileLd = {
   <main id="main">
     <header class="head gridbg">
       <div class="head-inner">
-        <div class="avatar" aria-hidden="true">{initials}</div>
+        <Image
+          class="avatar"
+          src={avatarSrc}
+          alt={site.author}
+          width={216}
+          height={216}
+          densities={[1, 2]}
+        />
         <div>
           <h1>{site.author}</h1>
           <p class="role">
-            Software engineer. I ship production systems by day and run timed public sprints by
-            night — everything on this site was built end-to-end against a deadline, and written
-            up weekly.
+            Software engineer building full-stack systems, developer tools, and public side-project sprints. Launch Start is where I turn ideas into real shipped projects, work against deadlines, and write honestly about what shipped, what broke, and what I learned along the way.
           </p>
           <div class="actions">
             {hasResume && <a class="btn btn-pink" href="/resume.pdf">Resume (PDF)</a>}
@@ -86,26 +86,33 @@ const profileLd = {
         )
       }
 
-      <section aria-label="how I work" class="prose-narrow">
-        <SectionLabel label="How I work" />
-        <div class="prose">
-          <p>
-            Every project here runs on my own engineering platform — shared CI with security
-            gates (Semgrep, osv-scanner, gitleaks), pinned reusable workflows, automated
-            releases, and an AI-assisted development harness. The platform itself is a project
-            — <a href="/projects/launch-start/">this site documents how it's built →</a>.
-          </p>
+      <section class="about-cols" aria-label="how I work and skills">
+        <div class="col">
+          <h2 class="col-label mono">Current focus</h2>
+          <div class="prose">
+            <p>
+              Right now, I’m focused on becoming a stronger engineer by shipping small, complete projects end to end: backend services, frontend interfaces, deployment workflows, security checks, documentation, and the messy parts that come after “it works on my machine.”
+            </p>
+            <p>
+              I’m especially interested in developer tools, secure development, cloud infrastructure, AI-assisted engineering workflows, CI/CD pipelines, and turning side projects into products people can actually use.
+            </p>
+          </div>
         </div>
-      </section>
-
-      <section aria-label="skills" class="prose-narrow">
-        <SectionLabel label="Skills, in prose" />
-        <div class="prose">
-          <p>
-            TypeScript and Python across the stack; CI/CD and supply-chain security as a habit,
-            not an afterthought; content systems, static sites, and the Cloudflare edge. The
-            projects above are the proof — each one links to its code and its build log.
-          </p>
+        <div class="col">
+          <h2 class="col-label mono">Skills</h2>
+          <div class="prose">
+            <p>
+              <strong>Languages</strong>: Java, Python, TypeScript/JavaScript, SQL, C, C++
+              <br>
+              <strong>Backend & Cloud</strong>: Flask, REST APIs, GraphQL, AWS, Docker, Kubernetes, GitLab CI/CD, HashiCorp Vault
+              <br>
+              <strong>Frontend & Tools</strong>: React, React Native, Postman, Bruno, Grafana, Git, code reviews
+              <br>
+              <strong>Machine Learning & AI</strong>: scikit-learn, PyTorch, Optuna, deep learning, LLMs, F2/F3-score, ROC-AUC, time-aware cross-validation, SMOTE
+              <br>
+              <strong>Quality & Ops</strong>: automated testing, regression testing, release validation, production debugging, technical documentation
+            </p>
+          </div>
         </div>
       </section>
     </div>
@@ -127,17 +134,12 @@ const profileLd = {
     flex-wrap: wrap;
   }
   .avatar {
-    width: 116px;
-    height: 116px;
+    width: 216px;
+    height: 216px;
     border-radius: 50%;
     border: 3px solid var(--pink);
     background: var(--card);
-    display: grid;
-    place-items: center;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: var(--step-3);
-    color: var(--rose-ink);
+    object-fit: cover;
     flex-shrink: 0;
   }
   h1 {
@@ -182,7 +184,27 @@ const profileLd = {
   .badge {
     color: var(--pink-deep);
   }
-  .prose-narrow .prose {
-    max-width: var(--measure-wide);
+  .about-cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-8);
+    margin-top: var(--s-8);
+  }
+  @media (min-width: 860px) {
+    .about-cols {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-12);
+    }
+  }
+  .col-label {
+    color: var(--rose-ink);
+    padding-bottom: var(--s-2);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--s-4);
+  }
+  /* prose fills its column here rather than capping at a single reading measure,
+     because two side-by-side columns already keep each line short enough */
+  .about-cols .prose {
+    max-width: none;
   }
 </style>

@@ -1,6 +1,6 @@
-/* Design tokens — "Warm Journal" v0.5 (spec 02 §2, L-26/L-29).
+/* Design tokens — "Warm Journal" v0.5.
    Every color, size, and shadow in the site lives here; components consume
-   tokens only. Dark palette is a Phase 2 addendum (L-16). */
+   tokens only. Dark palette is a Phase 2 addendum. */
 :root {
   /* color — light (all-warm, pink is the sole accent family) */
   --cream: #fbf5ea; /* page ground */
@@ -53,14 +53,13 @@
   --shadow-s: 0 2px 8px rgba(46, 40, 32, 0.06);
   --shadow-m: 0 10px 22px rgba(46, 40, 32, 0.13);
 
-  /* layout */
-  --measure: 62ch; /* article text */
-  --measure-wide: 66ch; /* prose on pages */
-  --page-max: 1000px; /* grids, gallery */
-  --sheet-max: 1200px; /* the cream sheet on the blueprint board */
+  /* layout — measures are in ch, so they widen with the fluid root font */
+  --measure: 66ch; /* article text */
+  --measure-wide: 72ch; /* prose on pages */
+  --page-max: 1200px; /* grids, gallery, page headers */
+  --sheet-max: 1280px; /* the cream sheet floating on the sunset wash */
 
-  /* blueprint drafting-board frame — page chrome on wide screens only,
-     never a content color (keeps L-29's warm palette intact) */
-  --blueprint: #e7edf3;
-  --blueprint-grid: rgba(74, 116, 158, 0.18);
+  /* sunset frame — the soft warm dusk wash behind the sheet on wide screens
+     (global.css). Page chrome only, never a content color. */
+  --sunset-wash: linear-gradient(180deg, #f6e0cb 0%, #f2d8c4 55%, #eecfc0 100%);
 }

@@ -1,5 +1,5 @@
 ---
-// Project page (L-24, spec 03 §3.3): overview on top, build log underneath.
+// Project page: overview on top, build log underneath.
 import { render } from 'astro:content';
 import Figure from '../../../components/Figure.astro';
 import GitHubPanel from '../../../components/GitHubPanel.astro';
@@ -48,7 +48,7 @@ function sprintLogs(n: number) {
 }
 const newestEntryId = logs[0]?.id;
 
-// Outcome section (spec 03 §3.3): shipped → retro teaser; in-sprint → goal.
+// Outcome section: shipped → retro teaser; in-sprint → goal.
 const retro = logs.find((l) => l.data.kind === 'retro');
 const outcome =
   status === 'shipped' && retro

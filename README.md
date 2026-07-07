@@ -4,9 +4,7 @@ The build-in-public platform behind Launch Start: timed project sprints,
 weekly build logs, and a permanent archive of shipped work. 100% static
 (Astro + MDX), deployed to Cloudflare's free edge tier, $0 steady state.
 
-The design repo (architecture, decision log, specs) lives in
-`Side_Projects/to_do/Launch Start` — read its README before changing anything
-structural here. This repo implements specs 01–03 (Phase 0).
+This repo is the site itself: content, build, and deploy config.
 
 ## Stack
 
@@ -35,22 +33,33 @@ Content is MDX in `src/content/` validated by `src/content.config.ts`
 | Retro | `src/content/logs/<project>/s<sprint>-retro.mdx` | `kind: 'retro'`; sprint timeline auto-generates |
 | Blog post | `src/content/posts/<slug>.mdx` | |
 
-Publish = flip `draft: false`, push to master. Slugs are immutable after
-first publish (L-09). Tech/tags must exist in `src/data/vocab.ts`.
+Publish = flip `draft: false`, push to main. Slugs are immutable after
+first publish. Tech/tags must exist in `src/data/vocab.ts`.
 
 ## Configuration
 
-All identity lives in `src/data/site.ts` (L-15): origin, socials, Buttondown
-username, home media slot. `SITE_ORIGIN` env overrides the origin at deploy;
-nothing else in the repo may hardcode a domain.
+All identity lives in `src/data/site.ts`: origin, socials, timezone
+(scheduled posts go live at local midnight there), Buttondown username, home
+media slot. `SITE_ORIGIN` env overrides the origin at deploy; nothing else in
+the repo may hardcode a domain.
 
-Currently unset (fill in as they exist): GitHub/LinkedIn/YouTube URLs,
-`buttondownUsername` (subscribe forms render nothing until set),
-`public/resume.pdf` (About's Resume button appears when present).
+Other config surfaces:
+
+- `src/data/project-logos.ts` — per-project square icons (public/icons/…),
+  shown beside projects in the blog tree and drifting through the masthead
+  ribbon. Projects without an entry fall back to a monogram.
+- `src/data/career.ts` — the /about commit-graph timeline.
+- `src/data/external-work.ts` — pre–Launch-Start repos shown on /about.
+- `src/assets/avatar.webp` — the /about photo (static import; the build fails
+  if it's missing). `public/resume.pdf` — About's Resume button appears only
+  while this file exists.
+
+Currently unset (fill in as they exist): YouTube URL,
+`buttondownUsername` (subscribe forms render nothing until set).
 
 ## Deploy
 
-`deploy.yml` builds and runs `wrangler deploy` on push to master, on a daily
+`deploy.yml` builds and runs `wrangler deploy` on push to main, on a daily
 cron (refreshes the sprint day counter), and manually. Needs repo secrets
 `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. First-time setup: create
 the Worker by running `pnpm build && pnpm dlx wrangler deploy` once locally.
@@ -59,5 +68,5 @@ the Worker by running `pnpm build && pnpm dlx wrangler deploy` once locally.
 
 Sync scripts + GitHub/YouTube panels-with-data (Phase 1) · scaffold scripts
 (Phase 1) · generated per-page OG cards (Phase 1) · search (Phase 2) ·
-dark mode (Phase 2) · syndication (Phase 3). See SPEC-ROADMAP in the design
+dark mode (Phase 2) · syndication (Phase 3). See the roadmap in the design
 repo.

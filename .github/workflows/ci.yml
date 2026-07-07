@@ -1,10 +1,9 @@
-# CI with the frozen check names (ci / lint|typecheck|test) so the
-# swap to pinned platform reusable workflows (D-18) is a drop-in later.
+# CI: lint, typecheck, test, and build on every push and pull request.
 name: ci
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
 
 permissions:
@@ -72,3 +71,4 @@ jobs:
       - run: pnpm build
         env:
           SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
+      - run: pnpm test:dist

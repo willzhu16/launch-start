@@ -10,7 +10,8 @@
     "check": "astro check && biome check .",
     "lint": "biome check .",
     "typecheck": "astro check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:dist": "vitest run --config vitest.dist.config.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.1",

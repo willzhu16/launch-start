@@ -1,5 +1,5 @@
 ---
-// Home (spec 03 §3.1): masthead → letter intro → optional media → sprint
+// Home: masthead → letter intro → optional media → sprint
 // banner → the shelf → recent writing → subscribe note.
 import Figure from '../components/Figure.astro';
 import Masthead from '../components/Masthead.astro';
@@ -33,7 +33,7 @@ const today = new Date();
 const projects = await publishedProjects();
 const writing = await latestWriting(5);
 
-// Sprint banner states (spec 03 §3.1 table).
+// Sprint banner states.
 const active = await activeProject(today);
 const sprint = active ? activeSprint(active.data, today) : null;
 const latestActiveLog = active

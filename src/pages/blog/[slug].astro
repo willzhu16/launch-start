@@ -1,5 +1,5 @@
 ---
-// Blog post page (spec 03 §3.5): same article layout as a log entry, minus
+// Blog post page: same article layout as a log entry, minus
 // the glance card and sprint kicker.
 import { getEntry, render } from 'astro:content';
 import NavLite from '../../components/NavLite.astro';
@@ -58,7 +58,7 @@ const project = post.data.project ? await getEntry(post.data.project) : null;
       project && (
         <aside class="project-link">
           <p>
-            This post came out of a project: <strong>{project.data.title}</strong> —{' '}
+            This post came out of a project: <strong>{project.data.title}</strong> — {' '}
             {project.data.pitch}
           </p>
           <a class="mono" href={`/projects/${project.id}/`}>

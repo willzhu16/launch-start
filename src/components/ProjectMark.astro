@@ -1,0 +1,45 @@
+---
+// A project's square logo when one exists, else a monogram of its initials.
+// Same drop-in pattern as the avatar: define the icon in project-logos.ts and
+// it replaces the monogram automatically.
+import { projectLogos } from '../data/project-logos';
+import { initials } from '../lib/format';
+
+interface Props {
+  id: string;
+  title: string;
+  size?: number;
+}
+
+const { id, title, size = 30 } = Astro.props;
+const logo = projectLogos[id];
+const monogram = initials(title);
+---
+
+{
+  logo ? (
+    <img class="mark" src={logo} alt="" width={size} height={size} style={`--mark: ${size}px`} />
+  ) : (
+    <span class="mark mono monogram" aria-hidden="true" style={`--mark: ${size}px`}>
+      {monogram}
+    </span>
+  )
+}
+
+<style>
+  .mark {
+    width: var(--mark);
+    height: var(--mark);
+    flex: none;
+    border-radius: var(--r-s);
+  }
+  .monogram {
+    display: grid;
+    place-items: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--rose-ink);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+  }
+</style>

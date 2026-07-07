@@ -3,30 +3,159 @@ project: 'launch-start'
 sprint: 1
 kind: 'week'
 week: 1
-title: 'Week 1 — schemas before pixels'
+title: 'Week 1 — Getting the Vibe Right'
 date: 2026-07-12
-tldr: 'The whole content model landed before any page existed — and the site skeleton followed in one sitting.'
+tldr: 'Launch Start went from an idea into a real site skeleton: spec files, first pages, first post, and a visual direction that finally started to feel right.'
 shipped:
-  - 'Content collections with zod schemas for projects, logs, and posts'
-  - 'Design tokens + the full component set from the v0.5 mockups'
-  - 'Every route rendering: home, projects, log entries, blog, about'
+  - 'Project specs for Launch Start'
+  - 'The first working site build'
+  - 'The first public post: Why Launch Start Exists'
+  - 'Initial UI direction for the homepage, about page, project pages, and build logs'
+  - 'This Week 1 build log structure'
 struggled:
-  - 'Keeping the font budget under 130KB — two faces had to go'
+  - 'Figuring out what the site should feel like, not just what it should contain'
+  - 'Making the commit graph feel playful without making it confusing'
+  - 'Avoiding prototypes that felt too formal, cold, or generic'
 learned:
-  - 'Schema-first means every later mistake fails the build instead of the page'
+  - 'Design is not just aesthetics; it is the feeling a project gives someone when they land on it'
+  - 'A portfolio can be technically correct and still feel wrong'
+  - 'The right structure makes writing easier later'
 days: []
-draft: true
+draft: false
 ---
 
-{/* DRAFT — finish this at the end of week 1 and flip draft to false.
-    The frontmatter arrays above render as the "Week at a glance" card;
-    keep them tight. The body below is the story — first person, honest,
-    with at least one screenshot of the week (L-23). */}
+import { Image } from 'astro:assets';
+import v1 from '../../../assets/launch-start/week-1/v1.png';
+import v2 from '../../../assets/launch-start/week-1/v2.png';
+import v3 from '../../../assets/launch-start/week-1/v3.png';
+import v4 from '../../../assets/launch-start/week-1/v4.png';
 
-The temptation was to start with the fun part — the warm cream pages, the pink
-accent, the animated dots. Instead the whole first stretch went to invisible
-stuff: schemas. Past me would have called that procrastination; current me got
-saved by it three times before the week was out.
+A lot got done in the first week.
 
-*(Write the rest of the story here: what the schema caught, how the build came
-together, what next week is for.)*
+Launch Start went from an idea into a real site skeleton: spec files, the first working build, the first public post, the beginning of the project structure, and the first version of this weekly log format.
+
+But the thing I want to highlight most is the harder, fuzzier problem: figuring out what this thing was supposed to feel like.
+
+I already knew the basic idea. Launch Start would be a public home for my side projects, build logs, notes, and reflections. I wanted each project to have a goal, a deadline, a visible trail, and some kind of honest record of what actually happened.
+
+That part made sense.
+
+The harder part was making the site feel like that.
+
+Because the easy version of this project would have been a normal portfolio. Clean hero section. Project cards. Resume link. About page. Maybe a blog.
+
+Useful, but not enough.
+
+Launch Start needed to be more specific than that. It needed to feel like a build journal. A place where real engineering work could live, but also a place that still felt warm, slightly silly, and most importantly, like me.
+
+Public-facing, but not corporate. Technical, but not sterile. Playful, but not unserious.
+
+That was the actual design problem of the week.
+
+## Finding the wrong vibe first
+
+Like normal, I spent the first few hours working with Claude to create the spec file. More on that in another post.
+
+As part of that process, I had Claude generate design artifacts based on how I imagined the site might look.
+
+The first run was... boring.
+
+<Image src={v1} alt="Version 1 of Launch Start's Designs" />
+
+Sure, it was designed reasonably well, aside from some text boundary fun, but it was missing warmth. It had structure, but not much personality.
+
+"Easy fix," thought little old me.
+
+The second design was interesting, to say the least.
+
+<Image src={v2} alt="Version 2 of Launch Start's Designs" />
+
+Maybe it was the pink and blue color combination (my fault), or maybe it was my suspicion that Claude has seen one too many product landing pages. Either way, the design came out way too corporate and cold.
+
+It looked like I was trying to sell a product.
+
+At least now I knew what vibe I did not want.
+
+<Image src={v3} alt="Version 3 of Launch Start's Designs" />
+
+The next iteration was better. It still had the dynamic blue and pink colors, but I changed the background to beige so the whole thing felt more inviting.
+
+It was closer.
+
+Then came the hard part.
+
+For some reason, I really wanted the pink and blue to work. I thought the pink would feel fun and dynamic, and the blue would be a nice cool contrast. It also felt vaguely symbolic of coding (seriously, why are so many coding things blue?)
+
+I even wanted blue gridded borders to mimic blueprints.
+
+But it was not working.
+
+So I made the cut.
+
+<Image src={v4} alt="Version 4 of Launch Start's Designs" />
+
+The last iteration was the clearest picture yet of how I wanted Launch Start to feel. It was warmer, softer, more inviting, and very much not a corporate website.
+
+And then we were ready to build.
+
+## Remembering that design is a feeling
+
+Thinking back on it, I remembered a frontend class I took in university: CS571.
+
+At the time, I found some of the design material boring. We talked about empty space, lines, shapes, points, hierarchy, alignment — all these basic visual ideas that felt almost too obvious to study.
+
+Like, what do you mean, “what is a line?”
+
+I did not fully appreciate it then.
+
+But working on Launch Start made the lesson land differently.
+
+Because I could tell when a design felt wrong before I could explain why. A page could have the right sections, the right copy, and the right links, but still feel cold. Or too serious. Or too flat.
+
+That is when design became less about decoration and more about translation.
+
+The site had to translate the point of Launch Start into a feeling.
+
+It had to say: this is technical, but human. This is public, but honest. This is playful, but still real work. 
+
+That is a lot harder than picking colors.
+
+## What shipped
+
+By the end of the week, Launch Start had moved from idea to actual structure.
+
+I had the project specs. I had the first basic build. I had the first public post, “Why Launch Start Exists.” I had a developing UI direction.
+
+That felt like a lot for one week.
+
+Not all of it was polished. A lot of it still needs refinement. The commit graph especially took more wrestling than expected. I wanted it to feel like a fun, developer-native way to show the journey, but it still had to be understandable to someone who is not living inside my head.
+
+That is probably going to be a recurring theme with this project.
+
+A good idea is not enough. The idea has to land.
+
+## What I learned
+
+The biggest lesson this week was that design is not just what something looks like.
+
+Design is the feeling someone gets when they arrive.
+
+That matters even more for Launch Start because the site itself is part of the message. If the whole point is to document projects honestly and publicly, then the site cannot feel like a sterile resume wrapper.
+
+It has to feel like a place where work actually happens.
+
+I also learned that structure makes future writing easier.
+
+Having projects, sprints, weekly logs, posts, and reflections as separate concepts already makes the site feel less messy. Instead of asking, “Where should this thought go?” I can ask, “Is this a project update, a build log, or a general post?”
+
+That is a small thing, but I think it will matter.
+
+## Next week
+
+Next week is about turning the skeleton into something more complete.
+
+The big goals are to keep refining the UI (...maybe I can still sneak in some blue...), finish more of the project pages, make the build logs feel good to read, and maybe port over another project I have been working on in the background.
+
+The first project on Launch Start, however, is still Launch Start itself.
+
+So far, that feels right.

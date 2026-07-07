@@ -1,16 +1,33 @@
-// Data for the /about career git-graph (L-22, spec 02 §5.12). Edits here never
+// Data for the /about career git-graph. Edits here never
 // touch SVG geometry — the CareerGraph component computes positions.
-// PLACEHOLDER entries below mirror the v0.5 mockup — replace with real history.
 export interface CareerNode {
+  /** Stable slug other nodes reference via `from`/`into`. Rename labels freely. */
+  id: string;
   year: string;
   label: string;
   lane: 'main' | 'side';
-  merge?: boolean;
+  /**
+   * Side projects only: id of the node this project branches off. Defaults to
+   * the most recent main role before it in time.
+   */
+  from?: string;
+  /**
+   * Side projects only: id of the node this project merges back into (its
+   * skills folding forward). Omit to leave the branch open, ending at its dot.
+   */
+  into?: string;
 }
 
 export const career: CareerNode[] = [
-  { year: '2022', label: 'B.S. CS', lane: 'main' },
-  { year: '2023', label: 'SWE @ Company', lane: 'main' },
-  { year: '2026', label: 'Side Project', lane: 'side' },
-  { year: '2026', label: 'Launch Start', lane: 'side', merge: true },
+  { id: 'uw', year: '2025', label: 'UW-Madison B.S. CS', lane: 'main' },
+  { id: 'swe', year: '2025', label: 'SWE @ Northwestern Mutual', lane: 'main' },
+  { id: 'nuu', year: '2025', label: 'NUU Mobile AI', lane: 'side', from: 'swe' },
+  { id: 'contextguard', year: '2026', label: 'ContextGuard', lane: 'side', from: 'nuu' },
+  {
+    id: 'launchstart',
+    year: '2026',
+    label: 'Launch Start',
+    lane: 'side',
+    from: 'contextguard',
+  },
 ];

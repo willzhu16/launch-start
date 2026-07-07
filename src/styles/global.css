@@ -1,8 +1,8 @@
-/* Global styles (spec 02 §6): reset, fonts, base type, prose/story reading
+/* Global styles: reset, fonts, base type, prose/story reading
    styles, focus, motion gating. Components carry their own scoped styles. */
 @import "./tokens.css";
 
-/* self-hosted latin subsets (≤130KB total, spec 02 §3) */
+/* self-hosted latin subsets (≤130KB total) */
 @font-face {
   font-family: "Fraunces";
   src: url("/fonts/fraunces-latin-400-normal.woff2") format("woff2");
@@ -70,6 +70,12 @@ textarea {
 
 html {
   color-scheme: light;
+  /* Fluid base: the whole system is built in rem (type scale) and ch (reading
+     measures), so scaling the root scales type, spacing, and line-length limits
+     together — the page grows with the viewport instead of stranding a fixed
+     column in dead space. Holds at 16px through tablet, grows to ~135% on large
+     desktops, then caps so ultrawide screens don't get comically large text. */
+  font-size: clamp(1rem, 0.82rem + 0.34vw, 1.34rem);
 }
 
 body {
@@ -236,7 +242,7 @@ a:hover {
   font-weight: 600;
 }
 
-/* buttons (spec 02 §5.14) — the only two button styles that exist */
+/* buttons — the only two button styles that exist */
 .btn {
   display: inline-block;
   font-family: var(--font-mono);
@@ -269,7 +275,7 @@ a:hover {
   color: var(--cream);
 }
 
-/* motion gating (L-32): nothing moves unless motion is welcome */
+/* motion gating: nothing moves unless motion is welcome */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -286,16 +292,23 @@ ol[role="list"] {
   list-style: none;
 }
 
-/* Blueprint drafting-board frame (wide viewports only): the cream page reads
-   as a sheet pinned to a light-blue gridded board. Presentation chrome — the
-   warm content palette (L-29) is untouched. */
-@media (min-width: 1280px) {
-  body {
-    background-color: var(--blueprint);
-    background-image:
-      linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
-    background-size: 28px 28px;
+/* Sunset frame (wide viewports only): the cream page floats as a sheet on a
+   soft warm dusk wash. Presentation chrome only — the warm content palette
+   is untouched, and warm-on-warm never reads as a squeeze.
+   Breakpoint must stay comfortably above --sheet-max (1280px): below that the
+   sheet fills the viewport and the border/shadow would render as stray
+   hairlines with no visible frame. */
+@media (min-width: 1360px) {
+  /* The wash is a fixed-position paint layer rather than `background-attachment:
+     fixed`, which defeats compositor scrolling and repaints the gradient on
+     every scroll frame. It sits above the body's cream (which propagates to the
+     canvas, painted first) and below the in-flow sheet. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--sunset-wash);
   }
   .sheet {
     max-width: var(--sheet-max);
@@ -303,6 +316,6 @@ ol[role="list"] {
     margin-inline: auto;
     background: var(--cream);
     border-inline: 1px solid var(--line);
-    box-shadow: 0 0 44px rgba(46, 40, 32, 0.12);
+    box-shadow: 0 0 60px rgba(120, 70, 40, 0.18);
   }
 }

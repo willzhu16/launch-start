@@ -1,5 +1,5 @@
 // Work from before Launch Start existed, shown in the /about projects grid
-// with a GITHUB ↗ badge instead of a project-page link (spec 03 §3.6).
+// with a GITHUB ↗ badge instead of a project-page link.
 export interface ExternalWork {
   title: string;
   blurb: string;

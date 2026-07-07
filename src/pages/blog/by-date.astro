@@ -1,0 +1,71 @@
+---
+// /blog/by-date/ — the chronological view: standalone posts newest-first,
+// grouped by year. Sibling of /blog/ (by project), switched by the toggle.
+import BlogViewToggle from '../../components/BlogViewToggle.astro';
+import NavLite from '../../components/NavLite.astro';
+import PathCrumb from '../../components/PathCrumb.astro';
+import PostListItem from '../../components/PostListItem.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import SubscribeNote from '../../components/SubscribeNote.astro';
+import Base from '../../layouts/Base.astro';
+import { publishedPosts } from '../../lib/content';
+import { groupByYear } from '../../lib/dates';
+
+const posts = await publishedPosts();
+const years = groupByYear(posts, (post) => post.data.date);
+---
+
+<Base page="Blog · By date" description="Every essay, newest first.">
+  <NavLite current="blog" />
+  <main id="main" class="page">
+    <PathCrumb segments={[{ label: 'blog', href: '/blog/' }, { label: 'by date' }]} />
+    <h1>Blog</h1>
+    <p class="lede">Every essay, newest first — for build logs, see the project view.</p>
+    <BlogViewToggle current="date" />
+
+    {
+      posts.length === 0 && (
+        <>
+          <p class="empty">First post is being written — subscribe and it'll find you.</p>
+          <SubscribeNote />
+        </>
+      )
+    }
+
+    {
+      years.map(({ year, items }) => (
+        <section aria-label={String(year)}>
+          {years.length > 1 && <SectionLabel label={String(year)} />}
+          <ul class="list" role="list">
+            {items.map((post) => (
+              <PostListItem item={{ type: 'post', entry: post }} />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </main>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--s-8);
+  }
+  h1 {
+    font-size: var(--step-4);
+  }
+  .lede {
+    font-family: var(--font-body);
+    color: var(--muted);
+    margin-top: var(--s-2);
+  }
+  .empty {
+    font-family: var(--font-body);
+    font-style: italic;
+    margin-top: var(--s-8);
+  }
+  .list {
+    padding: 0;
+    margin-top: var(--s-6);
+  }
+</style>

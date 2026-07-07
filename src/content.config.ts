@@ -5,7 +5,7 @@ import { vocab } from './data/vocab';
 
 const isoDate = z.coerce.date();
 
-// 11-char YouTube video id, never a URL — sync resolves the rest (spec 01 §2).
+// 11-char YouTube video id, never a URL — sync resolves the rest.
 const videoId = z.string().regex(/^[A-Za-z0-9_-]{11}$/, 'must be an 11-char YouTube video id');
 
 const projectStatus = z.enum(['idea', 'in-sprint', 'shipped', 'paused', 'archived']);
@@ -73,7 +73,7 @@ const projects = defineCollection({
         sprints: z.array(sprint).default([]),
       })
       .refine((p) => p.status === 'idea' || p.cover !== undefined, {
-        message: "cover is required once status !== 'idea' (L-23)",
+        message: "cover is required once status !== 'idea'",
       })
       .refine((p) => p.cover === undefined || (p.coverAlt ?? '').length > 0, {
         message: 'coverAlt is required when cover is present',
@@ -94,7 +94,7 @@ const logs = defineCollection({
       title: z.string().max(80),
       date: isoDate,
       tldr: z.string().max(280),
-      // "Week at a glance" (L-28) — rendered as a card; the body stays free-form.
+      // "Week at a glance" — rendered as a card; the body stays free-form.
       shipped: z.array(z.string().max(120)).default([]),
       struggled: z.array(z.string().max(120)).default([]),
       learned: z.array(z.string().max(120)).default([]),
