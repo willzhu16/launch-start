@@ -48,13 +48,13 @@ const profileLd = profilePageLd();
         <div>
           <h1>{site.author}</h1>
           <p class="role">
-            Software engineer building full-stack systems, developer tools, and public side-project sprints. Launch Start is where I turn ideas into real shipped projects, work against deadlines, and write honestly about what shipped, what broke, and what I learned along the way.
+            I’m a software engineer who likes taking useful ideas all the way from a first sketch to production. Launch Start is where I set a deadline, ship the project, and write down what worked, what broke, and what I would do differently.
           </p>
           <div class="actions">
             {hasResume && <a class="btn btn-pink" href="/resume.pdf">Resume (PDF)</a>}
             {site.socials.github && <a class="btn" href={site.socials.github}>GitHub ↗</a>}
             {site.socials.linkedin && <a class="btn" href={site.socials.linkedin}>LinkedIn ↗</a>}
-            <a class="btn" href={`mailto:${site.email}`}>Email</a>
+            {site.email && <a class="btn" href={`mailto:${site.email}`}>Email</a>}
           </div>
         </div>
       </div>
@@ -91,10 +91,10 @@ const profileLd = profilePageLd();
           <h2 class="col-label mono">Current focus</h2>
           <div class="prose">
             <p>
-              Right now, I’m focused on becoming a stronger engineer by shipping small, complete projects end to end: backend services, frontend interfaces, deployment workflows, security checks, documentation, and the messy parts that come after “it works on my machine.”
+              Right now, I’m practicing the part of engineering that starts after the prototype: turning a small idea into a complete, dependable product. That means owning the interface, backend, deployment, tests, security, documentation, and the rough edges between them.
             </p>
             <p>
-              I’m especially interested in developer tools, secure development, cloud infrastructure, AI-assisted engineering workflows, CI/CD pipelines, and turning side projects into products people can actually use.
+              I’m most interested in developer tools, secure software, cloud infrastructure, and practical uses of AI in engineering workflows. The common thread is simple: build something useful enough that another person can actually use it.
             </p>
           </div>
         </div>
@@ -102,15 +102,15 @@ const profileLd = profilePageLd();
           <h2 class="col-label mono">Skills</h2>
           <div class="prose">
             <p>
-              <strong>Languages</strong>: Java, Python, TypeScript/JavaScript, SQL, C, C++
+              <strong>Languages</strong>: Java, Python, TypeScript/JavaScript, SQL, C/C++
               <br>
-              <strong>Backend & Cloud</strong>: Flask, REST APIs, GraphQL, AWS, Docker, Kubernetes, GitLab CI/CD, HashiCorp Vault
+              <strong>Full-stack systems</strong>: REST APIs, GraphQL, Flask, React, React Native, AWS, Docker, Kubernetes
               <br>
-              <strong>Frontend & Tools</strong>: React, React Native, Postman, Bruno, Grafana, Git, code reviews
+              <strong>Developer workflow</strong>: GitLab CI/CD, GitHub Actions, Git, code reviews, Postman, Bruno, Grafana
               <br>
-              <strong>Machine Learning & AI</strong>: scikit-learn, PyTorch, Optuna, deep learning, LLMs, F2/F3-score, ROC-AUC, time-aware cross-validation, SMOTE
+              <strong>Machine Learning & AI</strong>: PyTorch, scikit-learn, Optuna, model evaluation, LLM-assisted workflows
               <br>
-              <strong>Quality & Ops</strong>: automated testing, regression testing, release validation, production debugging, technical documentation
+              <strong>Quality & Ops</strong>: automated testing, regression testing, release validation, production debugging, technical documentation, HashiCorp Vault
             </p>
           </div>
         </div>

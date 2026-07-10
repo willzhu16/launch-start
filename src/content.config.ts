@@ -22,8 +22,8 @@ const sprint = z
     outcome: z.string().max(300).optional(),
   })
   .refine(
-    (s) => Math.round((s.endDate.getTime() - s.startDate.getTime()) / DAY_MS) === s.lengthDays,
-    { message: 'endDate must equal startDate + lengthDays' },
+    (s) => Math.round((s.endDate.getTime() - s.startDate.getTime()) / DAY_MS) === s.lengthDays - 1,
+    { message: 'endDate must be the inclusive final day of the sprint' },
   );
 
 function vocabList(kind: 'tech' | 'tags', max: number) {

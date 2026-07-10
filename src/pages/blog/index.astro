@@ -9,6 +9,7 @@ import PathCrumb from '../../components/PathCrumb.astro';
 import ProjectMark from '../../components/ProjectMark.astro';
 import SubscribeNote from '../../components/SubscribeNote.astro';
 import TreeRow from '../../components/TreeRow.astro';
+import { site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
 import { logPath, publishedLogs, publishedPosts, publishedProjects } from '../../lib/content';
 import { blogLd } from '../../lib/seo';
@@ -39,6 +40,9 @@ const publishedIds = new Set(projects.map((project) => project.id));
 const general = allPosts.filter(
   (post) => !post.data.project || !publishedIds.has(post.data.project.id),
 );
+const emptyCopy = site.buttondownUsername
+  ? "First post is being written — subscribe and it'll find you."
+  : 'First post is being written — check back soon.';
 
 /** `Week 3` normally; `S2 · W3` once a project has more than one sprint. */
 function weekLabel(group: (typeof groups)[number], entry: (typeof allLogs)[number]): string {
@@ -62,7 +66,7 @@ function weekLabel(group: (typeof groups)[number], entry: (typeof allLogs)[numbe
     {
       groups.length === 0 && general.length === 0 && (
         <>
-          <p class="empty">First post is being written — subscribe and it'll find you.</p>
+          <p class="empty">{emptyCopy}</p>
           <SubscribeNote />
         </>
       )

@@ -123,6 +123,28 @@ function checkLogFilename(
   }
 }
 
+/** The log's sprint must be declared, and a week entry must start inside it. */
+function checkLogSprint(
+  log: CollectionEntry<'logs'>,
+  project: CollectionEntry<'projects'>,
+  problems: string[],
+): void {
+  const sprint = project.data.sprints.find((s) => s.number === log.data.sprint);
+  if (!sprint) {
+    problems.push(`${log.id}: sprint ${log.data.sprint} not declared in ${project.id}`);
+    return;
+  }
+  // Week N covers days (N-1)*7+1 .. N*7; its first day must fall inside the sprint,
+  // or the entry page's "Day a–b of len" kicker turns nonsensical.
+  if (log.data.kind === 'week' && log.data.week !== undefined) {
+    if ((log.data.week - 1) * 7 + 1 > sprint.lengthDays) {
+      problems.push(
+        `${log.id}: week ${log.data.week} starts after the ${sprint.lengthDays}-day sprint ends`,
+      );
+    }
+  }
+}
+
 /** A log entry must reference a declared project/sprint and match its file path. */
 function checkLog(
   log: CollectionEntry<'logs'>,
@@ -135,9 +157,12 @@ function checkLog(
     problems.push(`${log.id}: references unknown project '${log.data.project.id}'`);
     return;
   }
-  if (!project.data.sprints.some((s) => s.number === log.data.sprint)) {
-    problems.push(`${log.id}: sprint ${log.data.sprint} not declared in ${project.id}`);
+  // A live log page under a draft project would carry breadcrumb and nav links
+  // to a project page that prod builds never emit.
+  if (!log.data.draft && project.data.draft) {
+    problems.push(`${log.id}: published log references draft project '${project.id}'`);
   }
+  checkLogSprint(log, project, problems);
   const [projectPart, filePart] = log.id.split('/');
   if (projectPart !== log.data.project.id) {
     problems.push(

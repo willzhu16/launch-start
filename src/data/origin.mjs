@@ -3,4 +3,6 @@
 // and astro.config.mjs imports it for `site`.
 // Cutover to a purchased domain = set SITE_ORIGIN in the deploy env, or
 // change the fallback here.
-export const SITE_ORIGIN = process.env.SITE_ORIGIN ?? 'https://launch-start.workers.dev';
+const configuredOrigin = process.env.SITE_ORIGIN?.trim();
+
+export const SITE_ORIGIN = configuredOrigin || 'https://willzhu.dev';

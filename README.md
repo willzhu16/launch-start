@@ -1,72 +1,89 @@
 # launch-start
 
-The build-in-public platform behind Launch Start: timed project sprints,
-weekly build logs, and a permanent archive of shipped work. 100% static
-(Astro + MDX), deployed to Cloudflare's free edge tier, $0 steady state.
+A build-in-public journal: side projects taken from zero to shipped in timed
+public sprints, with weekly build logs and a permanent archive of what shipped.
 
-This repo is the site itself: content, build, and deploy config.
+**[willzhu.dev →](https://willzhu.dev)**
 
-## Stack
+Built with Astro + MDX and prerendered to static HTML, then deployed as a
+Cloudflare Worker with static assets only — no application server or backend.
+Hosting and bandwidth are free at this scale; the domain is the only recurring
+cost.
 
-Astro 7 + MDX content collections · TypeScript · pnpm · Biome · Vitest ·
-Cloudflare Workers static assets (wrangler).
+## How it works
 
-## Develop
+The site has no backend and no database. Every page is prerendered at build
+time, so the site is a pure function of the repo: content is a folder of MDX
+files, validated against a schema at build, rendered to static HTML, and served
+from the edge.
+
+Two ideas do most of the work:
+
+- **Scheduled publishing with no server.** A post carries a `date`, and a single
+  publish gate hides anything future-dated. A daily GitHub Actions cron rebuilds
+  the site, so a scheduled post goes live on its own the morning its date
+  arrives — no push, no cron job running on a box somewhere.
+- **A live sprint counter that stays honest.** Sprint day numbers ("day 6 of
+  14") are computed at build from pure date math. That same daily rebuild keeps
+  the counter current without anyone touching it.
+
+```mermaid
+flowchart LR
+    mdx["MDX content<br/>+ site data"] --> validate["Build-time validation<br/>zod schemas · publish gate"]
+    validate --> render["Astro<br/>static site generation"]
+    render --> dist["dist/<br/>prerendered HTML"]
+    dist --> edge["Cloudflare Worker<br/>(static assets only)"]
+    cron["GitHub Actions<br/>push · daily cron · manual"] -.->|"rebuild"| render
+    cron -.-> edge
+```
+
+## Run locally
 
 ```sh
 pnpm install
-pnpm dev        # localhost:4321 — drafts visible, marked DRAFT
-pnpm build      # prod build: drafts excluded, content integrity enforced
-pnpm test       # vitest (sprint math)
-pnpm check      # astro check + biome
+pnpm dev       # localhost:4321 — drafts and future-dated posts visible
+pnpm build     # production build: drafts excluded, content validated
+pnpm test      # unit tests
+pnpm check     # astro check + biome
+pnpm test:dist # built-site smoke tests; run after pnpm build
 ```
 
-## Write
+The stack: Astro 7, MDX content collections, TypeScript, pnpm, Biome, Vitest,
+and Cloudflare Workers static assets (wrangler).
 
-Content is MDX in `src/content/` validated by `src/content.config.ts`
-(scaffold scripts `pnpm new:*` arrive in Phase 1):
+## Deployment
 
-| What | Where | Notes |
-|---|---|---|
-| Project | `src/content/projects/<slug>/index.mdx` | H2 sections: What & why · Architecture · Outcome. Cover image required once status ≠ `idea` |
-| Weekly log | `src/content/logs/<project>/s<sprint>-w<week 2-digit>.mdx` | Frontmatter arrays render the "Week at a glance" card; body is free-form story |
-| Retro | `src/content/logs/<project>/s<sprint>-retro.mdx` | `kind: 'retro'`; sprint timeline auto-generates |
-| Blog post | `src/content/posts/<slug>.mdx` | |
+`wrangler.jsonc` is the source of truth for the `launch-start` Worker, its
+static assets, and the `willzhu.dev` custom domain. A first deployment from a
+local machine is:
 
-Publish = flip `draft: false`, push to main. Slugs are immutable after
-first publish. Tech/tags must exist in `src/data/vocab.ts`.
+```sh
+pnpm install
+pnpm run deploy:dry-run
+pnpm run cf:login
+pnpm run deploy
+```
 
-## Configuration
+The custom domain requires `willzhu.dev` to be an active zone in the same
+Cloudflare account, with no conflicting CNAME on the apex hostname. Cloudflare
+creates the Worker DNS record and certificate during deployment.
 
-All identity lives in `src/data/site.ts`: origin, socials, timezone
-(scheduled posts go live at local midnight there), Buttondown username, home
-media slot. `SITE_ORIGIN` env overrides the origin at deploy; nothing else in
-the repo may hardcode a domain.
+After the first deploy, `.github/workflows/deploy.yml` handles releases on every
+push to `main`, on manual dispatch, and once daily so scheduled posts and sprint
+counters stay current. The repository needs these GitHub Actions settings:
 
-Other config surfaces:
+- Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- Variables: `PUBLIC_CONTACT_EMAIL` if the public contact link should render;
+  `SITE_ORIGIN` only when overriding the `https://willzhu.dev` default
 
-- `src/data/project-logos.ts` — per-project square icons (public/icons/…),
-  shown beside projects in the blog tree and drifting through the masthead
-  ribbon. Projects without an entry fall back to a monogram.
-- `src/data/career.ts` — the /about commit-graph timeline.
-- `src/data/external-work.ts` — pre–Launch-Start repos shown on /about.
-- `src/assets/avatar.webp` — the /about photo (static import; the build fails
-  if it's missing). `public/resume.pdf` — About's Resume button appears only
-  while this file exists.
+Create the API token from Cloudflare's **Edit Cloudflare Workers** template and
+restrict it to this account and the `willzhu.dev` zone. The deployment needs
+Workers Scripts Write and Workers Routes Write access. No Cloudflare credential
+belongs in `.env` or the repository.
 
-Currently unset (fill in as they exist): YouTube URL,
-`buttondownUsername` (subscribe forms render nothing until set).
+## License
 
-## Deploy
-
-`deploy.yml` builds and runs `wrangler deploy` on push to main, on a daily
-cron (refreshes the sprint day counter), and manually. Needs repo secrets
-`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. First-time setup: create
-the Worker by running `pnpm build && pnpm dlx wrangler deploy` once locally.
-
-## Not yet (by design)
-
-Sync scripts + GitHub/YouTube panels-with-data (Phase 1) · scaffold scripts
-(Phase 1) · generated per-page OG cards (Phase 1) · search (Phase 2) ·
-dark mode (Phase 2) · syndication (Phase 3). See the roadmap in the design
-repo.
+The source code — components, TypeScript, styles, build tooling, and
+configuration — is [MIT](LICENSE), free to reuse. The site's content is not:
+the writing under `src/content/` and the images under `src/assets/` and
+`public/` are © 2026 William Zhu, all rights reserved.

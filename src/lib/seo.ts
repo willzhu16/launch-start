@@ -1,9 +1,17 @@
-// JSON-LD builders. Payload details deepen in Phase 1;
-// Phase 0 ships the core types with correct canonical URLs.
+// JSON-LD builders for the core schema.org types, with correct canonical URLs.
 import { site } from '../data/site';
 
 export function absoluteUrl(path: string): string {
   return new URL(path, site.origin).href;
+}
+
+/**
+ * JSON for an inline <script> body. Every angle bracket is emitted as the
+ * unicode escape u003c, so no content string (a title containing a closing
+ * script tag, say) can terminate the element early.
+ */
+export function serializeJsonLd(ld: Record<string, unknown>): string {
+  return JSON.stringify(ld).replace(/</g, '\\u003c');
 }
 
 export function personLd() {
@@ -11,7 +19,7 @@ export function personLd() {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: site.author,
-    email: `mailto:${site.email}`,
+    ...(site.email ? { email: `mailto:${site.email}` } : {}),
     url: absoluteUrl('/about/'),
     ...(site.socials.github || site.socials.linkedin
       ? { sameAs: [site.socials.github, site.socials.linkedin].filter(Boolean) }

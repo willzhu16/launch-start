@@ -3,7 +3,7 @@
 // Page composition (nav choice, main content) belongs to the pages.
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
-import { absoluteUrl } from '../lib/seo';
+import { absoluteUrl, serializeJsonLd } from '../lib/seo';
 import '../styles/global.css';
 
 interface Props {
@@ -13,10 +13,16 @@ interface Props {
   /** JSON-LD payloads to embed, one script per object. */
   jsonLd?: Record<string, unknown>[];
   ogImage?: string;
+  /** Error and utility pages can opt out of indexing and canonical metadata. */
+  noindex?: boolean;
 }
 
-const { page, description = site.description, jsonLd = [], ogImage } = Astro.props;
-const title = page ? `${page} · ${site.title}` : `${site.title} — ${site.tagline}`;
+const { page, description = site.description, jsonLd = [], ogImage, noindex = false } = Astro.props;
+const title = page
+  ? page === site.title || page.endsWith(` · ${site.title}`)
+    ? page
+    : `${page} · ${site.title}`
+  : `${site.title} — ${site.tagline}`;
 const canonical = absoluteUrl(Astro.url.pathname);
 const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
 ---
@@ -28,7 +34,8 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
@@ -51,13 +58,19 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content={`${site.title} preview`} />
     <meta property="og:site_name" content={site.title} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={`${site.title} preview`} />
     <meta name="generator" content={Astro.generator} />
-    {jsonLd.map((ld) => <script type="application/ld+json" set:html={JSON.stringify(ld)} />)}
+    {
+      jsonLd.map((ld) => (
+        <script is:inline type="application/ld+json" set:html={serializeJsonLd(ld)} />
+      ))
+    }
   </head>
   <body>
     <a class="skip-link mono" href="#main">Skip to content</a>

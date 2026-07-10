@@ -1,6 +1,6 @@
 /* Design tokens — "Warm Journal" v0.5.
    Every color, size, and shadow in the site lives here; components consume
-   tokens only. Dark palette is a Phase 2 addendum. */
+   tokens only. */
 :root {
   /* color — light (all-warm, pink is the sole accent family) */
   --cream: #fbf5ea; /* page ground */

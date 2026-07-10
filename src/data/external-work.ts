@@ -6,6 +6,4 @@ export interface ExternalWork {
   repoUrl: string;
 }
 
-export const externalWork: ExternalWork[] = [
-  // { title: 'Older thing', blurb: 'One line on what it is.', repoUrl: 'https://github.com/…' },
-];
+export const externalWork: ExternalWork[] = [];

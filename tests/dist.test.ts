@@ -87,6 +87,23 @@ function pageFile(entry: Entry): string {
   return join(DIST, entry.urlPath, 'index.html');
 }
 
+function htmlFiles(dir: string): string[] {
+  const files: string[] = [];
+  for (const item of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, item.name);
+    if (item.isDirectory()) files.push(...htmlFiles(path));
+    else if (item.name.endsWith('.html')) files.push(path);
+  }
+  return files;
+}
+
+function builtPath(urlPath: string): string {
+  const path = urlPath.split(/[?#]/, 1)[0].replace(/^\/+/, '');
+  if (!path) return join(DIST, 'index.html');
+  if (/\.[a-z0-9]+$/i.test(path)) return join(DIST, path);
+  return join(DIST, path, 'index.html');
+}
+
 const posts = collectPosts();
 const logs = collectLogs();
 const publishedPosts = posts.filter(isPublished);
@@ -150,5 +167,45 @@ describe('dist smoke suite', () => {
 
   it('emits a sitemap index', () => {
     expect(existsSync(join(DIST, 'sitemap-index.xml'))).toBe(true);
+  });
+
+  it('emits indexable metadata without duplicated site titles', () => {
+    for (const file of htmlFiles(DIST)) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, `${file} has a duplicated site title`).not.toContain(
+        `${site.title} · ${site.title}`,
+      );
+
+      if (file.endsWith('404.html')) {
+        expect(html).toContain('<meta name="robots" content="noindex, follow">');
+        expect(html).not.toContain('<link rel="canonical"');
+      } else {
+        expect(html).toMatch(
+          new RegExp(`<link rel="canonical" href="${site.origin.replaceAll('.', '\\.')}`),
+        );
+      }
+    }
+  });
+
+  it('has no broken root-relative href or src references', () => {
+    const references = /(?:href|src)="(\/[^"#?]*(?:[?#][^"]*)?)"/g;
+    for (const file of htmlFiles(DIST)) {
+      const html = readFileSync(file, 'utf8');
+      for (const [, reference] of html.matchAll(references)) {
+        expect(existsSync(builtPath(reference)), `${file} references missing ${reference}`).toBe(
+          true,
+        );
+      }
+    }
+  });
+
+  it('ships the Cloudflare security-header policy', () => {
+    const headersPath = join(DIST, '_headers');
+    expect(existsSync(headersPath), `missing ${headersPath}`).toBe(true);
+    const headers = readFileSync(headersPath, 'utf8');
+    expect(headers).toContain('Content-Security-Policy:');
+    expect(headers).toContain('X-Content-Type-Options: nosniff');
+    expect(headers).toContain('X-Frame-Options: DENY');
+    expect(headers).toContain('X-Robots-Tag: noindex');
   });
 });

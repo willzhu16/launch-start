@@ -1,6 +1,9 @@
 # CI: lint, typecheck, test, and build on every push and pull request.
 name: ci
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -14,11 +17,9 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
@@ -29,11 +30,9 @@ jobs:
     name: typecheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
@@ -44,11 +43,9 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
@@ -59,16 +56,15 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
         env:
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
           SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
       - run: pnpm test:dist

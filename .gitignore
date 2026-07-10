@@ -4,11 +4,19 @@ dist/
 
 # dependencies
 node_modules/
+.pnpm-store/
 
 # environment
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
+
+# local notes and agent tooling
+/TODO.md
+/.agents/
+/.codex/
 
 # OS
 .DS_Store

@@ -10,7 +10,7 @@ const links: { label: string; href: string }[] = [
   ...(site.socials.github ? [{ label: 'GitHub', href: site.socials.github }] : []),
   ...(site.socials.youtube ? [{ label: 'YouTube', href: site.socials.youtube }] : []),
   ...(site.socials.linkedin ? [{ label: 'LinkedIn', href: site.socials.linkedin }] : []),
-  { label: 'Email', href: `mailto:${site.email}` },
+  ...(site.email ? [{ label: 'Email', href: `mailto:${site.email}` }] : []),
 ];
 ---
 

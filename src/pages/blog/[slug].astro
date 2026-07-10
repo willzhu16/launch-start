@@ -9,7 +9,7 @@ import TechChips from '../../components/TechChips.astro';
 import VideoFacade from '../../components/VideoFacade.astro';
 import { site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
-import { publishedPosts } from '../../lib/content';
+import { published, publishedPosts } from '../../lib/content';
 import { fmtLong, fmtMono } from '../../lib/dates';
 import { blogPostingLd } from '../../lib/seo';
 
@@ -22,7 +22,11 @@ const { post } = Astro.props;
 const { title, description, date, updated, tags, videoId } = post.data;
 const { Content } = await render(post);
 
-const project = post.data.project ? await getEntry(post.data.project) : null;
+// A post may reference a project that is still a draft (the blog index files such
+// posts under "General" for the same reason). A draft project has no page in a
+// prod build, so the teaser link only renders once the project is published.
+const linkedProject = post.data.project ? await getEntry(post.data.project) : null;
+const project = linkedProject ? (published([linkedProject])[0] ?? null) : null;
 ---
 
 <Base

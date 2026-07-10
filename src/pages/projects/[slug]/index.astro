@@ -13,7 +13,7 @@ import VideoFacade from '../../../components/VideoFacade.astro';
 import WeekRow from '../../../components/WeekRow.astro';
 import Base from '../../../layouts/Base.astro';
 import { logPath, publishedLogs, publishedProjects } from '../../../lib/content';
-import { fmtMono, fmtRange } from '../../../lib/dates';
+import { fmtRange } from '../../../lib/dates';
 import { projectLd } from '../../../lib/seo';
 import { activeSprint } from '../../../lib/sprint';
 
@@ -47,6 +47,9 @@ function sprintLogs(n: number) {
     });
 }
 const newestEntryId = logs[0]?.id;
+const sprintsWithLogs = sprintsDesc
+  .map((sprint) => ({ sprint, entries: sprintLogs(sprint.number) }))
+  .filter(({ entries }) => entries.length > 0);
 
 // Outcome section: shipped → retro teaser; in-sprint → goal.
 const retro = logs.find((l) => l.data.kind === 'retro');
@@ -147,31 +150,22 @@ const next = allProjects[index - 1] ?? null; // newer
       }
 
       {
-        sprints.length > 0 && (
+        sprintsWithLogs.length > 0 && (
           <section aria-label="build log">
             <SectionLabel label="The log" />
-            {sprintsDesc.map((sprint) => {
-              const entries = sprintLogs(sprint.number);
-              return (
-                <div class="sprint">
-                  <div class="sprint-head">
-                    <h2>
-                      Sprint {sprint.number} — {sprint.goal}
-                    </h2>
-                    <SprintProgress sprint={sprint} today={today} />
-                  </div>
-                  {entries.length === 0 ? (
-                    <p class="empty">
-                      The log starts when the sprint does — {fmtMono(sprint.startDate)}.
-                    </p>
-                  ) : (
-                    entries.map((entry) => (
-                      <WeekRow entry={entry} open={entry.id === newestEntryId} />
-                    ))
-                  )}
+            {sprintsWithLogs.map(({ sprint, entries }) => (
+              <div class="sprint">
+                <div class="sprint-head">
+                  <h2>
+                    Sprint {sprint.number} — {sprint.goal}
+                  </h2>
+                  <SprintProgress sprint={sprint} today={today} />
                 </div>
-              );
-            })}
+                {entries.map((entry) => (
+                  <WeekRow entry={entry} open={entry.id === newestEntryId} />
+                ))}
+              </div>
+            ))}
           </section>
         )
       }

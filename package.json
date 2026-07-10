@@ -2,32 +2,37 @@
   "name": "launch-start",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "cf:login": "wrangler login",
     "check": "astro check && biome check .",
     "lint": "biome check .",
     "typecheck": "astro check",
     "test": "vitest run",
-    "test:dist": "vitest run --config vitest.dist.config.ts"
+    "test:dist": "vitest run --config vitest.dist.config.ts",
+    "deploy:dry-run": "pnpm check && pnpm test && pnpm build && pnpm test:dist && wrangler deploy --dry-run",
+    "deploy": "pnpm check && pnpm test && pnpm build && pnpm test:dist && wrangler deploy"
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.1",
+    "@astrojs/mdx": "^7.0.2",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.0.5",
+    "astro": "^7.0.7",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@biomejs/biome": "^2.5.2",
+    "@biomejs/biome": "^2.5.3",
     "@fontsource/fraunces": "^5.2.9",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/source-serif-4": "^5.2.9",
-    "@types/node": "^26.1.0",
+    "@types/node": "^26.1.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.107.1"
   }
 }

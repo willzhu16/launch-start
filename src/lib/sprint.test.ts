@@ -14,7 +14,7 @@ function makeSprint(overrides: Partial<Sprint> = {}): Sprint {
     goal: 'Ship the site.',
     lengthDays: 30,
     startDate: new Date('2026-07-06'),
-    endDate: new Date('2026-08-05'),
+    endDate: new Date('2026-08-04'),
     ...overrides,
   };
 }
@@ -46,7 +46,7 @@ describe('activeSprint / upcomingSprint', () => {
   const s2 = makeSprint({
     number: 2,
     startDate: new Date('2026-09-01'),
-    endDate: new Date('2026-10-01'),
+    endDate: new Date('2026-09-30'),
   });
   const project = { sprints: [s1, s2] };
 
@@ -62,7 +62,8 @@ describe('activeSprint / upcomingSprint', () => {
 
   it('includes both boundary days', () => {
     expect(activeSprint(project, new Date('2026-07-06'))?.number).toBe(1);
-    expect(activeSprint(project, new Date('2026-08-05'))?.number).toBe(1);
+    expect(activeSprint(project, new Date('2026-08-04'))?.number).toBe(1);
+    expect(activeSprint(project, new Date('2026-08-05'))).toBeNull();
   });
 
   it('upcomingSprint returns the earliest future sprint', () => {
@@ -92,7 +93,7 @@ describe('sprintProgress', () => {
 
 describe('sprintEnded', () => {
   it('is false on the last day and true after it', () => {
-    expect(sprintEnded(makeSprint(), new Date('2026-08-05'))).toBe(false);
-    expect(sprintEnded(makeSprint(), new Date('2026-08-06'))).toBe(true);
+    expect(sprintEnded(makeSprint(), new Date('2026-08-04'))).toBe(false);
+    expect(sprintEnded(makeSprint(), new Date('2026-08-05'))).toBe(true);
   });
 });

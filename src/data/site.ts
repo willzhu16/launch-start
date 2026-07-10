@@ -1,6 +1,7 @@
-// Site identity is configuration, never hardcoded. Anything
-// deploy-dependent can be overridden by env (SITE_ORIGIN, YOUTUBE_CHANNEL_ID).
 import { SITE_ORIGIN } from './origin.mjs';
+
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL?.trim() || null;
+const youtubeChannelId = import.meta.env.PUBLIC_YOUTUBE_CHANNEL_ID?.trim() || null;
 
 interface HomeMediaImage {
   kind: 'image';
@@ -24,7 +25,9 @@ export const site = {
   description:
     'A build-in-public journal: side projects taken from zero to shipped in timed public ' +
     'sprints, documented weekly.',
-  email: '',
+  // Contact address, env-injected so it stays out of the source. The footer,
+  // About page, and Person JSON-LD render the mailto only when it's set.
+  email: contactEmail,
   // Scheduled posts go live at local midnight in this timezone (IANA name).
   timezone: 'America/Chicago',
   socials: {
@@ -32,7 +35,7 @@ export const site = {
     linkedin: 'https://www.linkedin.com/in/williamlzhu/' as string | null,
     youtube: null as string | null,
   },
-  youtubeChannelId: (process.env.YOUTUBE_CHANNEL_ID ?? null) as string | null,
+  youtubeChannelId,
 
   // Default: Buttondown. The subscribe form renders only once this is set.
   buttondownUsername: null as string | null,

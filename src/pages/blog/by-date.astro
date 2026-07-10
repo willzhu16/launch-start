@@ -7,12 +7,16 @@ import PathCrumb from '../../components/PathCrumb.astro';
 import PostListItem from '../../components/PostListItem.astro';
 import SectionLabel from '../../components/SectionLabel.astro';
 import SubscribeNote from '../../components/SubscribeNote.astro';
+import { site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
 import { publishedPosts } from '../../lib/content';
 import { groupByYear } from '../../lib/dates';
 
 const posts = await publishedPosts();
 const years = groupByYear(posts, (post) => post.data.date);
+const emptyCopy = site.buttondownUsername
+  ? "First post is being written — subscribe and it'll find you."
+  : 'First post is being written — check back soon.';
 ---
 
 <Base page="Blog · By date" description="Every essay, newest first.">
@@ -26,7 +30,7 @@ const years = groupByYear(posts, (post) => post.data.date);
     {
       posts.length === 0 && (
         <>
-          <p class="empty">First post is being written — subscribe and it'll find you.</p>
+          <p class="empty">{emptyCopy}</p>
           <SubscribeNote />
         </>
       )
