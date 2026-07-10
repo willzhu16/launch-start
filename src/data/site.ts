@@ -38,7 +38,7 @@ export const site = {
   youtubeChannelId,
 
   // Default: Buttondown. The subscribe form renders only once this is set.
-  buttondownUsername: null as string | null,
+  buttondownUsername: 'willzhu' as string | null,
 
   // Optional photo/video slot below the home letter intro; null renders nothing.
   homeMedia: null as HomeMedia,
