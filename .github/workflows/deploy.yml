@@ -15,9 +15,6 @@ on:
     - cron: '17 9 * * *' # daily rebuild
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 concurrency:
   group: deploy
   cancel-in-progress: true
