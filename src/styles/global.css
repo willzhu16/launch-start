@@ -69,7 +69,7 @@ textarea {
 }
 
 html {
-  color-scheme: light;
+  color-scheme: light dark;
   /* Fluid base: the whole system is built in rem (type scale) and ch (reading
      measures), so scaling the root scales type, spacing, and line-length limits
      together — the page grows with the viewport instead of stranding a fixed

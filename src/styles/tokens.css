@@ -63,3 +63,39 @@
      (global.css). Page chrome only, never a content color. */
   --sunset-wash: linear-gradient(180deg, #f6e0cb 0%, #f2d8c4 55%, #eecfc0 100%);
 }
+
+/* Dark theme — "Warm Journal after dusk". Same warm family and single pink
+   accent, inverted onto a deep warm ground. Auto-applied by OS preference;
+   every value here overrides its light counterpart above, so components need no
+   dark-specific rules. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* color — warm dark ground, warm off-white ink */
+    --cream: #17130e; /* page ground */
+    --card: #211c14; /* cards, asides, glance box */
+    --paper: #272115; /* elevated card interiors */
+    --ink: #ece3d3; /* text */
+    --muted: #a89c88; /* metadata, captions */
+    --line: rgba(236, 227, 211, 0.15); /* hairlines, borders */
+    --grid: rgba(236, 227, 211, 0.05); /* graph-paper lines */
+    --pink: #e56aa0; /* accent fills, marks */
+    --pink-deep: #f191b5; /* links, interactive text */
+    --rose-ink: #ef85af; /* strong small text (day counter, active nav) */
+    --ok: #79c294; /* status: shipped */
+    --warn: #d3ac52; /* status: paused */
+
+    /* tinted grounds — slightly stronger alpha so pills read on the dark ground */
+    --pink-tint: rgba(229, 106, 160, 0.22);
+    --ok-tint: rgba(121, 194, 148, 0.2);
+    --warn-tint: rgba(211, 172, 82, 0.22);
+    --gray-tint: rgba(168, 156, 136, 0.18);
+    --tan-tint: rgba(168, 156, 136, 0.13);
+
+    /* depth — shadows go darker so the card hover-lift still reads on dark */
+    --shadow-s: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --shadow-m: 0 10px 22px rgba(0, 0, 0, 0.55);
+
+    /* sunset frame — a deep warm dusk wash behind the sheet on wide screens */
+    --sunset-wash: linear-gradient(180deg, #241a17 0%, #201620 55%, #1a141c 100%);
+  }
+}

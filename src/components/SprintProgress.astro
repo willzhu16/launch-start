@@ -69,4 +69,16 @@ const ended = sprintEnded(sprint, today);
     background: var(--ink);
     transform: translate(-50%, -50%);
   }
+  /* forced-colors drops the tinted track and pink fill to the canvas colour,
+     which would leave a blank gap; map them to system colours so the gauge
+     stays visible. The "Day N / N" label already states progress in text. */
+  @media (forced-colors: active) {
+    .track {
+      border: 1px solid CanvasText;
+    }
+    .fill,
+    .marker {
+      background: CanvasText;
+    }
+  }
 </style>
