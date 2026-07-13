@@ -38,7 +38,7 @@ const text: Record<Status, string> = {
 <style>
   .lozenge {
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.13em;
     padding: 0.28em 0.7em;
@@ -66,5 +66,12 @@ const text: Record<Status, string> = {
   .post {
     background: var(--tan-tint);
     color: var(--muted);
+  }
+  /* forced-colors strips the tinted grounds; a border keeps each pill a
+     distinct shape. The status word itself still carries the meaning. */
+  @media (forced-colors: active) {
+    .lozenge {
+      border: 1px solid currentColor;
+    }
   }
 </style>

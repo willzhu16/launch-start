@@ -222,6 +222,9 @@ const next = allProjects[index - 1] ?? null; // newer
   .content {
     padding-top: var(--s-8);
   }
+  #cover {
+    scroll-margin-top: var(--s-8);
+  }
   .outcome {
     font-family: var(--font-body);
     max-width: var(--measure);
@@ -258,5 +261,10 @@ const next = allProjects[index - 1] ?? null; // newer
   }
   .pn a:hover {
     text-decoration: underline;
+  }
+  @media (max-width: 500px) {
+    .pn {
+      flex-direction: column;
+    }
   }
 </style>

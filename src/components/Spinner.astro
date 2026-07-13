@@ -1,0 +1,51 @@
+---
+// A warm-palette loading spinner — the one bit of the site that deliberately
+// keeps you waiting. It exists so a post about hating load times can show the
+// thing it hates. The SVG is inlined (not an <img>) so the site's global
+// prefers-reduced-motion gate in global.css freezes it for readers who ask for
+// less motion; its colors are read from the design tokens, never hard-coded.
+interface Props {
+  label?: string;
+}
+
+const { label = 'A loading spinner, endlessly spinning' } = Astro.props;
+---
+
+<div class="spinner" role="img" aria-label={label}>
+  <svg viewBox="0 0 50 50" aria-hidden="true">
+    <circle class="track" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+    <circle
+      class="arc"
+      cx="25"
+      cy="25"
+      r="20"
+      fill="none"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-dasharray="32 126"></circle>
+  </svg>
+</div>
+
+<style>
+  .spinner {
+    display: flex;
+    justify-content: center;
+    margin-block: var(--s-8);
+  }
+  .spinner svg {
+    width: 56px;
+    height: 56px;
+    animation: spin 0.9s linear infinite;
+  }
+  .track {
+    stroke: var(--line);
+  }
+  .arc {
+    stroke: var(--pink);
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

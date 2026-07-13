@@ -12,7 +12,18 @@ export const vocab = {
     'postgres',
     'vitest',
   ],
-  tags: ['platform', 'meta', 'ai', 'devops', 'security', 'web', 'tooling', 'writing'],
+  tags: [
+    'platform',
+    'meta',
+    'ai',
+    'devops',
+    'security',
+    'web',
+    'tooling',
+    'writing',
+    'architecture',
+    'performance',
+  ],
 } as const;
 
 export type Tech = (typeof vocab.tech)[number];
@@ -37,6 +48,8 @@ export const labels: Record<string, string> = {
   web: 'web',
   tooling: 'tooling',
   writing: 'writing',
+  architecture: 'architecture',
+  performance: 'performance',
 };
 
 export function labelFor(key: string): string {
