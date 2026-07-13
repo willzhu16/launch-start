@@ -1,0 +1,125 @@
+---
+title: 'Why This Site Loads Instantly'
+description: 'I hate websites that make me wait, so I built one that doesn’t. The requirements that led me to a static site, and how Astro makes it feel instant.'
+date: 2026-07-15
+tags: ['web', 'architecture', 'performance', 'meta']
+project: 'launch-start'
+draft: false
+---
+
+import Spinner from '../../components/Spinner.astro';
+
+You know how sometimes you click on a website and it just...sits there? Blank for a second. Then a spinner. Then maybe a flash of unstyled text before the real thing finally loads?
+
+<Spinner />
+
+I hate that.
+
+Perhaps it is the attention-span-shortening effect of one too many shorts and reels, but I almost always click away or reload if a site takes more than a couple of seconds to show up.
+
+In my mind, good software should feel quick and snappy. It should be enjoyable to use.
+
+So when I started building Launch Start, one requirement sat near the top of the list: it had to feel instant.
+
+That requirement ended up shaping almost everything about how the site is built.
+
+## What I actually wanted
+
+I did not start with a framework. I started with a feeling and a short list.
+
+I wanted the site to be:
+
+* **Instant.** No spinners, loading states, or waiting. You click, it is there.
+* **Easy to write.** This is a journal. If publishing feels like a chore, I am much more likely to stop doing it.
+* **Lightweight.** No big machinery to maintain. I am one person doing this on the side.
+* **Low friction.** As few steps as possible between writing a post and putting it online.
+
+I did not know which tools or architecture I wanted, but the properties were clear.
+
+## The constraints
+
+Then there is reality.
+
+I am one person. This is a side project. I do not want to pay for a server, and I definitely do not want to wake up to one that fell over during the night. I do not want a database to back up or an admin panel just to publish a blog post.
+
+The content is the point. Everything else is overhead.
+
+When I lined up the requirements and constraints, they pointed toward the same answer, even if I could not name it yet.
+
+If every reader receives the same page, why should anything need to be computed when someone visits? Why not build the whole site once, ahead of time, and just...hand people the finished pages?
+
+I thought I was a genius for about five minutes. Unfortunately (and fortunately) people had already solved this problem.
+
+## What I didn't know, but do now
+
+So I did some research, which in this case meant asking an LLM to explain static-site generation to me like I was five years old. Which was, a little embarrassingly, quite useful.
+
+Here is the part I only half understood when I started: **why are so many websites slow in the first place?**
+
+Some sites are basically applications that happen to run in your browser. On the first visit, the server may hand your browser a nearly empty page and a bundle of JavaScript. Your browser has to download that JavaScript, parse it, and run it. That code may then fetch the actual content before it can draw the useful parts of the page. You do not see anything real until that chain gets far enough along.
+
+That is the waterfall. That is the spinner. Each step waits on the one before it, and you sit there watching.
+
+<Spinner />
+
+(Did this section need another spinner? Not at all. Am I enjoying the fact that I can drop one anywhere? You betcha.)
+
+Astro’s answer is to just...not do that.
+
+I had a rough version of this right in my head: “It renders the page ahead of time so the browser does not have to.” But I did not really understand how that worked.
+
+When the site builds, either locally or in CI, Astro runs my page components ahead of time. Reading my folder of posts, sorting them, calculating the sprint counter, and laying out the pages all happen during that build.
+
+The result is plain HTML. Finished, boring, static HTML files. That is what gets deployed.
+
+By the time you visit, most of the work is already done. Your browser still has things to download, including HTML, CSS, fonts, and images. The difference is that it does not also need to boot a framework, fetch the post itself, and reconstruct the page before showing it to you.
+
+The part that surprised me is that Astro components ship no client-side JavaScript by default. A client-rendered app often sends both the page and the machinery needed to build it. Astro sends the result and keeps the machinery behind.
+
+If I ever need something interactive, I can opt a specific component into shipping its JavaScript. Everything else stays static.
+
+I have barely needed to do that. Launch Start is almost entirely HTML and CSS, which is a large part of why it feels so fast.
+
+(Note: In case you want the receipts, at the time of writing, the page you are reading is about 25 KB of HTML and CSS, and only around 8 KB of that actually travels once it is compressed for the trip. None of it is JavaScript. The heaviest thing your browser downloads is the fonts, roughly 80 KB on the first visit, and then they are cached for every page after.)
+
+### The benefit I wasn't expecting
+
+I picked Astro for speed. What kept me happy was something I had not been looking for: it treats my writing as real, checked data.
+
+Every post is just a text file in a folder. Open, type, done. That is exactly the low-friction writing process I wanted.
+
+Each file also includes a small block of information at the top: its title, date, tags, project, and so on. Astro lets me define the required structure using a Zod schema, then validates every post when the site builds.
+
+Forget a title? Use the wrong type of value? Break one of the rules I defined? The build stops and calls me a dummy. More accurately, it tells me what went wrong and which file caused it.
+
+That means I am far less likely to publish a broken post. The site catches mistakes before a reader ever sees them.
+
+For a project whose entire purpose is writing, that mattered more than I expected.
+
+### The payoff: scheduling with no server
+
+Here is my favorite part, and it only exists because of the static, no-server approach.
+
+I wanted to write a post now and have it go live on a future date without needing to remember to publish it.
+
+Normally you would hand that to a server running around the clock, watching the calendar and flipping the post live at the right moment. I do not have one of those.
+
+Instead, every post carries a date, and a small rule hides anything dated in the future. A scheduled job rebuilds the whole site once a day.
+
+When a post’s date arrives, the next rebuild includes it. The post goes live on its own, with no button to press.
+
+That same daily rebuild keeps the sprint day counter accurate, too.
+
+A constraint I thought I was working around ended up handing me a feature almost for free.
+
+## What I learned
+
+I did not choose the “best” framework. I am not even sure that is a real thing.
+
+I chose the framework whose default behavior matched the requirement I cared about most. Then I learned it by building the thing you are reading this on.
+
+Which points at the actual lesson, and it is not a profound one: a tool should fit its purpose.
+
+A dynamic web app can do plenty this site cannot: accounts, content that changes per visitor, live updates without a rebuild. I did not want any of that. I wanted words on a page, fast. Astro does that by default, which is exactly why it works for me.
+
+So this is not the most capable site someone could build. It is the one that matches what I set out to make. And it loads before you have the chance to hate waiting for it.
