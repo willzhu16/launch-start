@@ -1,0 +1,78 @@
+---
+project: 'launch-start'
+sprint: 1
+kind: 'week'
+week: 2
+title: 'Week 2 — Live, With the Lights Off'
+date: 2026-07-19
+tldr: 'Launch Start went public at willzhu.dev, the Warm Journal palette learned to go dark, and I wrote up why the site loads instantly.'
+shipped:
+  - 'The public launch: willzhu.dev is live'
+  - 'The Buttondown subscribe form, switched on for real'
+  - 'Dark mode via token overrides, plus a manual toggle'
+  - 'Windows High Contrast support and small mobile fixes'
+  - 'The post "Why This Site Loads Instantly"'
+  - 'Prev/next links on blog posts'
+learned:
+  - 'Launching is its own feature, with its own work no one sees'
+  - 'Publishing the work is a different muscle than doing the work'
+  - 'Buying a domain is easier than it looks'
+days: []
+draft: true
+---
+
+So...I published the site (obviously)! It lives at willzhu.dev (also obvious), the repo is on GitHub and a stranger can, in theory, be reading this sentence.
+
+For full transparency, it went live on July 10, a couple of days before the Week 1 post was dated. That post was already written by then, so the launch story lands here instead.
+
+## The quiet launch
+
+Going public turned out to be its own little project.
+
+Some of it was expected: a deploy pipeline that pushes the site to Cloudflare on every commit to main, a public contact address, and flipping the subscribe form from a placeholder to a real Buttondown form.
+
+Some of it was less expected. Making a repo public means its entire history is public too, so I spent a while making sure past me did not tag along: an old resume here, a personal email address there. Nothing dramatic, but it is the kind of work that produces zero visible change and still has to be done carefully, because you only get to publish a history once.
+
+However, the biggest challenge was mental - not technical. Launch Start is an idea I had been nursing quietly for nearly a year now. I wanted to do it, but I never had time, and honestly, putting myself out there on the public web like this was kinda scary. 
+
+I was worried about people seeing my work and saying that I was a fraud, or that I didn't know anything about software engineering. I was also scared that no one would see it and I was just screaming into a dark void. 
+
+But after a few days of polishing (procrastination), I decided it was time. No more stalling. No more worrying. Just like software, there is only so long you can spend planning and testing before it just needs to ship (usually cause of a deadline). It was my deadline. 
+
+And then I pressed the button, and nothing happened. No confetti. The site was just...there, the same as it was on localhost, except now with a domain and consequences.
+
+And I felt relieved. It was out there. Nothing had blown up. 
+
+All I needed to do was continue living my life and documenting. I could do that. 
+
+## Dark mode without touching a component
+
+Meanwhile, the biggest visible change this week is that the site now respects your color scheme. If your machine runs dark, Launch Start is dark: same warm family, same single pink accent, inverted onto a deep warm ground. I have been calling it the Warm Journal after dusk (poetic if I do say so myself...)
+
+The satisfying part is how small the change was. Back in week 1, every color on the site got routed through a single tokens file, and components were only allowed to use tokens. That discipline felt fussy and overengineered at the time. This week it paid out: dark mode is one block of token overrides, and not a single component needed a dark-specific rule.
+
+The same pass added support for Windows High Contrast mode, so the status pills and the sprint progress gauge survive forced colors, and a round of small mobile fixes: the nav wraps instead of squishing, the tiniest labels got bumped up, and the prev/next links stack on narrow screens.
+
+Then came the follow-up question: what if your OS is set to light but you want to read it in the dark mode? So there is now a small toggle in the nav. It remembers your choice, it keeps the browser chrome matched to the page, and it cost a few dozen lines of inline JavaScript. This site made a big deal about shipping almost no JS, so adding any at all was a real decision. Reader control won.
+
+## Writing about speed
+
+The main piece of writing this week was a deep-dive: [Why This Site Loads Instantly](/blog/note-1-why-this-site-loads-instantly). It walks through what I wanted from the site, the constraints that pushed me toward a static build, and how Astro fits them.
+
+It was worth writing because the speed is not an accident, it is part of the premise. A build journal should open like a page, not boot like an app. Writing it down also forced me to actually check the claims I had been making casually, which is exactly the kind of honesty this site is supposed to run on.
+
+## What I learned
+
+Structure keeps paying rent. Dark mode was simple to implement (so simple I might add more...unconventional color schemes in the future...)
+
+Launching is a feature. The alias, the history scrub, the pipeline. None of it is visible on the site, and all of it was real work. I want this log to record that kind of work too, because it is exactly the part that polished portfolios edit out.
+
+Buying a domain is...surprisingly simple? I was always like a bit intimidated by the concept, but it turned out to be easy and hassle free.
+
+## Next week
+
+Week 1 floated porting over another project, and that has not happened yet, so it stays on the list and moves up front.
+
+There is also a conveyor belt in the masthead that slowly drifts project icons behind the wordmark. It currently renders a conveyor belt of nothing, because no project has an icon yet. Giving the shelf its first real neighbor, and the belt its first icon, feels like the right move.
+
+And maybe, just maybe I'll reintroduce the blues in a new color theme....
