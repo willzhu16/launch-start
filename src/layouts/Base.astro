@@ -32,6 +32,25 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- browser chrome matches the page ground; both hexes mirror --cream in tokens.css -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbf5ea" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17130e" />
+    <script is:inline>
+      // Apply the stored theme choice before first paint so pages never flash
+      // the wrong palette. No stored choice means the OS preference rules.
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.dataset.theme = theme;
+          const creamHex = theme === 'dark' ? '#17130e' : '#fbf5ea';
+          for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+            meta.setAttribute('content', creamHex);
+          }
+        }
+      } catch {
+        // storage can be unavailable (private mode); the OS preference still applies
+      }
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}

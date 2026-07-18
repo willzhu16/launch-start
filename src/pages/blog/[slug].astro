@@ -27,6 +27,14 @@ const { Content } = await render(post);
 // prod build, so the teaser link only renders once the project is published.
 const linkedProject = post.data.project ? await getEntry(post.data.project) : null;
 const project = linkedProject ? (published([linkedProject])[0] ?? null) : null;
+
+// Prev/next post, chronological.
+const chrono = [...(await publishedPosts())].sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+);
+const idx = chrono.findIndex((p) => p.id === post.id);
+const prevPost = idx > 0 ? chrono[idx - 1] : null;
+const nextPost = idx >= 0 && idx < chrono.length - 1 ? chrono[idx + 1] : null;
 ---
 
 <Base
@@ -71,6 +79,17 @@ const project = linkedProject ? (published([linkedProject])[0] ?? null) : null;
         </aside>
       )
     }
+
+    <nav class="pn" aria-label="post navigation">
+      {
+        prevPost ? (
+          <a href={`/blog/${prevPost.id}/`}>← {prevPost.data.title}</a>
+        ) : (
+          <a href="/blog/">← All posts</a>
+        )
+      }
+      {nextPost ? <a href={`/blog/${nextPost.id}/`}>{nextPost.data.title} →</a> : <span />}
+    </nav>
 
     <SubscribeNote compact />
   </main>
@@ -120,5 +139,19 @@ const project = linkedProject ? (published([linkedProject])[0] ?? null) : null;
   }
   .project-link a:hover {
     text-decoration: underline;
+  }
+  .pn {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-12);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-body);
+  }
+  @media (max-width: 500px) {
+    .pn {
+      flex-direction: column;
+    }
   }
 </style>
