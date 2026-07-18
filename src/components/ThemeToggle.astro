@@ -1,0 +1,51 @@
+---
+// Light/dark toggle for the header navs. Ships hidden and is revealed by its
+// script: without JS the OS preference already picks the palette, so a dead
+// button would only mislead. The label names the theme a click switches to.
+---
+
+<button class="theme-toggle mono" type="button" data-theme-toggle hidden></button>
+
+<script is:inline>
+  for (const btn of document.querySelectorAll('[data-theme-toggle]:not([data-bound])')) {
+    btn.setAttribute('data-bound', '');
+    const effectiveTheme = () =>
+      document.documentElement.dataset.theme ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const relabel = () => {
+      const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      btn.textContent = next === 'dark' ? 'Dark' : 'Light';
+      btn.setAttribute('aria-label', `Switch to ${next} theme`);
+    };
+    btn.addEventListener('click', () => {
+      const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        // storage can be unavailable (private mode); the flip still holds for this page
+      }
+      // resync browser-chrome color to the ground the new theme just set
+      const cream = getComputedStyle(document.documentElement).getPropertyValue('--cream').trim();
+      for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+        meta.setAttribute('content', cream);
+      }
+      relabel();
+    });
+    relabel();
+    btn.hidden = false;
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .theme-toggle:hover {
+    color: var(--pink-deep);
+  }
+</style>

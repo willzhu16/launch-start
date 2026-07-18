@@ -1,6 +1,8 @@
 ---
 // Header for every page except home: serif wordmark left
 // (no dots), mono nav right, current page marked.
+import ThemeToggle from './ThemeToggle.astro';
+
 interface Props {
   current?: 'projects' | 'blog' | 'about';
 }
@@ -24,6 +26,7 @@ const items = [
         </a>
       ))
     }
+    <ThemeToggle />
   </nav>
 </header>
 

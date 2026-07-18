@@ -78,6 +78,16 @@ html {
   font-size: clamp(1rem, 0.82rem + 0.34vw, 1.34rem);
 }
 
+/* An explicit theme choice (header toggle) narrows color-scheme so native
+   controls follow the chosen theme, not the OS. Token overrides live in
+   tokens.css next to the palette they flip. */
+html[data-theme="light"] {
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 body {
   background: var(--cream);
   color: var(--ink);
@@ -219,6 +229,11 @@ a:hover {
   border: none;
   border-top: 1px solid var(--line);
   margin-block: var(--s-8);
+}
+.prose img {
+  /* --media-dim is none in light, a slight brightness cut in dark, so bright
+     screenshots don't glare against the dark ground */
+  filter: var(--media-dim);
 }
 
 /* story pages (log entries, posts): larger measure-tuned serif with a drop cap */
