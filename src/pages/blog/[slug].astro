@@ -83,12 +83,24 @@ const nextPost = idx >= 0 && idx < chrono.length - 1 ? chrono[idx + 1] : null;
     <nav class="pn" aria-label="post navigation">
       {
         prevPost ? (
-          <a href={`/blog/${prevPost.id}/`}>← {prevPost.data.title}</a>
+          <a href={`/blog/${prevPost.id}/`}>
+            <span>← {prevPost.data.title}</span>
+            <span class="mono ctx">{prevPost.data.project?.id ?? 'general'}</span>
+          </a>
         ) : (
           <a href="/blog/">← All posts</a>
         )
       }
-      {nextPost ? <a href={`/blog/${nextPost.id}/`}>{nextPost.data.title} →</a> : <span />}
+      {
+        nextPost ? (
+          <a class="next" href={`/blog/${nextPost.id}/`}>
+            <span>{nextPost.data.title} →</span>
+            <span class="mono ctx">{nextPost.data.project?.id ?? 'general'}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
     </nav>
 
     <SubscribeNote compact />
@@ -149,9 +161,27 @@ const nextPost = idx >= 0 && idx < chrono.length - 1 ? chrono[idx + 1] : null;
     border-top: 1px solid var(--line);
     font-family: var(--font-body);
   }
+  .pn a {
+    display: grid;
+    gap: var(--s-1);
+    text-decoration: none;
+  }
+  .pn a:hover span:first-child {
+    text-decoration: underline;
+  }
+  .pn .next {
+    text-align: right;
+  }
+  .pn .ctx {
+    color: var(--muted);
+    font-size: 0.66rem;
+  }
   @media (max-width: 500px) {
     .pn {
       flex-direction: column;
+    }
+    .pn .next {
+      text-align: left;
     }
   }
 </style>

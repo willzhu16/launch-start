@@ -1,0 +1,46 @@
+---
+title: 'ContextGuard'
+pitch: 'A linter for the AI configuration layer: instruction files, MCP overhead, secrets, and clean context bundles, checked locally.'
+status: 'shipped'
+featured: true
+draft: false
+createdDate: 2026-06-04
+tech: ['typescript', 'vscode', 'node', 'cloudflare-workers', 'github-actions']
+tags: ['ai', 'tooling', 'security']
+repo: 'BearInBlue/contextguard'
+demoUrl: 'https://marketplace.visualstudio.com/items?itemName=bearinblue.contextguard'
+cover: './cover.png'
+coverAlt: 'ContextGuard cover: "The linter for your AI configuration" over stats from a scan of 100 popular repos'
+---
+
+## What & why
+
+ContextGuard started with a billing change. On June 1, 2026, GitHub Copilot (the tool I use at my day job) moved from request-based to usage-based billing. Every token now had a price, and I realized I could not answer a basic question: what was I actually sending to these models?
+
+So I went searching, and learned that finding out was really, really hard. Every AI coding tool follows different conventions, while instruction files quietly grow, drift, and accumulate conflicting rules. Agents may load those files on every request, but nothing reviews them.
+
+Three days after the billing switch, I started building ContextGuard.
+
+To understand the scale of the problem, I scanned 100 popular open-source repositories. 72 shipped AI instruction files. Among those repositories, the median always-loaded footprint was about 2,200 tokens (paid before the model saw a single line of the actual task) and the largest was 23,870.
+
+ContextGuard is ESLint for that layer. Deterministic rules catch oversized instruction files, duplicated or contradictory instructions, unmeasured MCP overhead, and secret-like values sitting in files agents may read. It also produces clean, paste-ready context bundles with detected secrets redacted (for web-based agents, which for some reason typically have higher limits?).
+
+Every finding names the rule and the file that triggered it. No model is involved, and nothing leaves your machine, with one exception for Pro license activation explained below.
+
+## Architecture
+
+ContextGuard is an IDE extension with a strict split down the middle: a pure detection core that knows nothing about the IDE, and a thin editor layer on top.
+
+The supported tools (Claude Code, Cursor, Copilot, Cline, Windsurf, and 17 more) live in a data-driven registry, each convention mapped to its real file paths. Supporting a new tool is a registry entry, not a new module.
+
+The whole extension is 51 TypeScript files, about 14,000 lines, covered by 61 test files, with exactly one runtime dependency: the tokenizer.
+
+Privacy is enforced by architecture rather than promised by policy. On the free tier the extension makes zero network calls. The only thing that ever touches the network is Pro license activation, which runs through a stateless Cloudflare Worker with no database behind it.
+
+## Outcome
+
+The day-zero build landed on June 4, 2026. A beta went out four days later, and 0.1.0 reached the VS Code Marketplace on June 14, ten days in. Eight patch releases later it sits at 0.1.8, with a Pro tier open at early-access pricing ($5/month or $39/year). It's my first product too which is exciting!
+
+ContextGuard predates this site, which makes it the first project ported onto the shelf instead of built on it. It arrived here already shipped, so instead of weekly logs it gets a retro post that tells the longer story.
+
+Granted there is much more work to do, so maybe it can be the subject of a future sprint, but for now, I'm content with it living here.

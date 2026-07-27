@@ -11,6 +11,7 @@ export const vocab = {
     'github-actions',
     'postgres',
     'vitest',
+    'vscode',
   ],
   tags: [
     'platform',
@@ -40,6 +41,7 @@ export const labels: Record<string, string> = {
   'github-actions': 'GitHub Actions',
   postgres: 'Postgres',
   vitest: 'Vitest',
+  vscode: 'VS Code',
   platform: 'platform',
   meta: 'meta',
   ai: 'AI',

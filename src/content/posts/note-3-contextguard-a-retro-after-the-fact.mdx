@@ -1,0 +1,52 @@
+---
+title: 'ContextGuard: A Retro, After the Fact'
+description: 'ContextGuard shipped before this site existed. The story so far: ten days to the Marketplace, weeks of hardening, and what charging money taught me.'
+date: 2026-07-26
+tags: ['ai', 'tooling']
+project: 'contextguard'
+draft: false
+---
+
+ContextGuard is the first project to join the shelf from the outside.
+
+It was built in the weeks before this site went public, so it never got weekly logs or a sprint. This retro is the catch-up: the story, reconstructed from commit history and memory, written down before it fades.
+
+## The story
+
+You already know the motivation (or if you don't, please read the [project overview](/projects/contextguard/) or the [first blog post](/blog/note-2-why-i-built-a-linter-for-ai-instruction-files) for ContextGuard)!
+
+But what wasn't captured there was the grind of starting a project with absolutely no experience in making extensions, publicly shipping as a solo developer, learning marketing, testing the boundaries of vibe-coding, etc...
+
+The first commit landed on June 4, three days after the Copilot billing switch that kicked this off. It was a day-zero build that already had the shape of the real thing, scan plus lint plus bundle. A beta followed on June 8. On June 14, version 0.1.0 went up on the VS Code Marketplace.
+
+Ten days from empty repo to public only worked because the scope was ruthless. Deterministic rules only, so there was no model integration to build or babysit. Local only, so there was no backend to run. VS Code only at first, so there was one surface to polish.
+
+It was...tough to say the least. The coding wasn't terrible, especially with the help of AI tools, but my inexperience definitely slowed a lot of things down. More than anything, I was kinda scared to publicly launch software for the first time. At my job, there is a team with more experienced engineers. Here, there is just me.
+
+## The long tail
+
+Then came the part that launch stories usually skip: 0.1.1 through 0.1.8, four weeks of it.
+
+The changelog from that stretch is not glamorous. Hardening scanning accuracy across the agent conventions. Making the license-outage grace period actually reachable. Correcting the published figures from the 100-repo survey. Syncing the privacy disclosure with what the extension really does, line by line.
+
+That stretch is also where vibe-coding met its boundary. AI tools wrote a lot of this codebase quickly, and the code itself mostly held up. The numbers did not. The survey figures I first published had errors that took days of hand-checking to root out, and correcting them publicly was humbling. The lesson stuck: an agent can write the code, but every claim that ships is mine, and it gets verified by hand.
+
+Even worse, I had to market this thing myself. Honestly, I am still trying to figure this part all out - all I know is that I really, really don't like it.
+
+## What it is now
+
+By the numbers: 51 TypeScript source files, about 14,000 lines, 61 test files, and one runtime dependency (the tokenizer). A data-driven registry covering 22 AI coding tools.
+
+The free tier makes zero network calls. Pro licensing is the single exception, and it runs through a stateless Cloudflare Worker with no database behind it. Early-access pricing is $5 a month or $39 a year, and the checkout is open.
+
+## What I learned
+
+Shipping alone is a different sport. At work there is a team to catch mistakes before they matter. Here, every decision, every bug, and the launch button were mine. Scary, but survivable, it turns out.
+
+Agents write code faster than they earn trust. Vibe-coding got ContextGuard built quickly, but the published numbers had to be corrected by hand. The code can be delegated; the claims cannot.
+
+Charging money sharpens everything. The free/Pro split forced a real answer to the question of what the honest core of this tool is, and the paid tier turned every doc into a promise I have to keep.
+
+## What happens next
+
+ContextGuard is shipped, but it is not done. There is more I want to build, and from here, that work gets documented on this site, the way it should have been from the start.

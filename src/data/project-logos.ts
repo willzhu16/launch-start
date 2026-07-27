@@ -4,4 +4,6 @@
 //   back to a monogram, so this can stay sparse);
 // - Masthead: the home ribbon of icons drifting behind the wordmark.
 // Drop the file in public/icons/ and add one row per project.
-export const projectLogos: Record<string, string> = {};
+export const projectLogos: Record<string, string> = {
+  contextguard: '/icons/ContextGuard.png',
+};

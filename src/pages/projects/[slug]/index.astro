@@ -5,6 +5,7 @@ import Figure from '../../../components/Figure.astro';
 import GitHubPanel from '../../../components/GitHubPanel.astro';
 import NavLite from '../../../components/NavLite.astro';
 import PathCrumb from '../../../components/PathCrumb.astro';
+import PostListItem from '../../../components/PostListItem.astro';
 import SectionLabel from '../../../components/SectionLabel.astro';
 import SprintProgress from '../../../components/SprintProgress.astro';
 import StatusLozenge from '../../../components/StatusLozenge.astro';
@@ -12,7 +13,7 @@ import TechChips from '../../../components/TechChips.astro';
 import VideoFacade from '../../../components/VideoFacade.astro';
 import WeekRow from '../../../components/WeekRow.astro';
 import Base from '../../../layouts/Base.astro';
-import { logPath, publishedLogs, publishedProjects } from '../../../lib/content';
+import { logPath, publishedLogs, publishedPosts, publishedProjects } from '../../../lib/content';
 import { fmtRange } from '../../../lib/dates';
 import { projectLd } from '../../../lib/seo';
 import { activeSprint } from '../../../lib/sprint';
@@ -31,6 +32,7 @@ const { Content } = await render(project);
 const today = new Date();
 const allProjects = await publishedProjects();
 const logs = (await publishedLogs()).filter((l) => l.data.project.id === project.id);
+const posts = (await publishedPosts()).filter((p) => p.data.project?.id === project.id);
 
 // Header meta line describes the current sprint, or the latest one.
 const current = activeSprint(project.data, today) ?? sprints.at(-1) ?? null;
@@ -170,6 +172,19 @@ const next = allProjects[index - 1] ?? null; // newer
         )
       }
 
+      {
+        posts.length > 0 && (
+          <section aria-label="related writing">
+            <SectionLabel label="Writing" />
+            <ul class="writing" role="list">
+              {posts.map((entry) => (
+                <PostListItem item={{ type: 'post', entry }} />
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
       <nav class="pn mono" aria-label="project navigation">
         {prev ? <a href={`/projects/${prev.id}/`}>← {prev.data.title}</a> : <span />}
         {next ? <a href={`/projects/${next.id}/`}>{next.data.title} →</a> : <span />}
@@ -242,6 +257,11 @@ const next = allProjects[index - 1] ?? null; // newer
   }
   .sprint-head :global(.progress) {
     max-width: 420px;
+  }
+  .writing {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
   .empty {
     font-family: var(--font-body);
