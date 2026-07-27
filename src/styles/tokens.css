@@ -72,9 +72,10 @@
    light counterpart above, so components need no dark-specific rules.
 
    Applied two ways: by OS preference (unless the reader explicitly chose
-   light), and by the [data-theme="dark"] attribute the header toggle sets. */
+   another theme), and by the [data-theme="dark"] attribute the header toggle
+   sets. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme="light"]):not([data-theme="winter"]) {
     /* color — warm dark ground, warm off-white ink */
     --cream: #17130e; /* page ground */
     --card: #211c14; /* cards, asides, glance box */
@@ -138,4 +139,44 @@
 
   /* sunset frame — a deep warm dusk wash behind the sheet on wide screens */
   --sunset-wash: linear-gradient(180deg, #241a17 0%, #201620 55%, #1a141c 100%);
+}
+
+/* Winter theme — the journal in winter. A seasonal replacement for the LIGHT
+   palette only (dark stays warm): snow-white grounds, slate ink, and the blues
+   finally reintroduced as the sole accent family. Never applied by OS
+   preference — only by the [data-theme="winter"] attribute the header toggle
+   sets. Future seasons follow this pattern: one block here, one name in
+   ThemeToggle's THEMES list. */
+:root[data-theme="winter"] {
+  /* color — bright blue-white ground, slate ink, blue is the sole accent family */
+  --cream: #eef6fe; /* page ground */
+  --card: #dcebfa; /* cards, asides, glance box */
+  --paper: #f9fcff; /* elevated card interiors */
+  --ink: #1d3348; /* text */
+  --muted: #48688a; /* metadata, captions, cool structure */
+  --line: rgba(29, 51, 72, 0.18); /* hairlines, borders */
+  --grid: rgba(64, 130, 199, 0.16); /* graph-paper lines */
+  --pink: #2586dd; /* accent fills, marks — once per screen */
+  --pink-deep: #1268c3; /* links, interactive text */
+  --rose-ink: #0d55a6; /* strong small text (day counter, active nav) */
+  --ok: #297a50; /* status: shipped */
+  --warn: #8f6f1a; /* status: paused */
+
+  /* tinted lozenge/chip grounds — same alphas as the warm light palette */
+  --pink-tint: rgba(37, 134, 221, 0.16);
+  --ok-tint: rgba(41, 122, 80, 0.14);
+  --warn-tint: rgba(143, 111, 26, 0.16);
+  --gray-tint: rgba(72, 104, 138, 0.13);
+  --tan-tint: rgba(64, 130, 199, 0.12);
+
+  /* prose media — a light ground needs no dimming */
+  --media-dim: none;
+
+  /* depth — cool-cast shadows so the card lift reads on the blue ground */
+  --shadow-s: 0 2px 8px rgba(29, 51, 72, 0.1);
+  --shadow-m: 0 10px 22px rgba(29, 51, 72, 0.16);
+
+  /* sunset frame — a bright winter-sky wash behind the sheet on wide screens
+     (global.css layers the snowfall tile over it in winter) */
+  --sunset-wash: linear-gradient(180deg, #cfe7fc 0%, #bfdcf9 55%, #b3d3f5 100%);
 }

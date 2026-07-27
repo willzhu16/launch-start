@@ -1,51 +1,73 @@
 ---
-// Light/dark toggle for the header navs. Ships hidden and is revealed by its
+// Theme picker for the header navs. Ships hidden and is revealed by its
 // script: without JS the OS preference already picks the palette, so a dead
-// button would only mislead. The label names the theme a click switches to.
+// control would only mislead. Adding a season is one <option> here plus a
+// token block in tokens.css (seasons replace the light palette only; dark
+// stays as-is) and a ground hex in Base.astro's early-paint script.
 ---
 
-<button class="theme-toggle mono" type="button" data-theme-toggle hidden></button>
+<select class="theme-picker mono" data-theme-picker aria-label="Color theme" hidden>
+  <option value="light">Light</option>
+  <option value="winter">Winter</option>
+  <option value="dark">Dark</option>
+</select>
 
 <script is:inline>
-  for (const btn of document.querySelectorAll('[data-theme-toggle]:not([data-bound])')) {
-    btn.setAttribute('data-bound', '');
-    const effectiveTheme = () =>
-      document.documentElement.dataset.theme ||
-      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    const relabel = () => {
-      const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-      btn.textContent = next === 'dark' ? 'Dark' : 'Light';
-      btn.setAttribute('aria-label', `Switch to ${next} theme`);
+  for (const picker of document.querySelectorAll('[data-theme-picker]:not([data-bound])')) {
+    picker.setAttribute('data-bound', '');
+    const themes = Array.from(picker.options, (option) => option.value);
+    const effectiveTheme = () => {
+      const set = document.documentElement.dataset.theme;
+      if (set && themes.includes(set)) return set;
+      return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     };
-    btn.addEventListener('click', () => {
-      const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+    picker.addEventListener('change', () => {
+      const next = picker.value;
       document.documentElement.dataset.theme = next;
       try {
         localStorage.setItem('theme', next);
       } catch {
-        // storage can be unavailable (private mode); the flip still holds for this page
+        // storage can be unavailable (private mode); the pick still holds for this page
       }
       // resync browser-chrome color to the ground the new theme just set
       const cream = getComputedStyle(document.documentElement).getPropertyValue('--cream').trim();
       for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
         meta.setAttribute('content', cream);
       }
-      relabel();
+      // keep any sibling picker (the other nav variant) in step
+      for (const other of document.querySelectorAll('[data-theme-picker]')) {
+        other.value = next;
+      }
     });
-    relabel();
-    btn.hidden = false;
+    picker.value = effectiveTheme();
+    picker.hidden = false;
   }
 </script>
 
 <style>
-  .theme-toggle {
-    background: none;
+  .theme-picker {
+    /* Strip the native widget chrome so the picker reads like the nav links
+       beside it. The caret is two tiny currentColor gradients, so it follows
+       the text through hover and every theme without an image asset. */
+    appearance: none;
     border: none;
-    padding: 0;
-    cursor: pointer;
+    border-radius: 0;
+    padding: 0 1.1em 0 0;
     color: var(--ink);
+    cursor: pointer;
+    background-color: transparent;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+      calc(100% - 0.55em) 50%,
+      calc(100% - 0.3em) 50%;
+    background-size:
+      0.28em 0.28em,
+      0.28em 0.28em;
+    background-repeat: no-repeat;
   }
-  .theme-toggle:hover {
+  .theme-picker:hover {
     color: var(--pink-deep);
   }
 </style>

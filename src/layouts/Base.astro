@@ -37,14 +37,15 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17130e" />
     <script is:inline>
       // Apply the stored theme choice before first paint so pages never flash
-      // the wrong palette. No stored choice means the OS preference rules.
+      // the wrong palette. No stored choice (or an unknown one) means the OS
+      // preference rules. Each hex mirrors the theme's --cream in tokens.css.
       try {
+        const grounds = { light: '#fbf5ea', winter: '#eef6fe', dark: '#17130e' };
         const theme = localStorage.getItem('theme');
-        if (theme === 'light' || theme === 'dark') {
+        if (theme && grounds[theme]) {
           document.documentElement.dataset.theme = theme;
-          const creamHex = theme === 'dark' ? '#17130e' : '#fbf5ea';
           for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
-            meta.setAttribute('content', creamHex);
+            meta.setAttribute('content', grounds[theme]);
           }
         }
       } catch {
