@@ -1,0 +1,58 @@
+---
+title: 'Why I Built a Linter for AI Instruction Files'
+description: 'AI tools read config files nobody reviews. ContextGuard lints that layer with deterministic rules: no model, no network calls, the same answer every time.'
+date: 2026-07-26
+tags: ['ai', 'tooling', 'security', 'architecture']
+project: 'contextguard'
+draft: false
+---
+
+Quick question: when did you last read your CLAUDE.md or AGENTS.md?
+
+Not edited it. Read it, top to bottom, the way the model does on every single request.
+
+If you're anything like me, the answer was: "I dunno...probably never."
+
+On June 1, GitHub Copilot (the tool my day job allows) moved to usage-based billing. Token consumption suddenly had a visible price, including the thousands of tokens my config files were adding to every request while nobody, including me, ever read them.
+
+## The configuration nobody reviews
+
+If you use AI coding tools, your repo likely has quietly grown a second configuration layer: CLAUDE.md, AGENTS.md, .cursorrules, Copilot instructions, MCP configs. Every tool brings its own convention (ContextGuard tracks the conventions of 22 of them), and every file in the pile gets injected into requests automatically.
+
+Code gets reviewed. CI configs get reviewed. This layer gets appended to.
+
+And it rots in predictable ways. Instruction files grow until they are thousands of tokens of always-on overhead. Use two tools for a while and their files start contradicting each other ("use tabs" here, "use spaces" there). If you're not careful, secrets can land in files that agents happily read, including gitignored ones. None of it is visible, because nothing is watching.
+
+To see how common this is, I scanned 100 popular open-source repos. 72 of them ship AI instruction files. The median always-loaded footprint is about 2,200 tokens, and the largest footprint I measured was 23,870.
+
+## The obvious fix is the wrong tool
+
+The 2026 reflex is to point an AI at the problem. Have a model read your config and tell you what is wrong with it.
+
+I decided early that this was the one tool ContextGuard would not use, for a boring reason: I wanted the same scan to give the same answer twice.
+
+A linter's entire value is trust. When ESLint flags an unused variable, you do not wonder whether it hallucinated. You fix it or you disable the rule, but you never argue with it about whether the variable exists. The moment a model is in the loop, every finding comes with an invisible asterisk.
+
+So ContextGuard is deterministic all the way down. Every warning is a named rule. Every finding points at the file that triggered it, with a line number when the rule is about content. Run it twice, get the same answer.
+
+Also, I didn't want to add in AI cause I'm kinda sick of all the applications that just stick a preset instruction file/prompt on an api call to an ai model provider. Like no shade, but I didn't want to push that out for this project.
+ 
+Besides, a tool that audits your AI configuration probably should not need AI as an evaluator (though that would be kinda funny in an ironic sense...).
+
+## Saying "I don't know" on purpose
+
+The hardest design problem was not detection. It was honesty about the numbers.
+
+Some instruction files load on every request. Those are countable. Some load only when a path matches a glob, so ContextGuard counts them only when it scans a file they actually apply to. And some load whenever the agent judges them relevant, which cannot be predicted at all. Those are listed and left uncounted, on purpose.
+
+The same policy runs through the whole tool. If a scan hits a safety cap, the panel says the scan is incomplete instead of presenting a smaller number as if it were the whole picture. Cost figures are labeled as estimates, not billing records. There is even a documented known limit: a quoted multi-word passphrase reads like prose and will not be flagged.
+
+A tool whose job is auditing has no business rounding in its own favor.
+
+## The bet
+
+Linters won not because they were smart, but because they were boring and trustworthy. ESLint, Prettier, type checkers: none of them hold one opinion on a good day and a different one on a bad day.
+
+ContextGuard is the same bet, one layer up. The AI configuration layer is real configuration now. It costs tokens, it leaks secrets, it drifts. It deserves the same boring, deterministic tooling as everything else in the repo.
+
+It shipped in June and lives on the VS Code Marketplace and Open VSX. The free tier is fully local and makes zero network calls, which is exactly the kind of claim a linter should be able to make.
