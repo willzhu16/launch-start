@@ -1,0 +1,57 @@
+---
+project: 'launch-start'
+sprint: 1
+kind: 'week'
+week: 3
+title: 'Week 3 — The Shelf Gets a Neighbor'
+date: 2026-07-26
+tldr: 'ContextGuard moved onto the shelf with a project page, a why post, and a retro; the masthead belt got its first icon; and the blues finally came back as a bright winter theme.'
+shipped:
+  - 'The ContextGuard project page, cover and all'
+  - 'Two posts: why I built a linter for AI instruction files, and a retro'
+  - 'The first icon on the masthead conveyor belt'
+  - 'A winter theme, with the blues finally back!'
+  - 'A theme picker in the nav: light, winter, dark'
+  - 'Posts now listed on their project page, and post nav that names the project'
+struggled:
+  - 'Deciding how a finished project fits a site built around sprints'
+  - 'Remembering and deciding how to tell the story of ContextGuard'
+learned:
+  - 'The token discipline keeps paying: a whole new theme is one CSS block'
+days: []
+draft: false
+---
+
+Week 2 ended with three promises: port over a project, give the conveyor belt its first icon, and maybe, just maybe, bring back the blues.
+
+All three happened (yay!!!)
+
+## A neighbor for the shelf
+
+[ContextGuard](/projects/contextguard/) is a VS Code extension I built and shipped in the weeks before this site went public: a linter for the AI configuration layer (the CLAUDE.md and AGENTS.md files that agents read on every request and nobody reviews). This week it moved onto the shelf, with a project page, a post on [why it exists](/blog/note-2-why-i-built-a-linter-for-ai-instruction-files), and a [retro](/blog/note-3-contextguard-a-retro-after-the-fact) on how the build actually went.
+
+The interesting problem was structural. Launch Start is built around sprints with weekly logs, and ContextGuard predates all of that. The first draft modeled it as a retroactive sprint, and it felt like filling out a form about the past with numbers nobody was tracking at the time. So there is a rule now: a project that arrives already shipped gets a retro post instead of a pretend sprint, and its story gets documented properly from here on.
+
+The part that took longer than expected was not the prose. It was the numbers. Every figure I wanted to cite (file counts, dates, survey stats) got traced back to something checkable: git history, the changelog, the live Marketplace listing. ContextGuard once had to publicly correct its own survey figures, so this time nothing shipped without a receipt.
+
+And the conveyor belt in the masthead finally carries an icon instead of drifting along empty. One icon on the belt. More to come.
+
+## The blues are back!
+
+Week 1 has a whole section about me cutting blue from the palette because I could not make it work. It stung a little...
+
+This week blue returned, with a season attached. The site now has a winter theme: bright blue-white grounds, slate ink, blue accents where the pink used to be, and actual snowflakes drifting through the margins on wide screens. It is picked from a small theme dropdown in the nav (light, winter, dark), it remembers your choice, and it never overrides anyone who never touches it.
+
+The token discipline from week 1 keeps paying rent. The entire theme is one block of CSS variables, checked against the same contrast ratios as the warm palette. The plan is a palette per season, and each new one should cost about an afternoon.
+
+## What I learned
+
+Structure earns its keep twice. The retro-not-sprint rule keeps the sprint system honest, and the token system made a second light palette almost free.
+
+Receipts beat memory. The fastest way to write a wrong number is to remember it. Every stat in this week's posts came from an artifact I could point at, and the writing was better for it.
+
+## Next week
+
+Wrapping up Launch Start and tying up any loose ends. While further work can be done, I'd like to get this in a place where I can call it a completed project by the time the sprint ends.
+
+And maybe a full seasonal selection for the theme picker. Spring looks good in green...
