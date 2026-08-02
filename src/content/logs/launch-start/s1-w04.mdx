@@ -1,0 +1,80 @@
+---
+project: 'launch-start'
+sprint: 1
+kind: 'week'
+week: 4
+title: 'Week 4 — The Last Coat of Paint'
+date: 2026-08-02
+tldr: 'The launch sprint closed with YouTube and GitHub snapshots, per-page social cards, and a full set of seasonal themes — including a small argument with myself about whether all this personality looks professional.'
+shipped:
+  - 'Nightly GitHub and YouTube snapshot syncs, with no network calls during builds'
+  - 'The ContextGuard demo video on its project page'
+  - 'Per-page Open Graph cards for projects, posts, and weekly logs'
+  - 'Spring, summer, and autumn themes to complete the seasonal picker :)'
+  - 'A coastal second pass on summer after the first version got very, very yellow and cheese-like...'
+struggled:
+  - 'Letting the site be playful without worrying that it looked unprofessional'
+  - 'Making summer feel sunny without turning the whole site into a greeting card'
+learned:
+  - 'Professional does not have to mean anonymous - or boring'
+  - 'External data can stay reliable when builds consume committed snapshots'
+days: []
+draft: false
+---
+
+Week 3 ended with a simple plan: wrap up Launch Start, tie off the loose ends, and maybe finish the seasonal theme picker.
+
+That sounded like a small week.
+
+It was not a small week...
+
+There was no single giant feature this time. Instead, a pile of last-mile details turned the site from “launched” into something I can actually call complete: live project data without fragile runtime requests, videos that belong to the projects they document, social cards for links that leave the site, and, yes, the rest of the seasons.
+
+## Videos, with an escape hatch
+
+The ContextGuard project page now includes its short YouTube demo. The visible part is simple: a thumbnail, a play button, a title, and a duration. The machinery underneath is intentionally boring.
+
+A nightly workflow scans the content for every referenced GitHub repository and YouTube video, fetches their current facts, and commits those facts as JSON snapshots. The site only reads those committed files when it builds. If GitHub or YouTube has a bad morning, the numbers may be a day stale, but the site still builds and every project page still works.
+
+That is the same rule the architecture started with: external services are allowed to enrich the site, but they are not allowed to become load-bearing.
+
+It also means adding a video to a future project is just one `videoId` in the content. No embed code copied between pages, no API request from a reader's browser, and no YouTube JavaScript until someone actually presses play.
+
+## A card for every page
+
+Every project, post, and weekly log now gets its own Open Graph image when the site builds. Sharing a link should look like sharing that page, not like sharing a generic homepage.
+
+This was one of those features that looked tiny from the outside and immediately found a weird edge case. The cards are SVG templates rasterized into PNGs, which meant getting the display and mono fonts to render consistently through Sharp and fontconfig. Windows and the build runner did not agree at first about where those fonts lived. A pair of committed font files, a fontconfig file, and one warm-up render later, the cards finally looked consistent.
+
+The result is worth the plumbing. The site has always been about keeping the story attached to the work. Now the story stays attached when a link leaves the site too.
+
+## All four seasons
+
+Winter brought the blues back last week. This week spring, summer, and autumn joined it: leaf greens and little sprouts for spring, rust and falling leaves for autumn, and a coastal summer palette with sun-bleached paper, sea-glass structure, coral accents, and quiet waves in the margins (quite charming if I do say so myself).
+
+Summer did not begin there. It was ugly. Like really ugly. 
+
+The first pass was yellow. Very yellow. Cheerful, technically readable, and one step away from a seasonal greeting card. It was a good reminder that a theme can have the correct tokens, pass every contrast check, and still be cheesy (both in that it looked like cheese, and it was cheesy). Summer eventually moved to the coast and got much better.
+
+I did have a moment where I wondered whether a professional portfolio should have a theme picker with snow, sprouts, waves, and falling leaves at all. Maybe it makes the site look a little less serious. Maybe the more polished choice would be one tasteful palette and no visible nonsense.
+
+But I really like the theme options.
+
+They make me want to visit my own site. They make Launch Start feel like mine instead of a clean template waiting for someone else's name. If the point of this project is to build a place I will keep using, that matters more to me than performing the narrowest possible version of “professional.”
+
+So the seasons stay (and I'm happy).
+
+## What I learned
+
+Reliability does not require giving up live information. It just requires deciding when live information is allowed to fail. Fetching on a schedule and building from snapshots gives me useful project facts without handing GitHub or YouTube the keys to the deploy.
+
+The last mile is real (sometimes boring) work. Social metadata, font rendering, scheduled workflows, validation, and theme details are not the headline features, but they are the difference between a prototype and a place that feels finished.
+
+And professional does not have to mean anonymous or flat. There is a line between personality and distraction, and I will probably keep finding it by crossing it slightly and walking back. That happened with summer (and perhaps arguably with all the seasonal themes). The answer was not to remove the fun; it was to make the fun better.
+
+## What is next
+
+The 30-day launch sprint ends tomorrow. The next entry is the retrospective: what worked, what did not, and what I would change before doing this again.
+
+There will not be another project sprint immediately after it. I am traveling for a while, and the next build will start shortly after I return. Launch Start can stay here and do the job it was built to do until then.
+
