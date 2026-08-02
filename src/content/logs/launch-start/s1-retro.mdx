@@ -1,0 +1,112 @@
+---
+project: 'launch-start'
+sprint: 1
+kind: 'retro'
+title: 'Sprint 1 Retro — A Place I Will Actually Use'
+date: 2026-08-03
+tldr: 'Thirty days turned an old build-in-public idea into a live home for projects, logs, and essays. The platform worked; next time I would plan each week more clearly and write the story while it is still happening.'
+shipped:
+  - 'A public site at willzhu.dev, deployed automatically through Cloudflare'
+  - 'Schema-validated projects, weekly logs, retrospectives, and standalone posts'
+  - 'A static, network-independent build with scheduled external-data snapshots'
+  - 'A project shelf, readable story pages, RSS, subscriptions, and social cards'
+  - 'Accessible light, dark, and seasonal themes with remembered reader choice'
+  - 'ContextGuard as the first finished project ported onto the shelf'
+struggled:
+  - 'Turning one broad 30-day goal into a clear outcome for each individual week'
+  - 'Balancing product work, infrastructure, design, and writing at the same time'
+  - 'Knowing when polish was valuable and when it was a reason not to stop'
+learned:
+  - 'Constraints make creative work easier when they reflect how I actually behave'
+  - 'Publishing and documenting are separate skills from building'
+  - 'Structure, tokens, and receipts keep paying for themselves after the first week'
+  - 'A personal site is allowed to have a personality'
+days: []
+draft: false
+---
+
+Thirty days ago, Launch Start was just an idea, and one I had been thinking about for nearly a year.
+
+I kept building side projects, and the same thing kept happening: the code existed, the useful parts (mostly) worked, and the story disappeared into a repository. I wanted a public place where projects had goals, deadlines, weekly logs, and honest retrospectives. More importantly, I wanted a system simple enough that I would still use it on a tired Sunday with 45 minutes left.
+
+Sprint 1 had one goal: ship that system, publicly, in 30 days.
+
+It shipped.
+
+## What actually happened
+
+Week 1 turned the idea into a structure and found the visual language. The site stopped looking like a generic product landing page and became the Warm Journal: technical, warm, a little playful, and much closer to how I wanted the work to feel.
+
+Week 2 put it on the public internet. The domain went live, the deployment pipeline became real, subscriptions switched on, dark mode arrived, and I learned that publishing is its own feature with a surprising amount of invisible work.
+
+Week 3 tested whether the system could hold something other than itself. ContextGuard joined the shelf with a project page and two essays. The site learned how to represent a project that had already shipped. Winter brought back the blues I had cut in week 1.
+
+Week 4 closed the gaps: committed GitHub and YouTube snapshots, a video on the ContextGuard page, per-page social cards, generated-data validation, and the rest of the seasonal themes.
+
+The result is a fast static site with structured content, project pages, weekly logs, essays, RSS, subscriptions, scheduled data refreshes, CI checks, and deployment through Cloudflare. It has one sprint and one imported project. That is enough to prove the shape works.
+
+## What worked
+
+### The constraints were honest
+
+No CMS. No database. No runtime API calls. Very little client JavaScript.
+
+Those constraints were not about technical purity. They came from the actual maintenance budget: some weeks I will have almost no time, and the site still needs to be easy to understand and hard to break.
+
+Static content and boring deployment made that possible. MDX goes in, Astro validates and builds it, and Cloudflare serves the result. External facts arrive as committed snapshots, so they can become stale without taking the site down. The architecture fits the life around the project instead of pretending the project will always come first.
+
+### Structure kept paying rent
+
+Projects, sprints, weekly logs, retrospectives, and essays are separate concepts with separate jobs. In Week 1, it felt a bit overengineered and formal. By Week 3, I realized that it helped keep things organized, and gave me ideas and topics of what to actually write about.
+
+The same thing happened with design tokens. Routing every color through one file felt fussy until dark mode, winter, spring, summer, and autumn each became one contained palette instead of a hunt through every component.
+
+Good structure costs something once and then keeps making later decisions smaller.
+
+### The deadline made publishing real
+
+The site could have stayed on localhost for months while I adjusted spacing and rewrote introductions. A public sprint gave the work consequences. I bought the domain, checked the repository history, configured the pipeline, and pressed the button.
+
+Nothing exploded (to my surprise). The site was simply there.
+
+That was a useful lesson: doing the work and publishing the work are different muscles. The second one only gets stronger by using it.
+
+## What I learned
+
+Design is a feeling before it is a checklist. The earliest versions had the right sections and still felt wrong. The finished site works because its visual language communicates the same thing as its content: serious work can still feel human.
+
+Receipts beat memory. Writing about ContextGuard forced me to trace dates, counts, and claims back to commits, changelogs, and live listings.
+
+The last mile is not fake work. Accessibility modes, metadata, social cards, font rendering, scheduled refreshes, and mobile details rarely lead a project description. They are also what make a real site feel real, polished, and dependable.
+
+And a personal site is allowed to be personal. I worried that seasonal themes might make the site look less professional (and perhaps they still do). The first summer palette did, admittedly, look like a cheese theme instead of summer (though that's fitting for living in Wisconsin). The answer was to improve it, not sand away the idea. Professional does not have to mean anonymous.
+
+## What I would do differently
+
+The biggest change would be clearer goals for each week.
+
+The 30-day sprint goal was concrete enough: ship the platform and document it. Inside that month, the weekly plans were often closer to a list of interesting directions. That worked, but it made prioritization reactive. I bounced between writing, design, infrastructure, and content based on what felt most urgent that day.
+
+Next time, each week gets one sentence that defines the outcome, plus a small must/should/could list. If the “must” is complete, the week succeeded. Everything else is explicitly optional. That would make it easier to stop polishing and easier to explain what the week was actually for.
+
+I would also write the log while the work is happening. Most of these entries were assembled near the end of the week from commits and memory. A few sentences after each meaningful session would preserve the small decisions and frustrations that disappear by Sunday. The weekly draft should be a cleanup job, not an archaeological dig.
+
+## Was the sprint successful?
+
+Yeah, I'd say so.
+
+Launch Start is public. It holds more than one project. It has a month of logs and a set of essays. The build is fast, the content is validated, the deploy is automated, and the system has already survived changes I did not design into the first mockup.
+
+More importantly, I want to keep using it.
+
+That was the real test. The goal was never to build the fanciest portfolio or the most elaborate publishing platform. It was to build a durable home for the work I would otherwise forget to document.
+
+## What happens next
+
+There will be a pause before the next project.
+
+I am traveling these next few weeks and will continue when I get back (hopefully with lots of cool ideas for the backlog). Until then, Launch Start will stay live.
+
+Sprint 1 built the place.
+
+Soon, I'll get to build something in it.

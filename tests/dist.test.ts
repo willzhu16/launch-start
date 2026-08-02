@@ -199,6 +199,34 @@ describe('dist smoke suite', () => {
     }
   });
 
+  for (const entry of [...publishedPosts, ...publishedLogs]) {
+    it(`gives ${entry.urlPath} its own og card and article type`, () => {
+      const html = readFileSync(pageFile(entry), 'utf8');
+      expect(html).toContain('<meta property="og:type" content="article">');
+      const image = /<meta property="og:image" content="([^"]+)"/.exec(html);
+      expect(image, `${entry.urlPath} has no og:image`).not.toBeNull();
+      const pathname = new URL((image as RegExpExecArray)[1]).pathname;
+      expect(pathname).toBe(`/og${entry.urlPath.replace(/\/$/, '')}.png`);
+    });
+  }
+
+  it('resolves every og:image to a real file, with per-page cards at 1200x630', () => {
+    for (const file of htmlFiles(DIST)) {
+      const html = readFileSync(file, 'utf8');
+      const image = /<meta property="og:image" content="([^"]+)"/.exec(html);
+      expect(image, `${file} has no og:image`).not.toBeNull();
+      const pathname = new URL((image as RegExpExecArray)[1]).pathname;
+      const built = builtPath(pathname);
+      expect(existsSync(built), `${file} references missing ${pathname}`).toBe(true);
+      if (pathname.startsWith('/og/')) {
+        // PNG IHDR: width and height are big-endian u32 at offsets 16 and 20.
+        const png = readFileSync(built);
+        expect(png.readUInt32BE(16), `${pathname} width`).toBe(1200);
+        expect(png.readUInt32BE(20), `${pathname} height`).toBe(630);
+      }
+    }
+  });
+
   it('ships the Cloudflare security-header policy', () => {
     const headersPath = join(DIST, '_headers');
     expect(existsSync(headersPath), `missing ${headersPath}`).toBe(true);

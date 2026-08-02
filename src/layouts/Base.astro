@@ -13,11 +13,20 @@ interface Props {
   /** JSON-LD payloads to embed, one script per object. */
   jsonLd?: Record<string, unknown>[];
   ogImage?: string;
+  /** Posts and log entries emit `og:type: article`; everything else stays `website`. */
+  ogType?: 'website' | 'article';
   /** Error and utility pages can opt out of indexing and canonical metadata. */
   noindex?: boolean;
 }
 
-const { page, description = site.description, jsonLd = [], ogImage, noindex = false } = Astro.props;
+const {
+  page,
+  description = site.description,
+  jsonLd = [],
+  ogImage,
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
 const title = page
   ? page === site.title || page.endsWith(` · ${site.title}`)
     ? page
@@ -40,7 +49,14 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
       // the wrong palette. No stored choice (or an unknown one) means the OS
       // preference rules. Each hex mirrors the theme's --cream in tokens.css.
       try {
-        const grounds = { light: '#fbf5ea', winter: '#eef6fe', dark: '#17130e' };
+        const grounds = {
+          light: '#fbf5ea',
+          spring: '#f0f8e6',
+          summer: '#f5f1e8',
+          autumn: '#fbeedd',
+          winter: '#eef6fe',
+          dark: '#17130e',
+        };
         const theme = localStorage.getItem('theme');
         if (theme && grounds[theme]) {
           document.documentElement.dataset.theme = theme;
@@ -75,7 +91,7 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
     />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:alt" content={`${site.title} preview`} />

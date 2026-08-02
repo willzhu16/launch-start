@@ -40,6 +40,8 @@ const nextPost = idx >= 0 && idx < chrono.length - 1 ? chrono[idx + 1] : null;
 <Base
   page={title}
   description={description}
+  ogImage={`/og/blog/${post.id}.png`}
+  ogType="article"
   jsonLd={[
     blogPostingLd({
       title,

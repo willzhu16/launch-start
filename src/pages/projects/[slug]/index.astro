@@ -70,6 +70,7 @@ const next = allProjects[index - 1] ?? null; // newer
 <Base
   page={title}
   description={pitch}
+  ogImage={`/og/projects/${project.id}.png`}
   jsonLd={[
     projectLd({
       title,

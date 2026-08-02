@@ -1,6 +1,5 @@
 ---
 // /projects/ — plain cover gallery, newest first, grouped by year.
-// No filters, no search, until the shelf exceeds ~12 projects.
 import GalleryCard from '../../components/GalleryCard.astro';
 import NavLite from '../../components/NavLite.astro';
 import PathCrumb from '../../components/PathCrumb.astro';
@@ -47,8 +46,7 @@ const collectionLd = collectionPageLd({ name: 'Projects', path: '/projects/' });
     {
       projects.length > 0 && (
         <p class="count mono">
-          {projects.length} {projects.length === 1 ? 'project' : 'projects'} · no filters until
-          the shelf earns them
+          {projects.length} {projects.length === 1 ? 'project' : 'projects'}
         </p>
       )
     }

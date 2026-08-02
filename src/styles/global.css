@@ -81,9 +81,10 @@ html {
 /* An explicit theme choice (header toggle) narrows color-scheme so native
    controls follow the chosen theme, not the OS. Token overrides live in
    tokens.css next to the palette they flip. */
-html[data-theme="light"] {
-  color-scheme: light;
-}
+html[data-theme="light"],
+html[data-theme="spring"],
+html[data-theme="summer"],
+html[data-theme="autumn"],
 html[data-theme="winter"] {
   color-scheme: light;
 }
@@ -354,6 +355,52 @@ ol[role="list"] {
   }
 }
 @keyframes snowfall {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 220px,
+      0 0;
+  }
+}
+
+/* Spring only: young sprouts scattered through the wash beside the sheet.
+   Static, unlike the snowfall — plants grow in place — so there is no
+   animation to motion-gate. */
+:root[data-theme="spring"] body::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cdefs%3E%3Cg id='p' fill='none' stroke='%232e7524' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M0 12C0 4 0 -2 0 -6'/%3E%3Cpath d='M0 -2C-4 -4 -7 -8 -8 -13C-3 -12 -1 -8 0 -2'/%3E%3Cpath d='M0 -6C4 -8 7 -12 8 -17C3 -16 1 -12 0 -6'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23p' transform='translate(50 60)' opacity='.6'/%3E%3Cuse href='%23p' transform='translate(155 135) scale(.65)' opacity='.45'/%3E%3Cuse href='%23p' transform='translate(95 200) scale(.45)' opacity='.35'/%3E%3C/svg%3E")
+    repeat,
+    var(--sunset-wash);
+}
+
+/* Summer only: quiet water lines through the coastal wash beside the sheet.
+   Static so the frame feels breezy rather than busy. */
+:root[data-theme="summer"] body::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='180' viewBox='0 0 240 180'%3E%3Cg fill='none' stroke='%232f8994' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M18 48c18-10 36-10 54 0s36 10 54 0 36-10 54 0 36 10 54 0' opacity='.32'/%3E%3Cpath d='M-24 112c18-10 36-10 54 0s36 10 54 0 36-10 54 0 36 10 54 0 36-10 54 0' opacity='.22'/%3E%3C/g%3E%3C/svg%3E")
+    repeat,
+    var(--sunset-wash);
+}
+
+/* Autumn only: leaves tumbling through the wash beside the sheet, in the
+   gold-to-rust spread of the palette. Falls like the snowfall, a touch
+   slower, and is motion-gated the same way. */
+:root[data-theme="autumn"] body::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cdefs%3E%3Cg id='l' fill='none' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 -11C6 -5 7 4 0 11C-7 4 -6 -5 0 -11Z'/%3E%3Cpath d='M0 -8V8'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23l' transform='translate(50 60) rotate(24)' stroke='%23b4501a' opacity='.6'/%3E%3Cuse href='%23l' transform='translate(155 135) scale(.65) rotate(-40)' stroke='%23c07a16' opacity='.5'/%3E%3Cuse href='%23l' transform='translate(95 200) scale(.45) rotate(70)' stroke='%23a03d10' opacity='.4'/%3E%3C/svg%3E")
+    repeat,
+    var(--sunset-wash);
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme="autumn"] body::before {
+    animation: leaffall 44s linear infinite;
+  }
+}
+@keyframes leaffall {
   from {
     background-position:
       0 0,

@@ -1,1 +1,11 @@
-{}
+{
+  "BearInBlue/contextguard": {
+    "url": "https://github.com/BearInBlue/contextguard",
+    "description": "A linter for AI instruction files",
+    "stars": 0,
+    "primaryLanguage": null,
+    "latestRelease": null,
+    "lastCommitDate": "2026-07-16T07:59:07Z",
+    "fetchedAt": "2026-07-29T01:11:55.856Z"
+  }
+}

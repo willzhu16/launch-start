@@ -8,6 +8,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "sync": "node --env-file-if-exists=.env scripts/sync-external.mjs",
     "cf:login": "wrangler login",
     "check": "astro check && biome check .",
     "lint": "biome check .",

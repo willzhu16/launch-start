@@ -1,6 +1,8 @@
 # build output
 dist/
 .astro/
+/cache/
+src/assets/og/cache/
 
 # dependencies
 node_modules/
