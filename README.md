@@ -83,11 +83,6 @@ script locally), shortly before the daily rebuild picks them up. Pages read
 only the committed snapshots, so an API outage can leave the numbers a day
 stale but can never break a build.
 
-Create the API token from Cloudflare's **Edit Cloudflare Workers** template and
-restrict it to this account and the `willzhu.dev` zone. The deployment needs
-Workers Scripts Write and Workers Routes Write access. No Cloudflare credential
-belongs in `.env` or the repository.
-
 ## License
 
 The source code — components, TypeScript, styles, build tooling, and
