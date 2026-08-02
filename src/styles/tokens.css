@@ -222,41 +222,42 @@
   --sunset-wash: linear-gradient(180deg, #ddefc6 0%, #d2e9b5 55%, #c8e3a8 100%);
 }
 
-/* Summer theme — the journal at high noon. The warm light palette turned up:
-   sun-gold grounds and a hotter pink accent. Never applied by OS preference —
-   only by the [data-theme="summer"] attribute the header toggle sets. */
+/* Summer theme — the journal by the coast. Sun-bleached neutral grounds,
+   sea-glass structure, and coral accents keep it warm without turning the
+   whole page yellow. Never applied by OS preference — only by the
+   [data-theme="summer"] attribute the header toggle sets. */
 :root[data-theme="summer"] {
-  /* color — sun-gold ground, deep warm ink, pink stays the sole accent family */
-  --cream: #fdf4d3; /* page ground */
-  --card: #f9e9b3; /* cards, asides, glance box */
-  --paper: #fffbea; /* elevated card interiors */
-  --ink: #3c2e0d; /* text */
-  --muted: #77601f; /* metadata, captions, golden structure */
-  --line: rgba(60, 46, 13, 0.18); /* hairlines, borders */
-  --grid: rgba(196, 150, 20, 0.16); /* graph-paper lines */
-  --pink: #dd3d7b; /* accent fills, marks — once per screen */
-  --pink-deep: #b02c60; /* links, interactive text */
-  --rose-ink: #93214d; /* strong small text (day counter, active nav) */
-  --ok: #4a7c59; /* status: shipped */
-  --warn: #7c5f10; /* status: paused — browner gold so it reads on the gold ground */
+  /* color — canvas ground, deep blue-charcoal ink, coral is the sole accent family */
+  --cream: #f5f1e8; /* page ground */
+  --card: #e5eeeb; /* cards, asides, glance box */
+  --paper: #fffdf8; /* elevated card interiors */
+  --ink: #20343a; /* text */
+  --muted: #526b73; /* metadata, captions, sea-glass structure */
+  --line: rgba(32, 52, 58, 0.18); /* hairlines, borders */
+  --grid: rgba(47, 137, 148, 0.13); /* graph-paper lines */
+  --pink: #df6b5f; /* accent fills, marks — once per screen */
+  --pink-deep: #ae4841; /* links, interactive text */
+  --rose-ink: #963f38; /* strong small text (day counter, active nav) */
+  --ok: #29765f; /* status: shipped */
+  --warn: #7f5d17; /* status: paused */
 
   /* tinted lozenge/chip grounds — same alphas as the warm light palette */
-  --pink-tint: rgba(221, 61, 123, 0.14);
-  --ok-tint: rgba(74, 124, 89, 0.14);
-  --warn-tint: rgba(124, 95, 16, 0.16);
-  --gray-tint: rgba(119, 96, 31, 0.13);
-  --tan-tint: rgba(196, 150, 20, 0.12);
+  --pink-tint: rgba(223, 107, 95, 0.15);
+  --ok-tint: rgba(41, 118, 95, 0.14);
+  --warn-tint: rgba(138, 104, 29, 0.15);
+  --gray-tint: rgba(82, 107, 115, 0.13);
+  --tan-tint: rgba(47, 137, 148, 0.11);
 
   /* prose media — a light ground needs no dimming */
   --media-dim: none;
 
-  /* depth — warm shadows so the card lift reads on the gold ground */
-  --shadow-s: 0 2px 8px rgba(60, 46, 13, 0.1);
-  --shadow-m: 0 10px 22px rgba(60, 46, 13, 0.16);
+  /* depth — sea-glass shadows so the card lift reads on the canvas ground */
+  --shadow-s: 0 2px 8px rgba(32, 52, 58, 0.1);
+  --shadow-m: 0 10px 22px rgba(32, 52, 58, 0.16);
 
-  /* sunset frame — a bright midsummer wash behind the sheet on wide screens
-     (global.css scatters the sun tile over it in summer) */
-  --sunset-wash: linear-gradient(180deg, #fbe6a3 0%, #f9dd8e 55%, #f7d47c 100%);
+  /* coastal frame — a hazy sky-to-water wash behind the sheet on wide screens
+     (global.css layers a quiet wave tile over it in summer) */
+  --sunset-wash: linear-gradient(180deg, #cfe8e8 0%, #afd7d8 55%, #91c8cb 100%);
 }
 
 /* Autumn theme — the journal in autumn. Amber grounds, russet ink, and the
