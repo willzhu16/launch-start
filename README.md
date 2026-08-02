@@ -72,9 +72,16 @@ After the first deploy, `.github/workflows/deploy.yml` handles releases on every
 push to `main`, on manual dispatch, and once daily so scheduled posts and sprint
 counters stay current. The repository needs these GitHub Actions settings:
 
-- Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; `YOUTUBE_API_KEY`
+  (a YouTube Data API v3 key) once content references a video
 - Variables: `PUBLIC_CONTACT_EMAIL` if the public contact link should render;
   `SITE_ORIGIN` only when overriding the `https://willzhu.dev` default
+
+`.github/workflows/sync.yml` refreshes the committed GitHub and YouTube
+snapshots under `src/data/generated/` every night (`pnpm sync` runs the same
+script locally), shortly before the daily rebuild picks them up. Pages read
+only the committed snapshots, so an API outage can leave the numbers a day
+stale but can never break a build.
 
 Create the API token from Cloudflare's **Edit Cloudflare Workers** template and
 restrict it to this account and the `willzhu.dev` zone. The deployment needs

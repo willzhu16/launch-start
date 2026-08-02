@@ -1,28 +1,34 @@
-// Typed access to the committed sync snapshots. Components render
-// nothing when a key is absent — no skeletons, no errors.
+// Typed access to the committed sync snapshots, written nightly by
+// scripts/sync-external.mjs. Parsed at build so a malformed snapshot fails
+// the build instead of shipping a broken page; components render nothing
+// when a key is absent — no skeletons, no errors.
+import { z } from 'astro/zod';
 import githubJson from '../data/generated/github.json';
 import youtubeJson from '../data/generated/youtube.json';
 
-export interface GitHubFacts {
-  url: string;
-  description: string | null;
-  stars: number;
-  primaryLanguage: string | null;
-  latestRelease: { tag: string; date: string; url: string } | null;
-  lastCommitDate: string;
-  fetchedAt: string;
-}
+const githubFactsSchema = z.object({
+  url: z.url(),
+  description: z.string().nullable(),
+  stars: z.number().int().nonnegative(),
+  primaryLanguage: z.string().nullable(),
+  latestRelease: z.object({ tag: z.string(), date: z.string(), url: z.url() }).nullable(),
+  lastCommitDate: z.string(),
+  fetchedAt: z.string(),
+});
 
-export interface YouTubeFacts {
-  title: string;
-  publishedAt: string;
-  durationSeconds: number;
-  thumbnailUrl: string;
-  fetchedAt: string;
-}
+const youtubeFactsSchema = z.object({
+  title: z.string(),
+  publishedAt: z.string(),
+  durationSeconds: z.number().int().nonnegative(),
+  thumbnailUrl: z.url(),
+  fetchedAt: z.string(),
+});
 
-const github = githubJson as Record<string, GitHubFacts>;
-const youtube = youtubeJson as Record<string, YouTubeFacts>;
+export type GitHubFacts = z.infer<typeof githubFactsSchema>;
+export type YouTubeFacts = z.infer<typeof youtubeFactsSchema>;
+
+const github = z.record(z.string(), githubFactsSchema).parse(githubJson);
+const youtube = z.record(z.string(), youtubeFactsSchema).parse(youtubeJson);
 
 export function githubFacts(repo: string | undefined): GitHubFacts | null {
   if (!repo) return null;

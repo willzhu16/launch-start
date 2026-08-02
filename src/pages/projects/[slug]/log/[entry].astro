@@ -62,6 +62,8 @@ const nextEntry = idx >= 0 && idx < chrono.length - 1 ? chrono[idx + 1] : null;
 <Base
   page={`${title} · ${project.data.title}`}
   description={tldr}
+  ogImage={`/og${logPath(entry).replace(/\/$/, '')}.png`}
+  ogType="article"
   jsonLd={[
     blogPostingLd({
       title: `${project.data.title} — ${title}`,

@@ -75,7 +75,10 @@
    another theme), and by the [data-theme="dark"] attribute the header toggle
    sets. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="winter"]) {
+  /* No [data-theme] at all means the reader never chose; only then does the
+     OS pick dark. Any explicit choice (light, a season, or dark itself via
+     the attribute block below) takes precedence. */
+  :root:not([data-theme]) {
     /* color — warm dark ground, warm off-white ink */
     --cream: #17130e; /* page ground */
     --card: #211c14; /* cards, asides, glance box */
@@ -179,4 +182,117 @@
   /* sunset frame — a bright winter-sky wash behind the sheet on wide screens
      (global.css layers the snowfall tile over it in winter) */
   --sunset-wash: linear-gradient(180deg, #cfe7fc 0%, #bfdcf9 55%, #b3d3f5 100%);
+}
+
+/* Spring theme — the journal in spring. A seasonal replacement for the LIGHT
+   palette only (dark stays warm): fresh green-white grounds, deep leaf ink,
+   and green as the sole accent family. Never applied by OS preference — only
+   by the [data-theme="spring"] attribute the header toggle sets. */
+:root[data-theme="spring"] {
+  /* color — pale leaf-white ground, deep green ink, green is the sole accent family */
+  --cream: #f0f8e6; /* page ground */
+  --card: #e0efcd; /* cards, asides, glance box */
+  --paper: #fafdf2; /* elevated card interiors */
+  --ink: #223618; /* text */
+  --muted: #4d6a3d; /* metadata, captions, leafy structure */
+  --line: rgba(34, 54, 24, 0.18); /* hairlines, borders */
+  --grid: rgba(90, 150, 60, 0.16); /* graph-paper lines */
+  --pink: #4a9a2e; /* accent fills, marks — once per screen */
+  --pink-deep: #2e7524; /* links, interactive text */
+  --rose-ink: #255c13; /* strong small text (day counter, active nav) */
+  --ok: #297a50; /* status: shipped — cooler green, still reads beside the accent */
+  --warn: #8f6f1a; /* status: paused */
+
+  /* tinted lozenge/chip grounds — same alphas as the warm light palette */
+  --pink-tint: rgba(74, 154, 46, 0.16);
+  --ok-tint: rgba(41, 122, 80, 0.14);
+  --warn-tint: rgba(143, 111, 26, 0.16);
+  --gray-tint: rgba(77, 106, 61, 0.13);
+  --tan-tint: rgba(90, 150, 60, 0.12);
+
+  /* prose media — a light ground needs no dimming */
+  --media-dim: none;
+
+  /* depth — green-cast shadows so the card lift reads on the leaf ground */
+  --shadow-s: 0 2px 8px rgba(34, 54, 24, 0.1);
+  --shadow-m: 0 10px 22px rgba(34, 54, 24, 0.16);
+
+  /* sunset frame — a fresh meadow wash behind the sheet on wide screens
+     (global.css scatters the sprout tile over it in spring) */
+  --sunset-wash: linear-gradient(180deg, #ddefc6 0%, #d2e9b5 55%, #c8e3a8 100%);
+}
+
+/* Summer theme — the journal at high noon. The warm light palette turned up:
+   sun-gold grounds and a hotter pink accent. Never applied by OS preference —
+   only by the [data-theme="summer"] attribute the header toggle sets. */
+:root[data-theme="summer"] {
+  /* color — sun-gold ground, deep warm ink, pink stays the sole accent family */
+  --cream: #fdf4d3; /* page ground */
+  --card: #f9e9b3; /* cards, asides, glance box */
+  --paper: #fffbea; /* elevated card interiors */
+  --ink: #3c2e0d; /* text */
+  --muted: #77601f; /* metadata, captions, golden structure */
+  --line: rgba(60, 46, 13, 0.18); /* hairlines, borders */
+  --grid: rgba(196, 150, 20, 0.16); /* graph-paper lines */
+  --pink: #dd3d7b; /* accent fills, marks — once per screen */
+  --pink-deep: #b02c60; /* links, interactive text */
+  --rose-ink: #93214d; /* strong small text (day counter, active nav) */
+  --ok: #4a7c59; /* status: shipped */
+  --warn: #7c5f10; /* status: paused — browner gold so it reads on the gold ground */
+
+  /* tinted lozenge/chip grounds — same alphas as the warm light palette */
+  --pink-tint: rgba(221, 61, 123, 0.14);
+  --ok-tint: rgba(74, 124, 89, 0.14);
+  --warn-tint: rgba(124, 95, 16, 0.16);
+  --gray-tint: rgba(119, 96, 31, 0.13);
+  --tan-tint: rgba(196, 150, 20, 0.12);
+
+  /* prose media — a light ground needs no dimming */
+  --media-dim: none;
+
+  /* depth — warm shadows so the card lift reads on the gold ground */
+  --shadow-s: 0 2px 8px rgba(60, 46, 13, 0.1);
+  --shadow-m: 0 10px 22px rgba(60, 46, 13, 0.16);
+
+  /* sunset frame — a bright midsummer wash behind the sheet on wide screens
+     (global.css scatters the sun tile over it in summer) */
+  --sunset-wash: linear-gradient(180deg, #fbe6a3 0%, #f9dd8e 55%, #f7d47c 100%);
+}
+
+/* Autumn theme — the journal in autumn. Amber grounds, russet ink, and the
+   accent family gone over to rust and gold for the leaves. Never applied by
+   OS preference — only by the [data-theme="autumn"] attribute the header
+   toggle sets. */
+:root[data-theme="autumn"] {
+  /* color — amber ground, russet ink, rust-orange is the sole accent family */
+  --cream: #fbeedd; /* page ground */
+  --card: #f5e2c4; /* cards, asides, glance box */
+  --paper: #fffaf1; /* elevated card interiors */
+  --ink: #3b2512; /* text */
+  --muted: #7a5a35; /* metadata, captions, russet structure */
+  --line: rgba(59, 37, 18, 0.18); /* hairlines, borders */
+  --grid: rgba(180, 110, 40, 0.15); /* graph-paper lines */
+  --pink: #c14e12; /* accent fills, marks — once per screen */
+  --pink-deep: #9d3a08; /* links, interactive text */
+  --rose-ink: #84300a; /* strong small text (day counter, active nav) */
+  --ok: #4a7c59; /* status: shipped */
+  --warn: #8a6414; /* status: paused */
+
+  /* tinted lozenge/chip grounds — same alphas as the warm light palette */
+  --pink-tint: rgba(193, 78, 18, 0.15);
+  --ok-tint: rgba(74, 124, 89, 0.14);
+  --warn-tint: rgba(138, 100, 20, 0.16);
+  --gray-tint: rgba(122, 90, 53, 0.13);
+  --tan-tint: rgba(180, 110, 40, 0.12);
+
+  /* prose media — a light ground needs no dimming */
+  --media-dim: none;
+
+  /* depth — russet shadows so the card lift reads on the amber ground */
+  --shadow-s: 0 2px 8px rgba(59, 37, 18, 0.1);
+  --shadow-m: 0 10px 22px rgba(59, 37, 18, 0.16);
+
+  /* sunset frame — a golden-hour wash behind the sheet on wide screens
+     (global.css layers the falling-leaf tile over it in autumn) */
+  --sunset-wash: linear-gradient(180deg, #f4ddb8 0%, #f0d0a4 55%, #ecc796 100%);
 }

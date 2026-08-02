@@ -37,6 +37,10 @@ jobs:
         env:
           PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
           SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
+          # OG card fonts. Set here because it must be process-start
+          # environment: the fallback assignment in astro.config.mjs never
+          # reaches libvips' own C runtime on Windows.
+          FONTCONFIG_PATH: ${{ github.workspace }}/src/assets/og
       - run: pnpm test:dist
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
