@@ -1,0 +1,137 @@
+---
+title: 'Beyond the Score: A Year of ML Research After Work'
+description: 'A year of after-work ML research, 392 million records, and a question: does a higher model score actually mean a better model?'
+date: 2026-10-25
+tags: ['ai']
+project: 'beyond-the-score'
+draft: false
+---
+
+import Figure from '../../components/Figure.astro';
+import capstoneDashboard from '../../assets/beyond-the-score/capstone-dashboard.png';
+import capstoneMetrics from '../../assets/beyond-the-score/capstone-metrics.png';
+import sandbox from '../../assets/beyond-the-score/sandbox.png';
+
+Well, that break went longer than I expected. Three months without a post. Oops...
+
+I promise I've been busy, though! In fact, I'm excited to share a project that has taken up most of my free time over the past year:
+
+Machine learning research.
+
+Like real research on how we evaluate machine learning models. Kinda crazy.
+
+I spent countless evenings answering a question that sounded simpler than it turned out to be: **does a higher model score actually mean a better model?**
+
+That question took me from a college capstone through hundreds of experiments and a fresh start with new data. It also became [Beyond the Score](https://beyond-the-score.willzhu.dev), an interactive version you can try for yourself.
+
+Here's how I got there.
+
+## How it started
+
+In the winter of 2025, my computer science capstone paired me with the smartphone manufacturer Nuu Mobile.
+
+They had an ambitious brief: a system for identifying customer-retention risks, complete with a dashboard, graphs, and a way to train models on new data.
+
+Quite a first assignment for four college students who had never touched production code.
+
+I took the lead on the system: I built the data processing, training workflow, and REST API, then containerized the app and deployed it on AWS. The finished product could take in new datasets, retrain its two models (XGBoost and an MLP), and display the records they flagged for review.
+
+<Figure
+  src={capstoneDashboard}
+  alt="The capstone's churn analysis dashboard, comparing feature importance for the XGBoost and MLP models side by side"
+  caption="The capstone dashboard: what each model leaned on most."
+/>
+
+If you want to poke around, a stripped-down, sanitized version is [on my GitHub](https://github.com/willzhu16/Churn-Prediction-Platform).
+
+They liked my project report so much that after I graduated, they asked whether I'd want to write a research paper for them. I said yes.
+
+At first, I was quite lost, I'll admit. They provided the data and a company contact who ensured the work was progressing, but there was no funding and no research question. I only had myself and the three other graduates from the class project. Defining the question and leading the work became my responsibility.
+
+I was also starting my first role as a professional software engineer. My days were about to get busy.
+
+## The question
+
+With no research funding and limited compute, I needed a question I could investigate carefully.
+
+I found inspiration in the strangest place: NieR: Automata. I'm not kidding. Seriously, play it. It rocks.
+
+It made me question the systems I took for granted, including the scores we used to judge AI models. Were we making something more useful, or had getting a higher score become the purpose?
+
+If you've been using AI models, you've probably seen the benchmark leaderboards. A model takes the top spot, and suddenly it's the one to beat. But what does scoring high actually mean?
+
+Take my own capstone. The dashboard reported higher accuracy for the MLP than XGBoost: 94.66% versus 92.08%. But the MLP found fewer of the records labeled "Churn": 64.86% versus 89.80%. One model looked better by one measure and worse by another. Which mattered for the job we wanted it to do?
+
+<Figure
+  src={capstoneMetrics}
+  alt="Reported capstone metrics against recorded labels: XGBoost at 92.08% accuracy and 89.80% positive-label recall; MLP at 94.66% accuracy and 64.86% positive-label recall"
+  caption="The capstone's reported scores against the recorded labels. Higher accuracy, fewer positive labels found."
+/>
+
+To investigate, I built a framework that tested 10 model families under 18 different setups, varying what I rewarded, how I handled the data, and how I tested the models.
+
+Over the better part of a year, I carried the project from research question to submission. I designed the experiments, built the data pipelines and model implementations, ran the studies, analyzed the results, and wrote and edited the final manuscript. I also coordinated the team (which whittled down to two) and kept the work moving alongside my day job.
+
+My coauthor contributed an initial draft of the Nuu data-analysis section and some of its figures and plotting code. I wrote the final version of the analysis section, and we submitted with me as first author. While it was under review, I built [ContextGuard](/projects/contextguard/) and started this site.
+
+It came back with fourteen reviewer comments and a hole I couldn't fill.
+
+The records included a flag called "Churn," but I couldn't establish exactly what it represented, when it happened, or whether the inputs came before it. Better scores couldn't answer those questions.
+
+Bummer.
+
+## Starting over
+
+After a week of trying to forget everything, I began again. I still wanted to investigate the question. I simply needed data that could support it.
+
+I chose KKBox, a music-streaming subscription service with public, dated transaction and listening histories. Those dates let me reconstruct the past and check renewal outcomes afterward.
+
+Then I rebuilt the experimental framework and evaluation pipeline. The data preparation alone scanned **392 million** listening records, streaming the compressed logs in chunks instead of trying to fit them all in memory.
+
+My favorite bug from this stretch: saving predictions at lower precision could round a probability sitting right at the alert cutoff and quietly change who got flagged. I fixed it and wrote a regression test so it stays fixed.
+
+## What happened
+
+In a 17-month study of three model families, I compared two ways of choosing a model: one preserved time order in the historical data, and the other shuffled it. Both were tested on the same future records. They picked different model families in more than half the months.
+
+And the result? If a team could contact only 10% of its customers each month, the time-aware picks found **68.9%** of the nonrenewals on average. The shuffled picks found **69.2%**, averaging two shuffled runs. The uncertainty checks backed that up: the gap was small.
+
+A different winner. Very little average difference at that contact budget.
+
+## So what does scoring high mean?
+
+For a team deciding where to spend its time, a different winner isn't, by itself, a reason to change the system. I had spent months building ways to compare models. Now I had to ask whether winning the comparison delivered enough to matter for the task.
+
+That wasn't a universal result. Other comparisons depended on the setup, and a separate model-selection finding did not convincingly reproduce on H&M purchase histories. The other experiments and their limits are on the research site.
+
+The work had come full circle. I started by questioning what a score rewarded, then built the experiments to examine what winning by that score actually changed.
+
+The lesson is simple: **before optimizing a score, define what "better" means for the task. Then measure that.**
+
+For now, I've decided to step back from the paper. My coauthor plans to continue toward another submission, and I may revisit it later. In the meantime, I wanted to make the work I'd done useful beyond a manuscript (which is kind of the whole reason this site exists).
+
+## Beyond the Score
+
+So I built [Beyond the Score](https://beyond-the-score.willzhu.dev), with three ways in:
+
+- Jump into the demo: an eight-step story about why a model with 90% accuracy can still miss most of the customers who leave.
+- Open the sandbox: choose the metric, what to tune the cutoff for, and the testing method. Then see whether the evaluation's pick holds up on later customers.
+- Read the research: the experiments, uncertainty, code excerpts, and the decisions behind them.
+
+<Figure
+  src={sandbox}
+  alt="The Beyond the Score sandbox: controls for the comparison metric, cutoff objective, and validation method above a results table ranking three models by estimated and later observed score"
+  caption="The sandbox. Change the setup and see whether the evaluation's pick holds up."
+/>
+
+The story and sandbox use fictional customers I generated. The research section reports the real study results, with their limits kept explicit.
+
+## What I learned
+
+Leading this work meant taking responsibility for the whole chain: choosing a question, building a way to test it, checking the evidence, and deciding what it supported.
+
+Matching sample sizes, keeping future outcomes out of earlier predictions, and saving results so I could inspect them again made it possible to follow an unexpected answer. That is the part of this work I want to carry into whatever I build next.
+
+[Try Beyond the Score](https://beyond-the-score.willzhu.dev). Start with a model reporting 90% accuracy, decide whether you'd deploy it, and see what changes when you look beyond that number.
+
+I'll be back next week (likely) with another side project idea.
