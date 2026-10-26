@@ -1,7 +1,7 @@
 ---
 title: 'Launch Start'
 pitch: 'The build-in-public platform this site runs on — built as its own first sprint.'
-status: 'in-sprint'
+status: 'shipped'
 featured: true
 draft: false
 createdDate: 2026-07-03
@@ -41,7 +41,7 @@ MDX content with zod-validated frontmatter goes in. Astro turns it into static H
 
 There are no runtime API calls, no deployed secrets, and no server that needs to stay alive for the site to work.
 
-External facts, like GitHub and YouTube data, will be synced at build time as committed JSON snapshots. That means an API outage can make the data slightly stale, but it should never break a page.
+External facts, like GitHub and YouTube data, are synced nightly as committed JSON snapshots. That means an API outage can make the data slightly stale, but it should never break a page.
 
 The goal is not to make the fanciest possible system.
 
