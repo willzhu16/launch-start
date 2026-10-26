@@ -1,0 +1,45 @@
+---
+title: 'Beyond the Score'
+pitch: 'Does a higher model score actually mean a better model? Explore the research and try the interactive demo.'
+status: 'shipped'
+featured: true
+draft: false
+createdDate: 2025-07-07
+tech: ['python', 'scikit-learn', 'pytorch', 'xgboost', 'cloudflare-workers']
+tags: ['ai']
+demoUrl: 'https://beyond-the-score.willzhu.dev'
+cover: './cover.png'
+coverAlt: 'Beyond the Score: "Which model should your team deploy?" above a report where Model A scores 90.1% accuracy and Model B 85.3%'
+---
+
+## What & why
+
+Beyond the Score is over a year of after-work ML research, turned into [something you can click through](https://beyond-the-score.willzhu.dev).
+
+It grew out of my university capstone, a [churn prediction platform](https://github.com/willzhu16/Churn-Prediction-Platform) for Nuu Mobile, and a question I chose to investigate afterward: does a higher model score actually mean a better model?
+
+A score depends on the metric, the data, and the test as well as the model. Those choices can change which model a team decides to deploy. I wanted to find out whether they also changed how useful its predictions would be.
+
+I led the research from question to submission: designing the experiments, building the data and model pipelines, running the studies, analyzing the results, and writing and editing the submitted manuscript. My coauthor contributed an initial Nuu data-analysis draft and some analysis figures and plotting code. 
+
+I also built the interactive site to make the work accessible beyond the paper.
+
+## How it was built
+
+On Nuu Mobile's data, I compared 10 model families under 18 evaluation conditions. The dataset contained 7,616 device records, including 326 flagged as "Churn," but I couldn't establish exactly what that flag represented, when it happened, or whether the inputs preceded it. I moved the question to dated subscription histories from KKBox.
+
+I rebuilt the framework in Python. It supported 12 model implementations for broad comparisons, but for the main 17-month study I deliberately narrowed to three established families, trading breadth for a longer test and more checks of the result. The preparation pipeline scanned **392 million listening records** in chunks and combined the sampled histories with transactions to build 158,009 customer-month records. That study ran **549 model fits**.
+
+I used recorded event dates to reconstruct the history before each prediction, treating each record as known on its recorded date and each outcome as known only 30 days after expiry. I then re-ran the study with a seven-day data delay to see how much that first assumption mattered. Matched sample sizes and checks for overlapping records and unavailable outcomes helped keep the comparisons fair. Saved predictions let me investigate results without repeating expensive fits, and compatibility checks let interrupted runs resume only when their inputs and code were unchanged.
+
+## Outcome
+
+The 17-month study compared model selection using time-ordered and shuffled historical records, with future test records held separate. The two shuffled versions selected different families from the time-aware approach in 9 and 11 of the 17 months.
+
+Yet at a fixed monthly contact budget of 10%, the choices found almost the same share of nonrenewals on average: **68.9% for time-aware history and 69.2% across the two shuffled versions**. The uncertainty checks backed that up: the gap was small. The seven-day delay was a clear hit to the models, lowering time-aware F3 (a recall-weighted score) from 0.65 to 0.61, but this result held. Other comparisons were more conditional; this does not mean model choice never matters.
+
+For a team deciding whether to change its system, a different winner would not, by itself, justify the investment.
+
+I've stepped back from the paper for now, while my coauthor plans to continue toward another submission. I may revisit it later.
+
+In the meantime, I turned the engineering, evidence, and lessons into Beyond the Score: an eight-step story, a sandbox, and an account of the research. The site is one self-contained HTML file (plain HTML, CSS, and JavaScript) served from a Cloudflare Worker. The story and sandbox use fictional customers generated for the demo; the research section presents the real study results. [Try the demo](https://beyond-the-score.willzhu.dev) and decide which model you would deploy.
