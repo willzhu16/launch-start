@@ -1,0 +1,110 @@
+---
+project: 'duckie'
+sprint: 1
+kind: 'week'
+week: 1
+title: 'Week 1: Where Does a Duck Live?'
+date: 2026-11-15
+tldr: 'Duckie moved her brain and voice off my GPU and onto Cloudflare, auditioned 52 voices and picked Luna, and got her speech down to a tenth of the size. Fresh answers still take a beat too long to start talking.'
+shipped:
+  - 'Duckie answering questions from Cloudflare Workers AI, on the free plan'
+  - 'A voice audition page: 52 voices, one winner (Aura-2 Luna)'
+  - 'Speech as MP3 instead of WAV: the test greeting went from 277 KB to 26 KB'
+  - 'Instant replays for lines Duckie says a lot, like her backflip excuse'
+  - 'The 3D code starts loading when you reach for the box, not with the page'
+  - 'Sharper project notes for Duckie to answer from'
+struggled:
+  - 'Running it all in the browser: great once warm, way too heavy to download'
+  - 'A small browser model happily agreed that I have a PhD from MIT (I wish)'
+  - 'Cloudflare response times that swung from 0.2 to 2.2 seconds between runs'
+learned:
+  - 'Where the model runs is a product decision, not just a hosting one'
+  - 'A smaller file does not help if you still wait for the whole thing'
+  - 'The voice is half the character'
+days: []
+draft: false
+---
+
+Sprint 1 started with Duckie living on my computer.
+
+That sounds fine until you remember the whole point of Duckie is talking to people who are not on my computer.
+
+I already had the animations and model completed and sitting around - boons from playing around with GPT-6 for a bit too long. I even had her linked up to a local LLM as a demo test to see if this was feasible. 
+
+Going into this week, she ran on my own GPU: an 11.9 billion parameter model through Ollama for her answers, and Kokoro for her voice in a little Python process next to it. Warm, it was pretty quick. Cold, the first question once took 18 seconds before she said a word. And either way, it only worked while my PC was on and I was sitting in front of it.
+
+So the whole week came down to one question: where does a duck actually live?
+
+## Option one: your browser
+
+The idea I was most excited about was running everything in the browser. No server, no API bill, no quota.
+
+And it worked! The week before the sprint, I got Qwen3 answering questions through WebLLM and Kokoro speaking the answers, all on the GPU inside a browser tab. I tried two sizes, 1.7B and 4B. Once both engines were warmed up, the 4B version started showing a ContextGuard answer in about 1.2 seconds and started speaking it in about 2.5.
+
+Then I looked at what it cost to get there.
+
+The 4B model took 44 seconds to load the first time. The voice engine's runtime alone was 21.6 MB (before compression), and that's before it downloads an actual voice. For comparison, the page you're reading right now is about 37 KB. That's a lot of download so a duck can say hi.
+
+The 1.7B model loaded in half the time, but it had a different problem. One of my test questions claimed I used to work at Google and had a PhD from MIT. The small model happily agreed.
+
+I do not have a PhD from MIT.
+
+The 4B model caught it. But a portfolio guide that's only honest in the big version, after a 44-second download, on a laptop with a decent GPU, isn't really a portfolio guide. It's a tech demo.
+
+## Option two: the server I already had
+
+The answer was kind of sitting there the whole time. This site already runs on Cloudflare, and Cloudflare also runs AI models through Workers AI, with a free plan.
+
+The free plan mattered more than anything. The hosting section of Duckie's spec has exactly one primary goal: "no surprise bill." On Workers Free, when the daily quota runs out, requests just start failing until it resets. There's no overage bill, because going past the free amount means upgrading to the paid plan first.
+
+So Duckie's answers now come from Gemma 4 on Workers AI, and her voice comes from Deepgram's Aura-2 voices through the same account.
+
+Her very first live answer didn't even finish. The model spent its entire word budget "thinking" before it got to the actual answer. Duckie's answers are supposed to be a couple of sentences out loud, not an essay, so thinking got turned off. After that she answered her first question from the cloud, about ContextGuard, naturally.
+
+And when the free quota does run out? Duckie gets tired, says so, and climbs into her box for a nap. Ask again and she wakes up and gives it another try.
+
+## Finding her voice
+
+Moving to Cloudflare meant Duckie needed a new voice, so I built a little audition page: pick one of 52 voices, pick a line (a greeting, a joke, or an explanation), and press Listen.
+
+I listened to a lot of ducks.
+
+Iris and Helena came close. Luna won, because she sounded the most like a duck who's up to something.
+
+## Keeping the duck light
+
+This site is proud of being small. I wrote a whole post about [why it loads instantly](/blog/note-1-why-this-site-loads-instantly), and near the end I said that if I ever needed something interactive, I could opt a specific component into shipping its JavaScript.
+
+Well. Here's the component.
+
+For a tiny duck, Duckie is not small. Her code is about 170 KB of JavaScript (compressed), and the duck herself is a 1 MB model. That's a lot to add to every page for a duck plenty of people will never open.
+
+So she doesn't come with the page. The 3D part only starts downloading when you hover over her box, focus it, or tap it, and nothing gets sent to a model until you actually ask a question. Whether the page itself stays as fast as before is something I can only measure once she's installed here for real.
+
+Her voice got the same treatment. Every spoken line used to come back as WAV, which is basically uncompressed audio. Switching to MP3 took the test greeting from 277 KB to 26 KB, about a tenth of the size. Lines she says a lot, like her backflip excuse, are now remembered too. The first time, she started talking in 0.7 seconds. The second time, instantly.
+
+## The part that's still slow
+
+Here's the thing, though. Making the audio smaller barely changed how long you wait for it.
+
+Generating a fresh line still takes about two seconds, MP3 or not. In my browser, a brand new answer showed text in half a second and started speaking at 2.7 seconds. That's fine. But it's not "talking to a duck" fine.
+
+Cloudflare didn't help by being moody, either. The same question took 0.2 seconds to start answering in one run and 2.2 seconds a minute and a half later.
+
+Then on the last day of the week I found the part I could actually fix, and it's a little embarrassing. Cloudflare starts sending Luna's audio in a quarter of a second or so. Duckie was waiting for the entire clip, around two seconds, before opening her beak (a very patient duck).
+
+Shrinking the file didn't fix that, because the file was never the bottleneck. The waiting was.
+
+## What I learned
+
+Where the model runs is a product decision, not just a hosting one. The browser version was the coolest engineering of the week. It also would have been a rough first impression for someone on a work laptop, and that's exactly who Duckie is for.
+
+Measure the wait, not the file. I spent a good chunk of the week making things smaller, and the biggest delay left had nothing to do with size.
+
+The voice is half the character. Same duck, same answers, and picking Luna is still the change that made her feel like Duckie.
+
+## Next week
+
+Next week Duckie moves in. That means trying to play her voice as it arrives instead of after it finishes, installing her on this site for real, and testing her on actual phones, actual themes, and the actual internet instead of my desk. Then I get to be her first real user.
+
+If it all goes to plan, by the end of the sprint there's a box in the corner of this page. Knock first.
