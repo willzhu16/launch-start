@@ -15,6 +15,8 @@ export const vocab = {
     'postgres',
     'vitest',
     'vscode',
+    'threejs',
+    'blender',
   ],
   tags: [
     'platform',
@@ -48,6 +50,8 @@ export const labels: Record<string, string> = {
   postgres: 'Postgres',
   vitest: 'Vitest',
   vscode: 'VS Code',
+  threejs: 'Three.js',
+  blender: 'Blender',
   platform: 'platform',
   meta: 'meta',
   ai: 'AI',

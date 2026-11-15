@@ -1,0 +1,52 @@
+---
+title: 'Duckie'
+pitch: 'A tiny 3D duck who answers questions about my work, out loud if you let her. Mostly she attempts backflips.'
+status: 'in-sprint'
+featured: false
+draft: false
+createdDate: 2026-09-19
+tech: ['typescript', 'threejs', 'cloudflare-workers', 'astro', 'blender', 'vitest']
+tags: ['ai', 'web', 'performance']
+cover: './cover.png'
+coverAlt: 'Duckie, a round yellow 3D duck with an orange beak and stubby orange feet, on a soft warm-gray background'
+sprints:
+  - number: 1
+    goal: 'Move Duckie off my machine and onto willzhu.dev: hosted answers and voice, replies quick enough to feel like talking, and a site that stays fast.'
+    lengthDays: 14
+    startDate: 2026-11-08
+    endDate: 2026-11-21
+---
+
+## What & why
+
+Duckie is a small (very cute) 3D duck who answers questions about my work.
+
+This project came from one realization: a portfolio gets read by very different people. A recruiter wants the headline. An engineer wants to know how something was built. A manager wants to know how I work. One page can't change shape for each of them, but something you can ask can.
+
+Additionally, I really just wanted to create my own RAG system at some point. I had been introduced to the concept years ago, but never had the chance to make my own implementation. However, I didn't want another generic chatbot in the corner of the screen. 
+
+So there was only one solution: a duck. Ask her about a project and she gives you the short version, with a link if you want the long one. Turn on voice and she says it out loud. Leave her alone and she tries a backflip. It usually doesn't go well.
+
+Why a duck? Rubber duck debugging is when you explain your code to a rubber duck until you find the bug yourself. Duckie flips it around: this time the duck does the explaining.
+
+The longer story is in [why my portfolio is getting a duck](/blog/note-5-why-my-portfolio-is-getting-a-duck).
+
+## How it works
+
+Duckie is a Three.js character. Her model is built in Blender by a Python script, so she can be rebuilt from scratch, and her animations are code rather than exported clips: the waddles, the failed backflips, and the nap where she squeezes into a box that is clearly too small for her.
+
+Her answers come from Cloudflare Workers AI, on the same platform that already serves this site. Her voice is Deepgram's Aura-2 Luna, picked out of 52 voices for sounding the most like a duck who's up to something.
+
+She only reads notes I've written and approved about my public projects. She doesn't get my repos, my files, or anything private, and the only things she can do on the page are a short list of animations and offering project links (a limited, but still mightily cute duck.)
+
+The 3D part doesn't download until you go near her box, and nothing is sent to a model until you actually ask something. When the free quota runs out, she doesn't throw an error at you. She gets tired and takes a nap.
+
+## Before the sprint
+
+Duckie didn't start on sprint day one. Roughly how she got here:
+
+- September: a data gathering weekend with an open-source AI VTuber on my own GPU, a lot of voice auditions, and a spec for a portfolio duck.
+- Late October: the Blender model, the box, the backflip, and a prototype that talked through a model running on my own machine.
+- Early November: the corner widget, and experiments with running the whole thing inside the visitor's browser.
+
+Sprint 1 starts the day I shelved the browser idea and moved Duckie's brain to Cloudflare.

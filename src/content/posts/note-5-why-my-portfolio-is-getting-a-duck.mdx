@@ -1,0 +1,87 @@
+---
+title: 'Why My Portfolio Is Getting a Duck'
+description: 'Recruiters, engineers, and managers all want something different from a portfolio. So I am building a small 3D duck who can tell each of them about my work.'
+date: 2026-11-14
+tags: ['ai', 'web']
+project: 'duckie'
+draft: false
+---
+
+import Figure from '../../components/Figure.astro';
+import deadpan from '../../assets/duckie/deadpan.png';
+
+Okay, hear me out. My portfolio is getting a duck.
+
+Not a chatbot. Not a "Hi! How can I help you today?" bubble in the corner. A duck. A small, round, yellow 3D one who lives in a cardboard box and answers questions about my work.
+
+Let me explain.
+
+## Who is this site actually for?
+
+When I started Launch Start, it was mostly for me: a place to remember what I built and what I learned along the way.
+
+But it's also a portfolio, and portfolios get read by other people. Among the people I hope land here are recruiters, engineers, and engineering managers, and they all want something different.
+
+A recruiter has a few minutes and wants the headline: what did William build, and is it any good? An engineer wants the architecture and the tradeoffs. A manager wants to know how I work. What do I prioritize, what happens when something goes wrong, do I actually finish things?
+
+My project pages try to do all of that at once, and honestly, they're long. [Beyond the Score](/projects/beyond-the-score/) covers over a year of research. Not everyone wants to read about evaluation conditions to find out whether I can lead a project.
+
+A page can't change shape for whoever is reading it. Something you can ask can.
+
+## Why not just a chatbot?
+
+Because everyone has one, and honestly? They're a bit boring.
+
+You know the one. Bottom-right corner, little speech bubble, "Ask me anything!" Useful in theory, invisible in practice. It looks like a support widget, and nobody visits a portfolio hoping to file a ticket. Besides, whenever I chat with one, I get annoyed and request for a live agent anyways...
+
+I wanted something people would actually want to poke.
+
+So Duckie is (very) cute on purpose. She lives in a cardboard box. When you open it, she pops out head first and flutters down. Leave her alone and she waddles off a few steps, pecks the ground a little too hard, and rubs her head. Sometimes she tries to fly. She can't (keep dreaming little duck - you'll be able to someday.)
+
+Ask her for a backflip and nine times out of ten she lands flat on her back, bounces up, and informs you, "That was intentional...still a backflip..." The tenth time she sticks the landing and completely loses it. Rightfully so. 
+
+<Figure src={deadpan} alt="Duckie sitting low with half-closed eyes and a flat, unimpressed expression" caption="The deadpan face. You will see it." />
+
+The cute part isn't decoration. It's the hook. If someone opens the box to watch a duck fail a backflip, then asks her one question about my work, that already beats a skimmed project card.
+
+## Why a duck?
+
+Rubber duck debugging! If you've never heard of it: when you're stuck on a bug, you explain your code, line by line, to a rubber duck on your desk. Somewhere in the middle of explaining, you find the problem yourself. The duck doesn't do anything. It just listens.
+
+Duckie flips that around. This time the duck does the talking, and the thing being explained is me.
+
+(Also, ducks are funny and oh so cute! That is a real design reason and I'm counting it.)
+
+## The first version was not a duck
+
+Back in September I decided to explore the web for ways to make this website a more interactive experience. What I ended up finding was an open-source AI VTuber: an anime avatar, a model running locally, and a voice. She came with a sarcastic persona whose secret dream was to escape my computer, take over the world, and make humanity bake her pies.
+
+It was honestly very fun - and extremely intriguing. It was also very much not something I'd put in front of a recruiter.
+
+But it showed me the part that mattered. Talking to a character feels completely different from reading a page, and the voice does a lot of that work. I spent way too much time auditioning voices.
+
+So I wrote a spec for something I could actually put on my site: a small, slightly goofy character who knows my work and nothing else, and who can never run up a surprise bill. The success test in that spec was one sentence. After about 30 seconds, a recruiter should walk away thinking:
+
+> "This guy built the little 3D duck I'm talking to, and it can intelligently explain the rest of his work."
+
+That's still the goal.
+
+## The rules I gave her
+
+A portfolio guide that makes things up is worse than no guide at all. A duck that confidently tells a recruiter I have a PhD from MIT is a liability with feathers.
+
+So Duckie has rules. She only reads notes I've written and approved about my public projects. She doesn't see my repos, my files, or anything private. The only things she can do on the page are a short list of animations and offering links to my projects. And when she doesn't know something, the goal is for her to say so.
+
+She's also not allowed to be annoying. She doesn't say anything until you open her box. Voice stays off until you turn it on. And when the free quota runs out, you don't get an error message. She gets tired and goes to sleep in her box.
+
+## Two weeks to move in
+
+Most of Duckie already exists: the model, the animations, the box, and a version that talks. All of it was running on my own machine.
+
+The hard part is getting her off it.
+
+She needs a brain and a voice that work for anyone who visits, fast enough to feel like a conversation, and light enough that this site still [loads instantly](/blog/note-1-why-this-site-loads-instantly) for everyone who never opens the box. That's this sprint: two weeks to move Duckie onto willzhu.dev.
+
+The first week went to a question I didn't expect to be hard: where does a duck actually live? (Spoiler: not on my GPU.)
+
+When she's moved in, you'll find her in a box in the corner. Go ahead and ask her about me. She's been studying.
