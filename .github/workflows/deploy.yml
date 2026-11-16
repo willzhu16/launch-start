@@ -36,6 +36,7 @@ jobs:
       - run: pnpm build
         env:
           PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_DUCKIE_ENABLED: ${{ vars.PUBLIC_DUCKIE_ENABLED }}
           SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
           # OG card fonts. Set here because it must be process-start
           # environment: the fallback assignment in astro.config.mjs never

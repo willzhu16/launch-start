@@ -17,4 +17,16 @@ export default defineConfig({
   site: SITE_ORIGIN,
   trailingSlash: 'ignore',
   integrations: [mdx(), sitemap()],
+  // Development-only Duckie proxy to the hosted-inference Worker preview.
+  vite: {
+    server: {
+      proxy: {
+        '/api/duckie': {
+          target: 'http://127.0.0.1:8787',
+          changeOrigin: false,
+          headers: { 'cf-connecting-ip': '127.0.0.1' },
+        },
+      },
+    },
+  },
 });

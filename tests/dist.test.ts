@@ -232,6 +232,9 @@ describe('dist smoke suite', () => {
     expect(existsSync(headersPath), `missing ${headersPath}`).toBe(true);
     const headers = readFileSync(headersPath, 'utf8');
     expect(headers).toContain('Content-Security-Policy:');
+    expect(headers).toContain("media-src 'self' blob:");
+    expect(headers).toContain("connect-src 'self';");
+    expect(headers).toContain("object-src 'none';");
     expect(headers).toContain('X-Content-Type-Options: nosniff');
     expect(headers).toContain('X-Frame-Options: DENY');
     expect(headers).toContain('X-Robots-Tag: noindex');
