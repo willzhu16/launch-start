@@ -10,3 +10,8 @@ overrides:
   # @napi-rs/wasm-runtime accepts @emnapi/runtime 1.x or 2.x as a peer, and pnpm picks the 2.0
   # beta, which does not match the 1.x @emnapi/core installed beside it. Keep the stable 1.x.
   '@napi-rs/wasm-runtime@1.2.4>@emnapi/runtime': 1.11.3
+
+  # Retain the compatible Shiki version while its newer dependency is unavailable.
+  shiki: 4.5.0
+  # Patch the XML stop-node denial-of-service advisory in the RSS build dependency.
+  '@astrojs/rss>fast-xml-parser': 5.12.1
