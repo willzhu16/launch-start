@@ -1,0 +1,4 @@
+[[IgnoredVulns]]
+id = "GHSA-fc5q-39xc-vjpf"
+ignoreUntil = 2026-12-17
+reason = "Locally remediated in patches/picomatch@2.3.2.patch and patches/picomatch@4.0.7.patch via pnpm patchedDependencies. Single-branch repeated extglobs containing stars are literalized. Regression coverage: src/picomatch-security.test.ts. Remove after adopting an upstream fixed release; review by expiry."

@@ -89,3 +89,16 @@ The source code — components, TypeScript, styles, build tooling, and
 configuration — is [MIT](LICENSE), free to reuse. The site's content is not:
 the writing under `src/content/` and the images under `src/assets/` and
 `public/` are © 2026 William Zhu, all rights reserved.
+
+## Picomatch security patch
+
+Both picomatch versions are patched through pnpm `patchedDependencies` for
+GHSA-fc5q-39xc-vjpf. Single-branch repeated extglobs containing `*` are treated as
+literal patterns using the parser's existing risky-pattern handling. Ordinary
+file globs and bounded repeated alternatives retain their behavior.
+
+The installed-package regression tests run during `pnpm test`. OSV identifies
+packages by upstream version and cannot recognize these local patches, so the
+specific advisory has a documented exception expiring December 17, 2026.
+Review the patches and exception then, or remove them when an upstream fixed
+release is available. Keep frozen-lockfile installation enabled in CI.
