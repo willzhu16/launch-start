@@ -1,0 +1,16 @@
+diff --git a/lib/parse.js b/lib/parse.js
+index caa2b86aa5a567df33cef4bda3c7a97794f439f8..003bdb0e3e9de7522c10f5b74251d1948cb557e0 100644
+--- a/lib/parse.js
++++ b/lib/parse.js
+@@ -292,6 +292,11 @@ const analyzeRepeatedExtglob = (body, options) => {
+ 
+   const branches = splitTopLevel(body).map(branch => branch.trim());
+ 
++  // GHSA-fc5q-39xc-vjpf: a wildcard inside one repeated branch nests quantifiers.
++  if (branches.length === 1 && branches[0].includes('*')) {
++    return { risky: true };
++  }
++
+   if (branches.length > 1) {
+     if (
+       branches.some(branch => branch === '') ||
