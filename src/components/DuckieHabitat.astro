@@ -1,0 +1,68 @@
+<duckie-habitat>
+  <div class="duckie-placeholder">
+    <p data-duckie-status>Preparing Duckie’s corner…</p>
+    <noscript>Enable JavaScript to chat with Duckie.</noscript>
+  </div>
+</duckie-habitat>
+
+<script is:inline type="module">
+  class DuckieHabitat extends HTMLElement {
+    connection;
+    mounted;
+
+    connectedCallback() {
+      if (this.connection) return;
+      const connection = new AbortController();
+      this.connection = connection;
+      const bundleUrl = '/duckie/duckie.js';
+      void import(bundleUrl).then((bundle) => {
+        if (connection.signal.aborted) return;
+        this.mounted = bundle.mountDuckieWidget(this, { apiBase: '/api/duckie', cloudVoice: true });
+      }).catch((error) => {
+        if (connection.signal.aborted) return;
+        console.error('Duckie loader failed', error);
+        const status = this.querySelector('[data-duckie-status]');
+        if (status) status.textContent = 'Duckie is taking a break. Refresh to try again.';
+      });
+    }
+
+    disconnectedCallback() {
+      this.connection?.abort();
+      this.mounted?.dispose();
+      this.connection = undefined;
+      this.mounted = undefined;
+    }
+  }
+
+  if (!customElements.get('duckie-habitat')) customElements.define('duckie-habitat', DuckieHabitat);
+</script>
+
+<style>
+  duckie-habitat {
+    --duckie-ground: var(--cream);
+    --duckie-card: var(--card);
+    --duckie-paper: var(--paper);
+    --duckie-ink: var(--ink);
+    --duckie-muted: var(--muted);
+    --duckie-line: var(--line);
+    --duckie-accent: var(--pink-deep);
+    --duckie-accent-tint: var(--pink-tint);
+    --duckie-shadow: var(--shadow-m);
+    --duckie-radius: var(--r-m);
+    --duckie-font-display: var(--font-display);
+    --duckie-font-ui: var(--font-ui);
+    --duckie-font-mono: var(--font-mono);
+  }
+  .duckie-placeholder {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 100;
+    max-width: calc(100% - 40px);
+    padding: 8px 16px;
+    border-radius: var(--r-m);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 12px;
+  }
+</style>

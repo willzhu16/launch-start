@@ -1,4 +1,5 @@
 ---
+import DuckieHabitat from '../components/DuckieHabitat.astro';
 // Page shell: head/meta, fonts, skip-link, footer.
 // Page composition (nav choice, main content) belongs to the pages.
 import Footer from '../components/Footer.astro';
@@ -114,5 +115,6 @@ const ogImageUrl = absoluteUrl(ogImage ?? '/og-default.png');
       <slot />
       <Footer />
     </div>
+    {(import.meta.env.DEV || import.meta.env.PUBLIC_DUCKIE_ENABLED === 'true') && <DuckieHabitat />}
   </body>
 </html>
