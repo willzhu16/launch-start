@@ -1,0 +1,42 @@
+---
+title: 'Rubber Duckie'
+pitch: 'A private rubber duck for debugging. Talk through the problem out loud and she asks the question you skipped. Runs on my machine.'
+status: 'in-sprint'
+featured: false
+draft: true
+createdDate: 2026-11-17
+tech: ['typescript', 'threejs', 'node', 'python', 'vitest']
+tags: ['ai', 'tooling']
+cover: './cover.png'
+coverAlt: 'Rubber Duckie on a pale green background: a small chat panel that says "Tell me what you''re working on. We''ll take it one question at a time," with the yellow 3D duck and her box below it'
+sprints:
+  - number: 1
+    goal: 'Turn the browser preview into a Windows desktop companion: a transparent always-on-top window, tray controls and a push-to-talk hotkey, tested on my own machine.'
+    lengthDays: 14
+    startDate: 2026-11-22
+    endDate: 2026-12-05
+---
+
+## What & why
+
+Rubber Duckie is the other half of [Duckie](/projects/duckie/).
+
+The Duckie on this site explains my work to visitors. Rubber Duckie lives on my own computer and does the opposite: she listens while I explain my code to her.
+
+That's the original rubber duck idea. When you're stuck, you talk through the problem line by line, and somewhere in the middle you find the bug yourself. Rubber Duckie keeps that, and adds a duck who can ask the question you skipped.
+
+She is deliberately not a coding agent. She doesn't read my files, doesn't see my screen, and doesn't write the fix. Tell her about a loop that never ends and she asks what condition is supposed to stop it. When I do want ideas, there's a mode for that.
+
+The longer story is in [why my rubber duck talks back now](/blog/note-6-why-my-rubber-duck-talks-back-now/).
+
+## How it works
+
+Same duck, same box, same animations: Rubber Duckie shares her character with the website Duckie, pinned to a reviewed version of the shared code, so an update to one never silently changes the other. What she says is completely separate. She has none of the portfolio notes or website limits, so she can talk about any software problem.
+
+Everything runs locally. A language model runs on my machine through llama.cpp, speech recognition uses Faster Whisper offline, and her voice is Kokoro's Heart, also local. There's no hosted fallback, no analytics and no saved history. Conversations live only in memory and are gone when the page closes.
+
+There are three modes: Rubber duck (mostly questions), Debug together (suggestions when you want them) and Just chat. You can type, record a thought and review the transcript before sending, or switch on Talk mode: speak, pause, and she answers out loud. The microphone only turns on when you ask, and it switches off while she's talking.
+
+## Before the sprint
+
+The first two days of work came before sprint 1: a local workbench, streaming conversation, microphone input, local speech, a compact companion layout, and hands-free Talk mode. All of it runs as a browser preview for now. Sprint 1 is about turning her into an actual desktop app.
