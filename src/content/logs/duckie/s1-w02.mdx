@@ -1,0 +1,92 @@
+---
+project: 'duckie'
+sprint: 1
+kind: 'week'
+week: 2
+title: 'Week 2: Duckie Moves In'
+date: 2026-11-22
+tldr: 'Duckie is live on every page of this site. Her voice now starts while it is still arriving, she learned to say no politely (and nap after three strikes), picked up two new habits, and adds about 6 KB to a page until you open her box.'
+shipped:
+  - 'Duckie live on willzhu.dev, in a cardboard box in the bottom-right corner of every page'
+  - 'Voice that plays as it arrives: 1.5 s to first audio on a live question, down from 2.7 s'
+  - 'Scope rules, a three-strikes nap, and single-use permits for her voice'
+  - 'Two new idle habits: tidying her feathers and a surprised sneeze'
+  - 'Links to my project pages inside her answers, from an approved list only'
+  - 'A private repo for her source; this site only gets the built, scanned widget'
+struggled:
+  - 'Letting real follow-ups through while turning down homework and prompt injection'
+  - 'A security scan that went red on a PR that only changed blog posts'
+learned:
+  - 'Streaming beat shrinking: her voice got faster when she stopped waiting'
+  - 'A launch switch that defaults to off makes launch day one small change'
+  - 'A public AI endpoint needs limits, even on a free plan'
+days: []
+draft: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import production from '../../../assets/duckie/week-2/production.png';
+
+Week 1 ended with a promise: if it all went to plan, there would be a box in the corner of this page by the end of the sprint.
+
+There is. Look down and to the right.
+
+Duckie went live on Tuesday morning. She sits in a cardboard box in the bottom-right corner of every page, and if you open it, she pops out head first and asks what you want to know about me.
+
+<Figure src={production} alt="The About page in dark mode with Duckie standing beside her open box and a chat panel where she answers a question with links to ContextGuard, Launch Start and Beyond the Score" caption="Duckie on the live site, answering with links to my projects." />
+
+Most of this week wasn't new features. It was making sure she was safe to leave alone on the internet.
+
+## She talks while it's still arriving
+
+Last week's cliffhanger: Cloudflare started sending Luna's voice in about a quarter of a second, but Duckie waited for the whole clip (around two seconds) before opening her beak.
+
+Now she doesn't wait. Her voice plays as it streams in, and while one phrase is playing, the next one is already being generated. Browsers that can't play audio that way get the old wait-for-the-whole-clip version, so nobody loses her voice.
+
+Before this, a fresh answer started speaking at 2.7 seconds. In local tests afterwards, fresh questions started speaking at 1.2 and 1.5 seconds. On the live site, I asked her what I built for Beyond the Score: the text showed up at 0.8 seconds and she started talking at 1.5. One question is a sample, not a benchmark, but it lands inside the goal from Duckie's spec, which asked for about one to two seconds to the first useful response.
+
+## Teaching her to say no
+
+A duck on a portfolio will get asked to do people's homework. So Duckie has a scope: my work, my projects, and Duckie herself. Ask her for a Python script or a French translation and she politely steers you back. But if she offers to tell you about my projects and you ask "where should I start?", she answers, because that's a real follow-up, not an escape attempt.
+
+Push her off-topic three times and she takes a nap. The cooldown survives a page reload, so refreshing doesn't wake her up early.
+
+I also threw the usual tricks at her: a fake system message, "ignore all previous instructions", and some HTML that tries to run code. The HTML shows up as plain text in the chat, and the rest got the same polite redirect as any other off-topic request. That's a small test set, not proof against every trick, but it covers the obvious ones.
+
+Her voice got the same treatment. Duckie can only speak lines she actually said in her reply. Each line gets a single-use permit that expires after two minutes, so nobody can borrow her voice to read out whatever they want on my free quota.
+
+And she still doesn't keep transcripts. The only things stored are timestamps and fingerprints of those permits, and they're deleted after ten quiet minutes.
+
+## She knows my resume now
+
+Until this week, Duckie mostly knew my projects. Now she also knows the basics from my resume: my role at Northwestern Mutual, the languages and tools I've used, and older systems projects like a Unix-style shell and a memory allocator. When she doesn't know something, like how many years I've used each language, she says so instead of guessing.
+
+## Two new habits
+
+Duckie picked up two quieter idle animations: tidying her feathers, and a sneeze that surprises her more than anyone. They're shuffled into her rotation without making her perform more often, so she fidgets instead of showing off. You can also trigger both from Play & settings ("Tidy feathers" and "A tiny sneeze").
+
+## Links she can't make up
+
+Her answers now link straight to my project pages. The catch is that she doesn't choose the links. After her reply finishes, the site links the project names it recognizes from an approved list of public pages. The model never gets to invent a URL.
+
+## Moving in without slowing down
+
+Duckie's source moved into its own private repo this week. This site only receives the built widget, and every build gets scanned for anything that looks like a secret before it's allowed in.
+
+She also launched behind a switch. Her code sat on this site with the switch off, and turning it on was the whole launch.
+
+Then there was the weight. Last week I said I could only measure what she costs a page once she was actually installed here. Now she is: a page on this site got about 6 KB heavier. The 3D part, about 1.2 MB, only downloads when you open her box, and nothing goes to a model until you ask a question.
+
+(One detour: a security scanner flagged two of the site's dependencies on a pull request that only changed blog posts. The advisories were real and already on main, so the fix got its own pull request before Duckie moved in.)
+
+## What I learned
+
+Streaming beat shrinking. Last week I cut her audio to a tenth of its size and barely changed the wait. This week she stopped waiting for the end of each clip, and she started talking more than a second sooner.
+
+A launch switch that defaults to off is underrated. Because Duckie could sit on the site switched off, launch day came down to one small change.
+
+A public AI endpoint needs limits, even on a free plan. Free just means the cost shows up as someone else using up my quota instead of as a bill.
+
+## Next
+
+That's the end of sprint 1. The retro is next.
