@@ -6,30 +6,30 @@
 // optionally merges back into) the node wired by its id. Horizontal scroll on
 // small screens.
 import { career } from '../data/career';
-import { type Connector, layoutCareer } from '../lib/career-graph';
+import { connectorPath, layoutCareer } from '../lib/career-graph';
 import { placeLabel } from '../lib/svg-label';
 
 const W = 800;
-const H = 230;
-const MAIN_Y = 160;
-const SIDE_Y = 82;
+const H = 278;
+const MAIN_Y = 208;
+const SIDE_Y = 130;
+const SUB_Y = 72;
 const YEAR_LABEL_Y = 16;
 const GRID_TOP = 26;
 
-const { mains, sides, years, connectors } = layoutCareer(career, {
+const { mains, sides, subs, years, connectors } = layoutCareer(career, {
   x0: 70,
   x1: 730,
   mainY: MAIN_Y,
   sideY: SIDE_Y,
+  subY: SUB_Y,
 });
 
-// Cubic curve between two points with horizontal handles: a rise when a branch
-// leaves the trunk, a fall when it merges back, a straight run when both
-// endpoints share a lane. The reach shrinks for short spans so it never overshoots.
-const connectorPath = (connector: Connector): string => {
-  const { from, to } = connector;
-  const reach = Math.min(45, Math.max(14, Math.abs(to.x - from.x) / 2));
-  return `M ${from.x} ${from.y} C ${from.x + reach} ${from.y}, ${to.x - reach} ${to.y}, ${to.x} ${to.y}`;
+const labelOf = (id: string | undefined): string =>
+  [...mains, ...sides, ...subs].find((node) => node.id === id)?.label ?? '';
+const mergeNote = (from: string | undefined, into: string | undefined): string => {
+  if (!into) return '';
+  return into === from ? ' and merged back into it' : ` and merged into ${labelOf(into)}`;
 };
 
 const description = [
@@ -38,6 +38,10 @@ const description = [
   sides.length > 0
     ? `Side projects: ${sides.map((node) => `${node.year} ${node.label}`).join(', ')}, each branching off the role it grew from.`
     : '',
+  ...subs.map(
+    (node) =>
+      `${node.year} ${node.label} grew out of ${labelOf(node.from)}${mergeNote(node.from, node.into)}.`,
+  ),
 ]
   .join(' ')
   .trim();
@@ -71,7 +75,7 @@ const description = [
               </>
             );
           })}
-          {sides.map((node) => {
+          {[...sides, ...subs].map((node) => {
             const p = placeLabel(node.x, node.label, W);
             return (
               <>

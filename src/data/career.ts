@@ -5,15 +5,17 @@ export interface CareerNode {
   id: string;
   year: string;
   label: string;
-  lane: 'main' | 'side';
+  /** 'sub' is a project that grew out of a side project, drawn on its own lane above it. */
+  lane: 'main' | 'side' | 'sub';
   /**
-   * Side projects only: id of the node this project branches off. Defaults to
-   * the most recent main role before it in time.
+   * Side and sub projects only: id of the node this project branches off. Side
+   * projects default to the most recent main role before them; sub projects must set it.
    */
   from?: string;
   /**
-   * Side projects only: id of the node this project merges back into (its
-   * skills folding forward). Omit to leave the branch open, ending at its dot.
+   * Side and sub projects only: id of the node this project merges back into (its
+   * skills folding forward). An earlier node means merging back into that node's
+   * ongoing line, just after this project. Omit to leave the branch open.
    */
   into?: string;
 }
@@ -30,4 +32,13 @@ export const career: CareerNode[] = [
     lane: 'side',
     from: 'contextguard',
   },
+  {
+    id: 'beyondthescore',
+    year: '2026',
+    label: 'Beyond the Score',
+    lane: 'sub',
+    from: 'nuu',
+    into: 'nuu',
+  },
+  { id: 'duckie', year: '2026', label: 'Duckie', lane: 'side', from: 'launchstart' },
 ];
