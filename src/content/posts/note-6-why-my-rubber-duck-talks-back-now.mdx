@@ -1,0 +1,68 @@
+---
+title: 'Why My Rubber Duck Talks Back Now'
+description: 'The duck on my website explains my work to visitors. This one lives on my computer, listens while I explain my bugs, and asks the question I skipped.'
+date: 2026-11-22
+tags: ['ai', 'tooling']
+project: 'rubber-duckie'
+draft: false
+---
+
+import Figure from '../../components/Figure.astro';
+import workbench from '../../assets/rubber-duckie/workbench.png';
+import RubberDuckieParts from '../../components/RubberDuckieParts.astro';
+
+Remember the rubber duck from [the Duckie post](/blog/note-5-why-my-portfolio-is-getting-a-duck/)? The whole joke was that the duck on my website flips rubber duck debugging around - instead of me explaining code to a duck, a duck explains me to you.
+
+This one goes the other way.
+
+Rubber Duckie is a duck who lives on my computer and listens while I talk through a problem. It's the same duck, just with a different job.
+
+## The rubber duck already works
+
+I first heard about rubber duck debugging from a coworker at Northwestern Mutual. If you've never tried it: when you're stuck, you explain your code, line by line, to a rubber duck on your desk. Somewhere in the middle you hear yourself say something that doesn't make sense, and that's usually the bug.
+
+The duck doesn't actually do anything; you're the one doing the thinking.
+
+The one thing a real rubber duck can't do is ask you the question you skipped. (They're great listeners, but not great conversationalists.) That is where Rubber Duckie comes in - an interactive rubber duck to talk to that can help you identify the issue. 
+
+Honestly though, the real reason Rubber Duckie exists is that I just wanted a cute duck to talk to. I already had one, she was just busy on my website talking to everyone else.
+
+## Why not just ask an AI?
+
+I didn't want to build another AI wrapper that changes your code. IDEs already have that, and they're good at it. I use AI coding tools a lot, and they're really good at producing answers, which is exactly the problem when I'm stuck. They jump straight to a fix, and I skip the part where I actually understand what went wrong.
+
+I also didn't want an AI looking at my screen or poking through my files without me asking.
+
+So Rubber Duckie is not a coding agent, on purpose. She doesn't read my files, she doesn't see my screen, and she doesn't write the fix. Her job is the rubber duck's job with one upgrade: she gets to ask questions.
+
+In one of my first tests, I told her I was debugging a loop that never ends and asked for one short clarifying question. She came back with: "What condition is supposed to terminate the loop?"
+
+Which is exactly the question I'd want someone to ask me in that moment.
+
+<Figure src={workbench} alt="An early Rubber Duckie workbench: the duck beside her box under the words 'Tell me where you're stuck', and a conversation where she answers a question about a never-ending loop with 'What condition is supposed to terminate the loop?'" caption="An early version of her workbench, doing exactly one job." />
+
+When I do want ideas, there's a Debug together mode for that, plus a Just chat mode for everything else.
+
+## Why she stays on my machine
+
+The stuff I say out loud to a rubber duck is half-formed, messy, and usually about code I'm in the middle of writing. I'd rather none of that leave my computer.
+
+So everything runs locally - the language model, the speech recognition, and her voice. No cloud fallback, no analytics, and no saved history. The mic only turns on when I hit Record or start Talk mode, and it shuts off while she's answering. If you ask her whether she can see your screen, she'll tell you the truth: "No, I can't see your screen or read files."
+
+None of those pieces are locked in, either. The part I wrote is the gateway that ties them together - the modes, the turn-taking, the mic rules. The model, the speech recognition and the voice all plug into it, so I can swap any of them out without rebuilding the rest of her.
+
+<RubberDuckieParts caption="The gateway is mine. The ears, brain and voice just plug into it." />
+
+## Same duck, different voice
+
+She shares her body with the website Duckie: same model, same box, same animations, all pulled from the same code. What she says is completely separate though. She doesn't know anything about my portfolio, doesn't have the website's limits, and will talk through any bug I throw at her.
+
+Her voice is different too. Website Duckie talks as Luna through Cloudflare, and Rubber Duckie talks as Heart, a Kokoro voice that runs on my own machine. Heart was actually one of the voices I auditioned back in September, the weekend this whole duck thing started (so she finally got the part).
+
+## Two weeks to leave the browser
+
+Right now she runs as a browser preview: a duck in the corner of a page, a small panel to talk in, and Talk mode for hands-free conversation.
+
+Sprint 1 is about turning her into a real desktop companion. That means a transparent window so she can sit on top of whatever I'm working on, a tray icon, a push-to-talk hotkey, and testing all of it on my own Windows machine.
+
+If it all works out, the next time I'm stuck on a bug there'll be a duck sitting on top of my editor, asking me what I skipped.

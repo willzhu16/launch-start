@@ -7,6 +7,7 @@
 export const projectLogos: Record<string, string> = {
   contextguard: '/icons/ContextGuard.png',
   duckie: '/icons/Duckie.svg',
+  'rubber-duckie': '/icons/RubberDuckie.svg',
   'launch-start': '/icons/LaunchStart.svg',
   'beyond-the-score': '/icons/BeyondTheScore.svg',
 };

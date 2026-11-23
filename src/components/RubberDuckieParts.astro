@@ -1,0 +1,203 @@
+---
+// Static hub-and-spoke diagram of Rubber Duckie's parts: the gateway
+// (orchestration) is fixed, the engines plugged into it are swappable.
+// Plain HTML/CSS so it costs no JavaScript and follows the site theme.
+interface Props {
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+
+const slots = [
+  { role: 'Ears', what: 'Speech to text', now: 'Faster Whisper or whisper.cpp' },
+  { role: 'Brain', what: 'Language model', now: 'Any GGUF model llama.cpp can run' },
+  { role: 'Voice', what: 'Text to speech', now: "Kokoro's Heart" },
+];
+---
+
+<figure
+  class="parts"
+  aria-label="Diagram: I talk or type to Rubber Duckie's gateway, and the gateway drives the duck's body, which is shared with the website Duckie. The gateway is the part I wrote, and it plugs into three swappable engines: ears (speech to text, Faster Whisper or whisper.cpp), brain (a language model, any GGUF model llama.cpp can run) and voice (text to speech, Kokoro's Heart)."
+>
+  <div class="diagram" aria-hidden="true">
+    <div class="top">
+      <div class="node you">
+        <span class="role">Me</span>
+        <span class="detail">talk or type</span>
+      </div>
+      <div class="node body">
+        <span class="role">Body <span class="tag shared">shared</span></span>
+        <span class="detail">the same duck, box and animations as the website Duckie</span>
+      </div>
+    </div>
+    <div class="fan up"></div>
+    <div class="node core">
+      <span class="role">Duckie's gateway <span class="tag mine">mine</span></span>
+      <span class="detail">modes, turn-taking, mic rules, and what the page is allowed to do</span>
+    </div>
+    <div class="fan"></div>
+    <div class="slots">
+      {
+        slots.map((s) => (
+          <div class="node slot">
+            <span class="role">
+              {s.role} <span class="tag swap">swappable</span>
+            </span>
+            <span class="detail">{s.what}</span>
+            <span class="now">{s.now}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  {caption && <figcaption class="mono">{caption}</figcaption>}
+</figure>
+
+<style>
+  .parts {
+    margin-block: var(--s-6);
+  }
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--s-6) var(--s-4);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    font-family: var(--font-ui);
+  }
+  .node {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+    padding: var(--s-3) var(--s-4);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    text-align: center;
+  }
+  .role {
+    font-weight: 600;
+    font-size: var(--step-0);
+    color: var(--ink);
+  }
+  .detail {
+    font-size: var(--step--1);
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .now {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink);
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-3);
+    width: 70%;
+  }
+  .core {
+    max-width: 27rem;
+    border: 2px solid var(--pink);
+    box-shadow: var(--shadow-s);
+  }
+  .slot {
+    border-style: dashed;
+    border-width: 1.5px;
+  }
+  .tag {
+    display: inline-block;
+    margin-left: var(--s-1);
+    padding: 0.05rem 0.45rem;
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+  .mine {
+    background: var(--pink-tint);
+    color: var(--rose-ink);
+  }
+  .swap {
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+  .shared {
+    background: var(--gray-tint);
+    color: var(--muted);
+  }
+  /* A stem from the gateway that splits into one drop per slot. */
+  .fan {
+    position: relative;
+    width: 66.6%;
+    height: var(--s-8);
+  }
+  .fan::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 50%;
+    background: var(--muted);
+    opacity: 0.6;
+  }
+  .fan::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 50%;
+    border: 2px solid var(--muted);
+    border-bottom: 0;
+    opacity: 0.6;
+  }
+  /* Mirror image: one drop per top node joining into a stem. */
+  .fan.up {
+    width: 35%;
+  }
+  .fan.up::before {
+    top: 50%;
+  }
+  .fan.up::after {
+    top: 0;
+    border: 2px solid var(--muted);
+    border-top: 0;
+  }
+  .slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-3);
+    width: 100%;
+  }
+  figcaption {
+    margin-top: var(--s-2);
+    color: var(--muted);
+    font-size: 0.66rem;
+  }
+  @media (max-width: 560px) {
+    .top {
+      width: 100%;
+    }
+    .fan.up {
+      width: 50%;
+    }
+    .fan:not(.up) {
+      width: 2px;
+      height: var(--s-6);
+      background: var(--muted);
+      opacity: 0.6;
+    }
+    .fan:not(.up)::before,
+    .fan:not(.up)::after {
+      display: none;
+    }
+    .slots {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

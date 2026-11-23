@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Rubber Duckie</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A39A8A"/>
+      <stop offset="1" stop-color="#F3ECE0"/>
+    </linearGradient>
+    <radialGradient id="body" cx="0.38" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#FFEB85"/>
+      <stop offset="0.55" stop-color="#FCD144"/>
+      <stop offset="1" stop-color="#EDB12A"/>
+    </radialGradient>
+    <linearGradient id="beak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFAE52"/>
+      <stop offset="1" stop-color="#F08A2E"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <ellipse cx="146" cy="208" rx="92" ry="9" fill="#5C4A30" opacity="0.2"/>
+  <!-- open cardboard box, behind the duck -->
+  <path d="M150 128 L156 100 L216 100 L222 128Z" fill="#D9A46C"/>
+  <path d="M222 128 L240 114 L240 166 L222 180Z" fill="#C99256"/>
+  <path d="M138 136 L150 128 L222 128 L210 136Z" fill="#6E4A2A"/>
+  <path d="M210 136 L222 128 L222 194 L210 204Z" fill="#9C6B3C"/>
+  <rect x="138" y="136" width="72" height="68" fill="#C08A55"/>
+  <!-- duck -->
+  <ellipse cx="86" cy="204" rx="15" ry="7" fill="#F08A2E"/>
+  <ellipse cx="124" cy="204" rx="15" ry="7" fill="#F08A2E"/>
+  <ellipse cx="44" cy="142" rx="13" ry="20" fill="#F2BE34"/>
+  <ellipse cx="160" cy="142" rx="13" ry="20" fill="#F2BE34"/>
+  <ellipse cx="102" cy="132" rx="62" ry="66" fill="url(#body)"/>
+  <circle cx="90" cy="118" r="7" fill="#1E1A16"/>
+  <circle cx="134" cy="118" r="7" fill="#1E1A16"/>
+  <circle cx="92.2" cy="115.4" r="2.1" fill="#fff"/>
+  <circle cx="136.2" cy="115.4" r="2.1" fill="#fff"/>
+  <path d="M94 136 Q115 124 138 136 Q140 146 116 149 Q94 146 94 136Z" fill="url(#beak)"/>
+  <path d="M100 145 Q116 152 132 145 Q127 155 116 156 Q105 155 100 145Z" fill="#E07A24"/>
+</svg>
