@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Duckie</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A39A8A"/>
+      <stop offset="1" stop-color="#F3ECE0"/>
+    </linearGradient>
+    <radialGradient id="body" cx="0.38" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#FFEB85"/>
+      <stop offset="0.55" stop-color="#FCD144"/>
+      <stop offset="1" stop-color="#EDB12A"/>
+    </radialGradient>
+    <linearGradient id="beak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFAE52"/>
+      <stop offset="1" stop-color="#F08A2E"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <ellipse cx="128" cy="214" rx="62" ry="9" fill="#5C4A30" opacity="0.2"/>
+  <ellipse cx="104" cy="206" rx="17" ry="8" fill="#F08A2E"/>
+  <ellipse cx="152" cy="206" rx="17" ry="8" fill="#F08A2E"/>
+  <ellipse cx="58" cy="140" rx="15" ry="22" fill="#F2BE34"/>
+  <ellipse cx="198" cy="140" rx="15" ry="22" fill="#F2BE34"/>
+  <ellipse cx="128" cy="128" rx="74" ry="78" fill="url(#body)"/>
+  <circle cx="102" cy="114" r="8" fill="#1E1A16"/>
+  <circle cx="154" cy="114" r="8" fill="#1E1A16"/>
+  <circle cx="104.5" cy="111" r="2.4" fill="#fff"/>
+  <circle cx="156.5" cy="111" r="2.4" fill="#fff"/>
+  <path d="M104 134 Q128 120 152 134 Q154 146 128 149 Q102 146 104 134Z" fill="url(#beak)"/>
+  <path d="M110 145 Q128 153 146 145 Q140 156 128 157 Q116 156 110 145Z" fill="#E07A24"/>
+</svg>
