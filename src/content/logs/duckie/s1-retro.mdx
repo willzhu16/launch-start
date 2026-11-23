@@ -1,0 +1,81 @@
+---
+project: 'duckie'
+sprint: 1
+kind: 'retro'
+title: 'Sprint 1 Retro: A Duck in the Corner'
+date: 2026-11-22
+tldr: 'Two weeks took Duckie from my GPU to every page of this site. She answers from Cloudflare''s free plan, starts talking in about a second and a half, and costs a page about 6 KB until you open her box. Next time I''d test on real phones a lot sooner.'
+shipped:
+  - 'Duckie live on every page of willzhu.dev'
+  - 'Answers from Gemma 4 on Workers AI, on the free plan with hard limits'
+  - 'An Aura-2 Luna voice that starts playing while it streams in'
+  - 'Answers grounded in notes I approved, with links to my project pages'
+  - 'Scope rules, a three-strikes nap, visitor limits and single-use voice permits'
+  - 'About 6 KB per page; the 1.2 MB duck only loads when you open the box'
+struggled:
+  - 'Picking where the model runs: my GPU, the visitor''s browser, or Cloudflare'
+  - 'Figuring out the slow part was the waiting, not the file size'
+  - 'Turning down off-topic requests without refusing real follow-ups'
+learned:
+  - 'Where the model runs ends up deciding who can actually use it'
+  - 'Most of the work in shipping an AI feature is the guardrails'
+  - 'The voice is half the character'
+days: []
+draft: false
+---
+
+Two weeks ago, Duckie lived on my computer. She answered questions through a model on my own GPU, talked through a Python process running next to it, and only worked while I was sitting there.
+
+Sprint 1 had one goal: get her off my machine and onto willzhu.dev. That meant hosted answers and voice, replies quick enough to feel like an actual conversation, and a site that's still fast with her on it.
+
+She moved in on Tuesday (and is oh so cute!!!).
+
+## How it went
+
+Week 1 was figuring out where a duck lives. Running everything in the visitor's browser technically worked, but it meant a 44-second model download, a 21.6 MB voice engine, and a small model that agreed I have a PhD from MIT (sorry Duckie, I'm not that smart). Cloudflare's free plan won - Gemma 4 for her answers, Aura-2 Luna for her voice (out of 52 I listened to), and hard limits instead of a bill. I shrank her speech files to a tenth of the size, then found out on the last day that the real problem was Duckie waiting for each whole clip before she started talking.
+
+Week 2 was moving in. Her voice started playing as it arrived. She got a scope, a three-strikes nap, single-use permits for her voice, the basics of my resume, two new idle habits, and links to my project pages that she can't make up. Then she launched on this site behind a switch.
+
+## Did it hit the goal?
+
+Hosted answers and voice: yes. Both come from Cloudflare's free plan, and nobody visiting has to download a model.
+
+Replies quick enough to feel like talking: on the live site, I asked her about Beyond the Score and got text at 0.8 seconds and voice at 1.5. Duckie's spec aimed for one to two seconds, so that's in range. It's only one question though, so I'll keep checking.
+
+A site that's still fast and much more adorable: a page is about 6 KB heavier with Duckie on it. The 3D duck (about 1.2 MB) only loads when you open her box.
+
+So yeah, I'm calling it a success.
+
+## What worked
+
+### Measuring before picking
+
+I measured every hosting option before choosing one - load times, download sizes, how good the answers were. The browser version lost because of actual numbers, not because I had a feeling about it. Measuring is also how I found week 1's real bottleneck. Shrinking the audio barely helped, and the timings showed why.
+
+### Using what I already had
+
+This site already ran on Cloudflare, so Duckie's API lives on the same domain, on a route that only covers her own paths. I didn't have to sign up for another host or deal with cross-origin setup, and the free plan just stops instead of sending me a bill.
+
+### Launching with the switch off
+
+Duckie's code sat on the site switched off before launch, so launch day was mostly just flipping it on.
+
+## What I learned
+
+Where the model runs ends up deciding who can actually use it. The browser version was the most fun engineering of the sprint, and it would've been a terrible experience for someone opening my site on a work laptop.
+
+Time the wait before optimizing anything. Cutting the audio to a tenth of the size barely changed anything. Not waiting for the whole clip took more than a second off.
+
+Most of the work in shipping an AI feature is the guardrails around it: what she'll answer, how often, who gets to use her voice, and what never gets stored.
+
+And the voice really is half the character. Same duck, same answers, but Luna is what made her feel like Duckie.
+
+## What I'd do differently
+
+Test on real phones way sooner. Most of Duckie's testing happened in desktop browsers and a phone-sized window, and actual iPhone and Safari checks came last. Admittedly there is still some work to do here as the UX isn't as polished as I'd like, but since Duckie is live, I'm ending the official work here and will make small updates in the future.
+
+## What's next
+
+Duckie's live. Next up is polishing her on mobile, and she'll keep picking up new habits (more animations are on her list).
+
+Sprint 1 put a duck in the corner. Go ask her something.

@@ -1,0 +1,74 @@
+---
+project: 'duckie'
+sprint: 1
+kind: 'week'
+week: 2
+title: 'Week 2: Duckie Moves In'
+date: 2026-11-22
+tldr: 'Duckie is live on every page of this site. She learned to say no politely (and nap after three strikes), picked up two new habits, and adds about 6 KB to a page until you open her box.'
+shipped:
+  - 'Duckie live on willzhu.dev, in a cardboard box in the bottom-right corner of every page'
+  - 'Scope rules, a three-strikes nap, and single-use permits for her voice'
+  - 'Two new idle habits: tidying her feathers and a surprised sneeze'
+  - 'Links to my project pages inside her answers, from an approved list only'
+struggled:
+  - 'Letting real follow-ups through while turning down improper requests'
+learned:
+  - 'Shipping with the switch off first made launch day basically one flip'
+  - 'Free plan or not, a public AI endpoint still needs limits'
+days: []
+draft: false
+---
+
+import Figure from '../../../components/Figure.astro';
+import production from '../../../assets/duckie/week-2/production.png';
+
+Week 1 ended with a promise: if it all went to plan, there'd be a box in the corner of this page by the end of the sprint.
+
+Look down and to the right :)
+
+Duckie went live early on Tuesday morning. She sits in a cardboard box in the bottom-right corner of every page, and if you open it, she pops out head first and asks what you want to know about me.
+
+<Figure src={production} alt="The About page in dark mode with Duckie standing beside her open box and a chat panel where she answers a question with links to ContextGuard, Launch Start and Beyond the Score" caption="Duckie on the live site, answering with links to my projects." />
+
+Most of this week was less about new features and more about making sure she wouldn't embarrass me (or burn through my free quota) once she was out on the internet by herself.
+
+## Saying no
+
+Put a chatbot on a portfolio and someone's going to ask it to do their homework. So Duckie has a scope: my work, my projects, and herself. Ask her for a Python script or a French translation and she'll politely steer you back. But if she offers to tell you about my projects and you ask "where should I start?", she answers with her duckie enthusiasm.
+
+Push her off-topic three times and she takes a nap. The cooldown survives a page reload too, so refreshing won't wake her up early.
+
+I also threw the usual tricks at her - a fake system message, "ignore all previous instructions", and some HTML that tries to run code. The HTML just shows up as plain text in the chat, and the rest got the same polite redirect as everything else off-topic. I'm sure someone will find a way around it eventually, but at least the obvious stuff doesn't work.
+
+Her voice has rules too. Duckie can only say lines that were actually in her reply, and each line gets a single-use permit that expires after two minutes. Otherwise anyone could use her to read out whatever they wanted on my free quota.
+
+She still doesn't keep transcripts either. The only things stored are timestamps and fingerprints of those permits, and those get deleted after ten quiet minutes.
+
+## Resume
+
+Until this week Duckie mostly knew about my projects. Now she knows the basics from my resume too: my role at Northwestern Mutual, the languages and tools I've used, and some older systems projects like a Unix-style shell and a memory allocator. If she doesn't know something (like how many years I've used each language), she just says so instead of making something up.
+
+## New habits
+
+Duckie picked up two quieter idle animations: tidying her feathers, and a sneeze that surprises her more than anyone. They're mixed into her usual rotation without making her do stuff more often, so she's less distracting (and maximally cute). You can also trigger both from Play & settings ("Tidy feathers" and "A tiny sneeze").
+
+## Links
+
+Her answers link straight to my project pages now, but she doesn't actually pick the links. Once her reply finishes, the site looks for project names it recognizes and links them from an approved list of public pages. The model never gets to come up with a URL itself.
+
+## Launch and page weight
+
+She launched behind a switch. Her code sat on this site switched off for a bit, and turning it on was the whole launch.
+
+Last week I said I couldn't measure what she costs a page until she was actually installed here. Now she is, and a page on this site got about 6 KB heavier. The 3D part (about 1.2 MB) only downloads when you open her box, and nothing goes to a model until you ask a question.
+
+## What I learned
+
+Shipping her with the switch off first meant launch day was basically just flipping it on, which was way less stressful than I expected.
+
+Free plan or not, a public AI endpoint still needs limits. If someone hammers it there's no bill, but they eat my daily quota and Duckie ends up napping for everyone else.
+
+## Next
+
+That's the end of sprint 1. The retro is next.
