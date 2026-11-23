@@ -1,14 +1,14 @@
 ---
 title: 'Rubber Duckie'
-pitch: 'A private rubber duck for debugging. Talk through the problem out loud and she asks the question you skipped. Runs on my machine.'
+pitch: 'A rubber duck for debugging that talks back. I explain the bug out loud, she asks the question I skipped. Runs on my machine.'
 status: 'in-sprint'
 featured: false
-draft: true
+draft: false
 createdDate: 2026-11-17
 tech: ['typescript', 'threejs', 'node', 'python', 'vitest']
 tags: ['ai', 'tooling']
 cover: './cover.png'
-coverAlt: 'Rubber Duckie on a pale green background: a small chat panel that says "Tell me what you''re working on. We''ll take it one question at a time," with the yellow 3D duck and her box below it'
+coverAlt: 'Rubber Duckie, a round yellow 3D duck with an orange beak and stubby orange feet, standing beside her open cardboard box on a soft warm-gray background'
 sprints:
   - number: 1
     goal: 'Turn the browser preview into a Windows desktop companion: a transparent always-on-top window, tray controls and a push-to-talk hotkey, tested on my own machine.'
@@ -17,26 +17,32 @@ sprints:
     endDate: 2026-12-05
 ---
 
+import RubberDuckieParts from '../../../components/RubberDuckieParts.astro';
+
 ## What & why
 
 Rubber Duckie is the other half of [Duckie](/projects/duckie/).
 
-The Duckie on this site explains my work to visitors. Rubber Duckie lives on my own computer and does the opposite: she listens while I explain my code to her.
+Duckie (the one on this site) explains my work to whoever visits. Rubber Duckie lives on my own computer and does the opposite - she listens while I explain my code to her.
 
-That's the original rubber duck idea. When you're stuck, you talk through the problem line by line, and somewhere in the middle you find the bug yourself. Rubber Duckie keeps that, and adds a duck who can ask the question you skipped.
+That's the original rubber duck idea. When you're stuck, you talk through the problem line by line, and somewhere in the middle you find the bug yourself. Rubber Duckie keeps all of that, except now the duck can ask the question you skipped.
 
-She is deliberately not a coding agent. She doesn't read my files, doesn't see my screen, and doesn't write the fix. Tell her about a loop that never ends and she asks what condition is supposed to stop it. When I do want ideas, there's a mode for that.
+She's not a coding agent, and that's on purpose. She doesn't read my files, doesn't see my screen, and definitely doesn't write the fix. Tell her about a loop that never ends and she'll ask what's supposed to stop it. If I actually want ideas, there's a mode for that.
 
 The longer story is in [why my rubber duck talks back now](/blog/note-6-why-my-rubber-duck-talks-back-now/).
 
 ## How it works
 
-Same duck, same box, same animations: Rubber Duckie shares her character with the website Duckie, pinned to a reviewed version of the shared code, so an update to one never silently changes the other. What she says is completely separate. She has none of the portfolio notes or website limits, so she can talk about any software problem.
+Same duck, same box, same animations. Rubber Duckie shares her body with the website Duckie, but what she says is completely separate. She doesn't get the portfolio notes or any of the website's limits, so she'll talk through pretty much any software problem.
 
-Everything runs locally. A language model runs on my machine through llama.cpp, speech recognition uses Faster Whisper offline, and her voice is Kokoro's Heart, also local. There's no hosted fallback, no analytics and no saved history. Conversations live only in memory and are gone when the page closes.
+Everything runs locally. The language model runs on my machine through llama.cpp, speech recognition is Faster Whisper (offline), and her voice is Kokoro's Heart, also local. No hosted fallback, no analytics, and no saved history. Conversations only live in memory and are gone as soon as the page closes.
 
-There are three modes: Rubber duck (mostly questions), Debug together (suggestions when you want them) and Just chat. You can type, record a thought and review the transcript before sending, or switch on Talk mode: speak, pause, and she answers out loud. The microphone only turns on when you ask, and it switches off while she's talking.
+The part I actually wrote is the gateway in the middle: the modes, the turn-taking, the mic rules, and what the page is and isn't allowed to do. Everything it talks to is swappable. The brain is just a setting, so I can point it at a different model whenever a better (and importantly, small) one comes out. Speech recognition already works with either Faster Whisper or whisper.cpp. And her voice sits behind one function, so trying a different voice engine means writing a small adapter instead of rebuilding everything else.
+
+<RubberDuckieParts caption="The gateway is mine. The ears, brain and voice just plug into it." />
+
+She has three modes: Rubber duck (mostly questions), Debug together (suggestions when I want them), and Just chat. I can type, record a thought and check the transcript before sending it, or turn on Talk mode - speak, pause, and she answers out loud. The mic only turns on when I ask, and it switches off while she's talking.
 
 ## Before the sprint
 
-The first two days of work came before sprint 1: a local workbench, streaming conversation, microphone input, local speech, a compact companion layout, and hands-free Talk mode. All of it runs as a browser preview for now. Sprint 1 is about turning her into an actual desktop app.
+The first few days of work were the build: a local workbench, streaming conversation, mic input, local speech, a compact companion layout, and hands-free Talk mode. Right now it's all a browser preview. The rest of Sprint 1 is about turning her into an actual desktop app.
